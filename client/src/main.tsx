@@ -58,6 +58,10 @@ const router = createBrowserRouter([
             {
                 path: "/receipts/new",
                 element: <Outlet />
+            },
+            {
+                path: "/contacts",
+                element: <Outlet />
             }
         ]
     }
