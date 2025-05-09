@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Navbar, Typography } from "@material-tailwind/react";
 export default function JobsNavbar() {
 
-    const ty_classname = "p-1 font-normal hover:border-b border-[#535BF2]";
+    const ty_classname = "p-1 font-normal hover:border-b border-[#A295AF]";
     const navList = (
         <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
             <Typography
@@ -14,9 +14,48 @@ export default function JobsNavbar() {
             >
                 <Link
                     className="flex items-center"
-                    to="/jobs"
+                    to="/jobs/status/incoming"
                 >
-                    All Open Jobs
+                    Incoming
+                </Link>
+            </Typography>
+            <Typography
+                as="li"
+                variant="small"
+                color="blue-gray"
+                className={ty_classname}
+            >
+                <Link
+                    className="flex items-center"
+                    to="/jobs/status/received"
+                >
+                    Received
+                </Link>
+            </Typography>
+            <Typography
+                as="li"
+                variant="small"
+                color="blue-gray"
+                className={ty_classname}
+            >
+                <Link
+                    className="flex items-center"
+                    to="/jobs/status/processed"
+                >
+                    Processed
+                </Link>
+            </Typography>
+            <Typography
+                as="li"
+                variant="small"
+                color="blue-gray"
+                className={ty_classname}
+            >
+                <Link
+                    className="flex items-center"
+                    to="/jobs/status/delivered"
+                >
+                    Delivered
                 </Link>
             </Typography>
         </ul>

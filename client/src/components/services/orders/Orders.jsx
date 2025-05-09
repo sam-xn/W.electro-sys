@@ -52,7 +52,7 @@ export default function Orders() {
                 <OrdersNavbar />
             </div>
             <div className="grid grid-cols-4">
-                <div className="text-md p-4 pt-6 border-b border-slate-500 text-slate-500">
+                <div className="text-md p-4 pt-6 border-b border-slate-500 text-[#544B76]">
                     {(filter.status ? String(filter.status).charAt(0).toUpperCase()+String(filter.status).slice(1) : "All") + " Orders"}
                 </div>
                 <div></div><div></div>
@@ -108,9 +108,10 @@ export default function Orders() {
                         </div>
                     </form>
                 </div>
+
                 { /*-------------------------------------------------------- Orders Table />*/ }
                 <div className="border border-slate-500 rounded-md overflow-hidden mb-4">
-                    <table className="w-full caption-bottom text-sm">
+                    <table className="w-full caption-bottom text-sm text-[#544B76]">
                         <thead> 
                             <tr className="">
                                 <th className={ th_classname }>

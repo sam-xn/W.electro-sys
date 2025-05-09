@@ -55,7 +55,7 @@ export default function Jobs() {
                 <JobsNavbar />
             </div>
             <div className="grid grid-cols-4">
-                <div className="p-4 pt-6 border-b border-slate-500 text-slate-500">
+                <div className="p-4 pt-6 border-b border-slate-500 text-[#544B76]">
                     {"Open Orders : " + (filter.status ? String(filter.status).charAt(0).toUpperCase() + String(filter.status).slice(1) : "All") + " Jobs"}
                 </div>
             </div>

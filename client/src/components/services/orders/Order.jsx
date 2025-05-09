@@ -160,7 +160,7 @@ export default function Order() {
             });
     }, []);
 
-    const div_classname = "max-w-full mx-4 p-8 rounded shadow border border-slate-500 text-slate-500";
+    const div_classname = "max-w-full mr-4 p-8 rounded shadow border border-slate-500 text-[#544B76]";
     const button_classname = "grid py-2 px-2 mx-18 md:mx-6 text-center text-sm font-bold shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-white hover:bg-[#DEE1F4] rounded-md";
 
     return (
@@ -248,7 +248,7 @@ export default function Order() {
                                        {`Date: ${new Date(receipt._timestamp).toDateString()}`}
                                     </div>
 
-                                    <div className="pb-4">{`Delivery Slip # ${receipt.id}`}</div>
+                                    <div className="pb-8">{`Delivery Slip # ${receipt.id}`}</div>
 
                                     <div className="pb-8 px-4">
                                         {receipts[index].deliverables.map((d, d_index) =>

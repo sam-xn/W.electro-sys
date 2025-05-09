@@ -213,7 +213,7 @@ export default function Receipts() {
                 <ReceiptsNavbar />
             </div>
             <div className="grid grid-cols-4">
-                <div className="text-md p-4 pt-6 border-b border-slate-500 text-slate-500">
+                <div className="text-md p-4 pt-6 border-b border-slate-500 text-[#544B76]">
                     {(filter.status ? String(filter.status).charAt(0).toUpperCase()+String(filter.status).slice(1) : "All") + " Receipts"}
                 </div>
                 <div></div><div></div>
