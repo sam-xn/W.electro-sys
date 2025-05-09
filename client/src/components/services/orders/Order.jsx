@@ -160,29 +160,30 @@ export default function Order() {
             });
     }, []);
 
-    const div_classname = "max-w-full mr-4 p-8 rounded shadow border border-slate-500 text-[#544B76]";
+    const div_classname = "max-w-full mr-4 p-8 rounded shadow border border-slate-500";
     const button_classname = "grid py-2 px-2 mx-18 md:mx-6 text-center text-sm font-bold shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-white hover:bg-[#DEE1F4] rounded-md";
 
     return (
         <>
             <div className={"bg-[#eff1fc] " + div_classname}>
-                <div className="font-bold text-xl grid grid-cols-2 border-b border-slate-500 p-1">
-                    <div> Purchase Order </div>
-                    <div className="grid place-items-end px-12">{`| status: ${po.status}`}</div>
-                </div>
-                <div className="text-xl font-bold underline grid grid-cols-3 justify-between gap-2 py-2 px-8">
-                    <div>{`PO # ${po.po_num}`}</div>
-                    <div>{`${String(po.customer).toUpperCase()}`}</div>
-                    <div>{`${new Date(po._timestamp).toDateString()}`}</div>
-                </div>
-
-                {po.notes ? 
-                    <div className="px-8 pt-4 flex gap-4">
-                        <div className="text-lg font-bold underline"> Notes: </div>
-                        <div className="text-xl"> {`${po.notes}`} </div>
+                <div className="text-[#544B76]">
+                    <div className="font-bold text-xl grid grid-cols-2 border-b border-slate-500 p-1">
+                        <div> Purchase Order </div>
+                        <div className="grid place-items-end px-12">{`| status: ${po.status}`}</div>
                     </div>
-                : ""}
+                    <div className="text-xl font-bold underline grid grid-cols-3 justify-between gap-2 py-2 px-8">
+                        <div>{`PO # ${po.po_num}`}</div>
+                        <div>{`${String(po.customer).toUpperCase()}`}</div>
+                        <div>{`${new Date(po._timestamp).toDateString()}`}</div>
+                    </div>
 
+                    {po.notes ? 
+                        <div className="px-8 pt-4 flex gap-4">
+                            <div className="text-lg font-bold underline"> Notes: </div>
+                            <div className="text-xl"> {`${po.notes}`} </div>
+                        </div>
+                    : ""}
+                    </div>
                 <div className="grid grid-cols-4 justify-between gap-4 mx-4 my-8 pb-8 border-b border-slate-500">
                     {jobs.map((job, index) => 
                         <>
@@ -234,14 +235,14 @@ export default function Order() {
             </div>
 
             <div className={"bg-[#eff1fc] my-8 " + div_classname}>
-                <div className="font-bold text-xl border-b border-slate-500 p-1">
+                <div className="text-[#544B76] font-bold text-xl border-b border-slate-500 p-1">
                     <div> Receipts </div>
                 </div>
 
                 <div className="grid grid-cols-2 justify-between mx-4 mt-4">
                     {receipts.map((receipt, index) =>
                         <>
-                            <div className={"bg-white mb-8 grid grid-cols-1 place-content-between " + div_classname} key={[index, receipt.id]}>
+                            <div className={div_classname+" bg-white mb-8 grid grid-cols-1 place-content-between  text-black"} key={[index, receipt.id]}>
 
                                 <div>
                                    <div className="font-bold border-b border-slate-500">

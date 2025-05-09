@@ -126,7 +126,7 @@ export default function Jobs() {
                 <div className="border border-slate-500 rounded-md overflow-hidden mb-4">
                     <table className="w-full caption-bottom text-sm">
                         <thead>
-                            <tr className="">
+                            <tr className="text-[#544B76]">
                                 <th className={th_classname}>
                                     Date
                                 </th>
