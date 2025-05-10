@@ -23,7 +23,7 @@ const receiptsItems: Item[] = [
 ]
 
 const contactsItems: Item[] = [
-    { title: 'Customers', iconName: 'receipt-text', href: '/contacts' }
+    { title: 'Customers', iconName: 'receipt-text', href: '/customers' }
 ]
 
 const SidebarSection = ({ title, items }: { title: string; items: Item[] }) => (
@@ -49,15 +49,15 @@ const SidebarItem: React.FC<PropsType> = ({ title, iconName, href }) => {
     return (
         <Link
             to={ href}
-            className={`group flex items-center gap-3 rounded pl-8 py-3 transition-all duration-300 text-[#544B76] hover:bg-[#DEE1F4] hover:text-[#A295AF] md:px-8 lg:px-1`}
+            className={`group flex items-center gap-3 rounded pl-8 py-3 transition-all duration-300 text-[#544B76] hover:bg-[#DEE1F4] md:px-8 lg:px-1`}
         >
             <Suspense fallback={ fallback }>
                 <Icon
                     size={ 18 }
-                    className={`transition-all duration-300 group-hover:text-[#A295AF] text-[#544B76]`}
+                    className={`transition-all duration-300 text-[#544B76]`}
                 />
             </Suspense>
-            <h3 className="text-md text-[#544B76] leading-4 hover:text-[#A295AF]">{ title }</h3>
+            <h3 className="text-md text-[#544B76] leading-4">{ title }</h3>
         </Link>
     )
 }

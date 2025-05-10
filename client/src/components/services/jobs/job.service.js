@@ -7,26 +7,13 @@ const http = axios.create({
     },
 });
 
-const getAll = () => {
-    return http.get("/jobs");
-};
-
 const get = (id) => {
-    console.log(id);
     return http.get(`/jobs/${id}`); 
 };
 
-const create = (data) => {
-    return http.post("/jobs", data);
-};
-
-const update = (id, data) => {
-    return http.put(`/jobs/${id}`, data);
-};
-
-const remove = (id) => {
-    return http.delete(`/jobs/${id}`);
-};
+//const getAll = () => {
+//    return http.get("/jobs");
+//};
 
 const getPO = (id) => {
     return http.get(`/jobs/PO/id=${id}`);
@@ -63,8 +50,21 @@ const findByCriteria = (status, customer, PO, process) => {
     }
 };
 
+const update = (id, data) => {
+    return http.put(`/jobs/${id}`, data);
+};
+
+const create = (data) => {
+    return http.post("/jobs", data);
+};
+
+const remove = (id) => {
+    return http.delete(`/jobs/${id}`);
+};
+
+
 export default {
-    getAll,
+    //getAll,
     get,
     create,
     update,

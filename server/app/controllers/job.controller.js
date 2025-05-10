@@ -7,65 +7,41 @@ const Job = db.jobs;
 
 const sequelize = db.sequelize;
 
-export const create = (req, res) => {
-    if (!res.body.author_initial ||
-        !res.body.po_id ||
-        !res.body.customer ||
-        !res.body.process ||
-        !res.body.num_pcs
-    ) {
-        res.status(400).send({
-            message: "Content cannot be empty."
-        });
-        return;
-    }
+export const findOne = (req, res) => {
+    const id = req.params.id;
 
-    Job.create(job)
+    const query = `\
+    SELECT orders.po_num, orders.customer, \
+    jobs.* \
+    FROM jobs join orders on orders.id = jobs.po_id \
+    WHERE jobs.id=${id};`;
+
+    sequelize.query(query, { type: QueryTypes.SELECT })
         .then(data => {
-            res.send(data);
+            if (data) {
+                res.send(data);
+            } else {
+                res.status(404).send({
+                    message: `Cannot find Job with id=${id}.`
+                });
+            }
         })
         .catch(err => {
             res.status(500).send({
-                message:
-                    err.message || "An error occured while creating Job."
-            });
-        });
-};
-
-export const findAll = (req, res) => {
-    const title = req.query.title;
-    const condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
-
-    Job.findAll({ where: condition })
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "An error occurred while retrieving Jobs."
+                message: "Error retrieving Job with id=" + id
             });
         });
 };
 
 export const findAllPO = (req, res) => {
-    console.log(req.params);
 
     const poId = req.params.id;
+
     const query = `\
     SELECT jobs.id, jobs._timestamp, jobs.status, jobs.process, jobs.num_pcs, jobs.remarks, \
     orders.id as orderId, orders.customer, orders.po_num, orders.status as orderStatus \
     FROM jobs JOIN orders ON jobs.po_id=orders.id \
     WHERE jobs.po_id=${poId};`;
-
-    //const query = `\
-    //SELECT jobs.id, jobs._timestamp, jobs.status, jobs.process, jobs.num_pcs, jobs.remarks, \
-    //orders.id as orderId, orders.customer, orders.po_num, orders.status, \
-    //customers.*, contacts.name \
-    //FROM jobs JOIN orders ON jobs.po_id = orders.id \
-    //JOIN customers on orders.customer = customers.company \
-    //JOIN contacts on contacts.email = customers.primary_contact\
-    //WHERE jobs.po_id=${poId};`;
 
     sequelize.query(query, { type: QueryTypes.SELECT })
         .then(data => {
@@ -80,8 +56,6 @@ export const findAllPO = (req, res) => {
 };
 
 export const findAllSearch = (req, res) => {
-    
-    console.log(req.params);
     
     const customer = req.params.customer;
     const PO = req.params.PO;
@@ -142,25 +116,21 @@ export const findAllSearch = (req, res) => {
             });
 };
 
-export const findOne = (req, res) => {
-    const id = req.params.id;
+//export const findAll = (req, res) => {
+//    const title = req.query.title;
+//    const condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
 
-    Job.findByPk(id)
-        .then(data => {
-            if (data) {
-                res.send(data);
-            } else {
-                res.status(404).send({
-                    message: `Cannot find Job with id=${id}.`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error retrieving Job with id=" + id
-            });
-        });
-};
+//    Job.findAll({ where: condition })
+//        .then(data => {
+//            res.send(data);
+//        })
+//        .catch(err => {
+//            res.status(500).send({
+//                message:
+//                    err.message || "An error occurred while retrieving Jobs."
+//            });
+//        });
+//};
 
 export const update = (req, res) => {
     const id = req.params.id;
@@ -184,6 +154,30 @@ export const update = (req, res) => {
         });
 };
 
+export const create = (req, res) => {
+    if (!res.body.author_initial ||
+        !res.body.po_id ||
+        !res.body.customer ||
+        !res.body.process ||
+        !res.body.num_pcs
+    ) {
+        res.status(400).send({
+            message: "Content cannot be empty."
+        });
+        return;
+    }
+
+    Job.create(job)
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "An error occured while creating Job."
+            });
+        });
+};
 export const deleteOne = (req, res) => {
     const id = req.params.id;
 

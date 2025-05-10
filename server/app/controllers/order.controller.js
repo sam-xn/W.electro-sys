@@ -20,7 +20,7 @@ export const create = (req, res) => {
     const status = req.body.status;
 
     const query_string = `insert into orders(po_num, customer, status) values('${req.body.poNum}', '${req.body.customer}', '${req.body.status}')`;
-    console.log(query_string);
+    //console.log(query_string);
     sequelize.query(query_string)
         .then(data => {
             res.send(data); console.log(data);
@@ -116,6 +116,23 @@ export const findOne = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message: "Error retrieving Order with id=" + id
+            });
+        });
+};
+
+export const updateNotes = (req, res) => {
+    const id = req.params.id;
+    console.log(data);
+    const query = `UPDATE orders SET notes=${data} WHERE id=${id};`;
+    
+    sequelize.query(query, { type: QueryTypes.UPDATE })
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "An error occurred while retrieving Jobs."
             });
         });
 };

@@ -23,6 +23,10 @@ const update = (id, data) => {
     return http.put(`/orders/${id}`, data);
 };
 
+const updateNote = (id, data) => {
+    return http.put(`/orders/${id}/notes`, data);
+};
+
 const remove = (id) => {
     return http.delete(`/orders/${id}`);
 };
@@ -45,6 +49,7 @@ export default {
     get,
     create,
     update,
+    updateNote,
     remove,
     findByCriteria,
 };

@@ -9,6 +9,7 @@ export default (app) => {
 
     router.get("/:id", orders.findOne);
     router.put("/:id", orders.update);
+    router.put("/:id/notes", orders.updateNotes);
     router.delete("/:id", orders.deleteOne);
 
     router.get("/status/:status", orders.findAllSearch);

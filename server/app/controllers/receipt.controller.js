@@ -63,7 +63,6 @@ export const findAllList = (req, res) => {
 }
 
 export const findAllPO = (req, res) => {
-
     const poId = req.params.id;
 
     const query = `\

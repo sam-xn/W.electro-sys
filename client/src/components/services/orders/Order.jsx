@@ -11,6 +11,12 @@ export default function Order() {
     const [jobs, setJobs] = useState([]);
     const [receipts, setReceipts] = useState([]);
 
+    const [addNote, setAddNote] = useState(false);
+    const [newNote, setNewNote] = useState(po.notes);
+
+    const [addReceiptNote, setAddReceiptNote] = useState(false);
+    const [newReceiptNote, setNewReceiptNote] = useState(receipts.notes);
+
     useEffect(() => {
         OrderService.get(params.id)
             .then((response) => {
@@ -160,9 +166,47 @@ export default function Order() {
             });
     }, []);
 
+    function fnAddNote() {
+        if (!addNote) setAddNote(true);
+        else setAddNote(false);
+    }
+
+    function fnAddReceiptNote() {
+        if (!addReceiptNote) setAddReceiptNote(true);
+        else setAddReceiptNote(false);
+    }
+    function saveNote() {
+        //OrderService.updateNote(params.id, { newNote })
+        //    .then((resposnse) => {
+        //        //setAddNote(false);
+        //    })
+        //    .catch((e) => {
+        //        console.log(e);
+        //    });
+    }
+    function discardNote() {
+        setNewNote(po.notes);
+        setAddNote(false);
+    }
+
+    function discardReceiptNote() {
+        setNewReceiptNote(po.notes);
+        setAddReceiptNote(false);
+    }
+
+    function saveReceiptNote() {
+        //OrderService.updateNote(params.id, { newNote })
+        //    .then((resposnse) => {
+                //setAddReceiptNote(false);
+        //    })
+        //    .catch((e) => {
+        //        console.log(e);
+        //    });
+    }
+
     const div_classname = "max-w-full mr-4 p-8 rounded shadow border border-slate-500";
     const button_classname = "grid py-2 px-2 mx-18 md:mx-6 text-center text-sm font-bold shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-white hover:bg-[#DEE1F4] rounded-md";
-
+    const addnote_classname = "text-[#544B76] text-sm bg-white outline outline-slate-500 shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 hover:outline-none hover:bg-[#DEE1F4] rounded";
     return (
         <>
             <div className={"bg-[#eff1fc] " + div_classname}>
@@ -203,13 +247,13 @@ export default function Order() {
 
                                 <div className="border-t border-slate-500">
                                     <div className="my-4">
-                                        <Link className={button_classname} to={`/jobs/${job.id}`}>
-                                            Update Job
+                                        <Link className={button_classname} to={`/jobs/${job.id}/print`}>
+                                            Print Tag
                                         </Link>
                                     </div>   
                                     <div className="my-4">
-                                        <Link className={button_classname} to={`/jobs/${job.id}`}>
-                                            Print Tag
+                                        <Link className={button_classname} to={`/jobs/${job.id}/update`}>
+                                            Finish Job
                                         </Link>
                                     </div>
                                 </div>
@@ -218,19 +262,52 @@ export default function Order() {
                     )}
                 </div>
 
-                <div className="pt-2 pb-2 gap-4 grid grid-cols-4">
-                    <Link className={button_classname} to={`/jobs/new`}>
+                <div className="pb-2 gap-4 grid grid-cols-4">
+                    <Link className={button_classname} to={`new`}>
                         Add Jobs
                     </Link>
                     <div></div>
-                    <Link className={button_classname} to={`/`}>
+                    <Link className={button_classname} to={`contacts`}>
                         View Contacts
                     </Link>
-
-                    <Link className={button_classname} to={`/jobs/new`}>
-                        Update Notes
-                    </Link>
+                    <button
+                        className={addnote_classname}
+                        onClick={fnAddNote}
+                    >
+                        Add Notes
+                    </button>
                 </div>
+
+                {addNote ?
+                    <>
+                        <div className="grid grid-cols-4">
+
+                            <div></div>
+                            <div></div>
+
+                            <div className="col-span-2 flex gap-2 self-end py-4">
+                                <input
+                                    className="w-3/4 px-4 bg-white focus:outline-none max-w-full border border-slate-500"
+                                    onChange={(e) => setNewNote(e.target.value)}
+                                    value={newNote}
+                                ></input>
+                                <button
+                                    className="w-1/8 outline outline-slate-500 rounded-xs text-xxs text-[#544B76] bg-white my-2"
+                                    onClick={saveNote}
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    className="w-1/8 outline outline-slate-500 rounded-xs text-xxs text-[#544B76] bg-white my-2"
+                                    onClick={discardNote}
+                                >
+                                    Discard
+                                </button>
+                            </div>
+                        </div>
+                    </>
+                    : <></>
+                }
 
             </div>
 
@@ -281,17 +358,61 @@ export default function Order() {
                                             Print Receipt
                                         </Link>
                                     </div>
-                                    <div className="my-4">
-                                        <Link className={button_classname} to={`/receipts/${receipt.id}`}>
-                                            Update Receipt
-                                        </Link>
-                                    </div>
+                                    {/*<div className="my-4">*/}
+                                    {/*    <Link className={button_classname} to={`/receipts/${receipt.id}`}>*/}
+                                    {/*        Update Receipt*/}
+                                    {/*    </Link>*/}
+                                    {/*</div>*/}
                                 </div>
 
                             </div>
+
                         </>
                     )}
                 </div>
+
+                <div className="pt-8 pb-2 gap-4 grid grid-cols-4 border-t border-slate-500">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <button
+                        className={addnote_classname}
+                        onClick={fnAddReceiptNote}
+                    >
+                        Add Notes
+                    </button>
+                </div>
+                {addReceiptNote ?
+                    <>
+                        <div className="grid grid-cols-4">
+
+                            <div></div>
+                            <div></div>
+
+                            <div className="col-span-2 flex gap-2 self-end py-4">
+                                <input
+                                    className="w-3/4 px-4 bg-white focus:outline-none max-w-full border border-slate-500"
+                                    onChange={(e) => setNewReceiptNote(e.target.value)}
+                                    value={newReceiptNote}
+                                ></input>
+                                <button
+                                    className="w-1/8 outline outline-slate-500 rounded-xs text-xxs text-[#544B76] bg-white my-2"
+                                    onClick={saveReceiptNote}
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    className="w-1/8 outline outline-slate-500 rounded-xs text-xxs text-[#544B76] bg-white my-2"
+                                    onClick={discardReceiptNote}
+                                >
+                                    Discard
+                                </button>
+                            </div>
+                        </div>
+                    </>
+                    : <></>
+                }
+
             </div>
         </>
     )

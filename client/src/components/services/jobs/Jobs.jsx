@@ -14,7 +14,7 @@ export default function Jobs() {
     useEffect(() => {
         JobService.findByCriteria(filter.status, searchCustomer, searchPO, searchProcess)
             .then((response) => {
-                setJobs(response.data); console.log(response.data);
+                setJobs(response.data); 
             })
             .catch((e) => {
                 console.log(e);

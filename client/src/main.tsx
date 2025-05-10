@@ -10,9 +10,12 @@ import Orders from './components/services/orders/Orders.jsx'
 import Order from './components/services/orders/Order.jsx'
 import NewOrder from './components/services/orders/NewOrder.jsx'
 import Jobs from './components/services/jobs/Jobs.jsx'
-import Job from './components/services/jobs/Job.jsx'
+import NewJob from './components/services/jobs/NewJob.jsx'
+import UpdateJob from './components/services/jobs/UpdateJob.jsx'
+import PrintJob from './components/services/jobs/PrintJob.jsx'
 import Receipts from './components/services/receipts/Receipts.jsx'
-import Receipt from './components/services/receipts/Receipt.jsx'
+import PrintReceipt from './components/services/receipts/PrintReceipt.jsx'
+import NewReceipt from './components/services/receipts/NewReceipt.jsx'
 
 const router = createBrowserRouter([
     {
@@ -36,6 +39,14 @@ const router = createBrowserRouter([
                 element: <NewOrder />
             },
             {
+                path: "/orders/:id/new",
+                element: <NewJob />
+            },
+            {
+                path: "/orders/:id/contacts",
+                element: <Outlet />
+            },
+            {
                 path: "/jobs",
                 element: <Jobs />
             },
@@ -44,8 +55,12 @@ const router = createBrowserRouter([
                 element: <Jobs />
             },
             {
-                path: "/jobs/:id",
-                element: <Job />
+                path: "/jobs/:id/update",
+                element: <UpdateJob />
+            },
+            {
+                path: "/jobs/:id/print",
+                element: <PrintJob />
             },
             {
                 path: "/receipts",
@@ -53,14 +68,18 @@ const router = createBrowserRouter([
             },
             {
                 path: "/receipts/:id",
-                element: <Receipt />
+                element: <PrintReceipt />
             },
             {
                 path: "/receipts/new",
+                element: <NewReceipt />
+            },
+            {
+                path: "/customers",
                 element: <Outlet />
             },
             {
-                path: "/contacts",
+                path: "/orders/:id/contacts",
                 element: <Outlet />
             }
         ]
