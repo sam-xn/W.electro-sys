@@ -160,6 +160,14 @@ export default function Orders() {
                             ))}
                         </tbody>
                     </table>
+
+                    <div>{
+                        orders.length == 0 ?
+                            <div className="text-sm px-8 py-2 bg-[#eff1fc]">
+                                No {filter.status ? filter.status : ''} orders to display.
+                            </div>
+                            : <div></div>
+                    }</div>
                 </div>
             </div>
         </>

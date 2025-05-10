@@ -185,7 +185,7 @@ export default function Jobs() {
                     <div>{
                         jobs.length == 0 ?
                             <div className="text-sm px-8 py-2 bg-[#eff1fc]">
-                                {`No ${filter.status} jobs to display.`}
+                                No {filter.status ? filter.status : ''} jobs to display.
                             </div>
                             : <div></div>
                     }</div>
