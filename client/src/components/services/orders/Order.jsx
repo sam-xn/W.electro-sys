@@ -292,13 +292,13 @@ export default function Order() {
                                     value={newNote}
                                 ></input>
                                 <button
-                                    className="w-1/8 outline outline-slate-500 rounded-xs text-xxs text-[#544B76] bg-white my-2"
+                                    className="w-1/8 outline outline-slate-500 rounded-xs text-xxs text-[#544B76] bg-white hover:bg-[#DEE1F4] my-2"
                                     onClick={saveNote}
                                 >
                                     Save
                                 </button>
                                 <button
-                                    className="w-1/8 outline outline-slate-500 rounded-xs text-xxs text-[#544B76] bg-white my-2"
+                                    className="w-1/8 outline outline-slate-500 rounded-xs text-xxs text-[#544B76] bg-white hover:bg-[#DEE1F4] my-2"
                                     onClick={discardNote}
                                 >
                                     Discard
@@ -396,13 +396,13 @@ export default function Order() {
                                     value={newReceiptNote}
                                 ></input>
                                 <button
-                                    className="w-1/8 outline outline-slate-500 rounded-xs text-xxs text-[#544B76] bg-white my-2"
+                                    className="w-1/8 outline outline-slate-500 rounded-xs text-xxs text-[#544B76] bg-white hover:bg-[#DEE1F4] my-2"
                                     onClick={saveReceiptNote}
                                 >
                                     Save
                                 </button>
                                 <button
-                                    className="w-1/8 outline outline-slate-500 rounded-xs text-xxs text-[#544B76] bg-white my-2"
+                                    className="w-1/8 outline outline-slate-500 rounded-xs text-xxs text-[#544B76] bg-white hover:bg-[#DEE1F4] my-2"
                                     onClick={discardReceiptNote}
                                 >
                                     Discard
