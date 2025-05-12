@@ -1,6 +1,6 @@
 import db from '../models/index.js'
 
-//import { QueryTypes } from 'sequelize';
+import { QueryTypes } from 'sequelize';
 import { sql } from '@sequelize/core';
 
 const Op = db.Sequelize.Op;
@@ -9,21 +9,25 @@ const Order = db.orders;
 const sequelize = db.sequelize;
 
 export const create = (req, res) => {
+
     if (!req.body.poNum || !req.body.customer || !req.body.status) {
         res.status(400).send({
             message: "Content cannot be empty."
         });
         return;
     }
+
     const customer = req.body.customer;
     const poNum = req.body.poNum;
     const status = req.body.status;
 
-    const query_string = `insert into orders(po_num, customer, status) values('${req.body.poNum}', '${req.body.customer}', '${req.body.status}')`;
-    //console.log(query_string);
-    sequelize.query(query_string)
+    const query = `\
+    INSERT INTO orders(po_num, customer, status) \
+    values(\'${poNum}\',\'${customer}\',\'${status}\');`;
+
+    sequelize.query(query, { type: QueryTypes.INSERT })
         .then(data => {
-            res.send(data); console.log(data);
+            res.send(data);
         })
         .catch(err => {
             res.status(500).send({
@@ -31,32 +35,6 @@ export const create = (req, res) => {
                     err.message || "An error occurred while retrieving Jobs."
             });
         });
-
-    //const query_string = "insert into orders(po_num, customer, status) values('" + req.body.poNum + "', '" + req.body.customer + "', '" + req.body.status + "');";
-    //console.log(query_string);
-    //sequelize.query(query_string, { type: QueryTypes.INSERT })
-    //    .then(data => {
-    //        res.send(data);
-    //    })
-    //    .catch(err => {
-    //        res.status(500).send({
-    //            message:
-    //                err.message || "An error occurred while retrieving Jobs."
-    //        });
-    //    });
-
-    //Order.create({ po_num: req.poNum, customer: req.body.customer, status: req.body.status })
-    //    .then(data => {
-    //        res.send(data);
-    //    })
-    //    .catch(err => {
-    //        res.status(500).send({
-    //            message:
-    //                err.message || "An error occured while creating Order."
-    //        });
-    //    });
-    //console.log("???????");
-
 };
 
 export const findAll = (req, res) => {

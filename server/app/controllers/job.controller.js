@@ -178,8 +178,8 @@ export const create = (req, res) => {
     }
 
     const query = `\
-    INSERT INTO jobs(_timestamp, status, author_initial, po_id, process, num_pcs, remarks) \
-    values(CURRENT_TIMESTAMP(),\'${status}\',\'${initial}\',${po},\'${process}\',\'${qty}\',\'${remarks}\');`;
+    INSERT INTO jobs(status, author_initial, po_id, process, num_pcs, remarks) \
+    values(\'${status}\',\'${initial}\',${po},\'${process}\',\'${qty}\',\'${remarks}\');`;
 
     sequelize.query(query, { type: QueryTypes.INSERT })
         .then(data => {

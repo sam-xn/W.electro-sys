@@ -147,18 +147,20 @@ export default function NewJob() {
                     </div>
                 </div>
 
-                <button
-                    className="text-white my-2 mx-8 py-1 rounded w-sm bg-[#544B76] outline"
-                    onClick={saveJob}
-                >
-                    Submit
-                </button>
-                <button
-                    className="text-white mb-4 mx-8 py-1 rounded w-sm bg-[#544B76] outline"
-                    onClick={saveJob}
-                >
-                    Discard
-                </button>
+                <div className="pt-4">
+                    <button
+                        className="text-white mb-4 mx-8 py-1 rounded w-sm bg-[#544B76] outline"
+                        onClick={saveJob}
+                    >
+                        Submit
+                    </button>
+                    <button
+                        className="text-white mb-4 mx-8 py-1 rounded w-sm bg-[#544B76] outline"
+                        onClick={saveJob}
+                    >
+                        Discard
+                    </button>
+                </div>
             </div>
         </>
     );
