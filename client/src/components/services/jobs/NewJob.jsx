@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 
+import JobService from "./job.service";
 import OrderService from "../orders/order.service";
 export default function NewJob() {
 
     const navigate = useNavigate();
     const params = useParams();
-
-    console.log("params:" + params.id)
 
     const [po, setPo] = useState({});
     const [submitted, setSubmitted] = useState();
@@ -16,34 +15,36 @@ export default function NewJob() {
             OrderService.get(params.id)
                 .then((response) => {
                     setPo(response.data);
-                    console.log(response.data)
                 })
                 .catch((e) => {
                     console.log(e);
                 });
     }, []);
-    //console.log(po)
 
-    function setValues() {
+    const [status, setStatus] = useState("received");
+    const [qty, setQty] = useState("");
+    const [process, setProcess] = useState("");
+    const [remarks, setRemarks] = useState("");
+    const [initial, setInitial] = useState("");
 
-    }
     function saveJob() {
 
-        // params.id ? update : create
+        let today = new Date();
+        let poId = po.id;
 
-        //JobService.create(tag)
-        //    .then((response) => {
-        //        console.log(response.data);
-        //        setSubmitted(true);
-        //        navigate(`/orders/${response.data[0]}`);
-        //    })
-        //    .catch((e) => {
-        //        console.log(e);
-        //    });
-        navigate(`/orders/${params.id}`);
+        // add error checks before sending http
+
+        let tag = { today, status, initial, poId, process, qty, remarks };
+        JobService.create(tag)
+            .then((response) => {
+                //setSubmitted(true);
+                navigate(`/orders/${po.id}`);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+        setSubmitted(false);
     };
-
-
 
     const label_classname = "font-bold text-md text-[#544B76] border-b pl-4 pb-1 pt-2";
     const input_classname = "focus:outline-none border-b pl-16 pb-1 pt-2";
@@ -65,7 +66,8 @@ export default function NewJob() {
                         <input className=""
                             type="radio"
                             name="status"
-                            onChange={(e) => setValues(e.target.value)}
+                            value="incoming"
+                            onChange={(e) => setStatus(e.target.value)}
                         />
                         <label className="text-md px-2"> Incoming </label>
                     </div>
@@ -73,7 +75,9 @@ export default function NewJob() {
                         <input className=""
                             type="radio"
                             name="status"
-                            onChange={(e) => setValues(e.target.value)}
+                            value="received"
+                            defaultChecked
+                            onChange={(e) => setStatus(e.target.value)}
                         />
                         <label className="text-md px-2"> Received </label>
                     </div>
@@ -109,39 +113,36 @@ export default function NewJob() {
                             disabled
                             type="text" 
                             value={new Date().toDateString()}
-                            onChange={(e) => setValues(e.target.value)}
                         />
                         <input className={input_classname}
                             disabled
                             type="text"
                             value={po.customer}
-                            onChange={(e) => setValues(e.target.value)}
                         />
                         <input className={input_classname}
                             disabled
                             type="text"
                             value={po.po_num}
-                            onChange={(e) => setValues(e.target.value)}
                         />
                         <input className={input_classname + " mt-12"}
                             type="text"
                             placeholder="input required"
-                            onChange={(e) => setValues(e.target.value)}
+                            onChange={(e) => setQty(e.target.value)}
                         />
                         <input className={input_classname}
                             type="text"
                             placeholder="input required"
-                            onChange={(e) => setValues(e.target.value)}
+                            onChange={(e) => setProcess(e.target.value)}
                         />
                         <input className={input_classname+" mt-12"}
                             type="text"
                             placeholder=""
-                            onChange={(e) => setValues(e.target.value)}
+                            onChange={(e) => setRemarks(e.target.value)}
                         />
                         <input className={input_classname}
                             type="text"
                             placeholder="input required"
-                            onChange={(e) => setValues(e.target.value)}
+                            onChange={(e) => setInitial(e.target.value)}
                         />
                     </div>
                 </div>

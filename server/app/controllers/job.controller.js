@@ -155,11 +155,21 @@ export const update = (req, res) => {
 };
 
 export const create = (req, res) => {
-    if (!res.body.author_initial ||
-        !res.body.po_id ||
-        !res.body.customer ||
-        !res.body.process ||
-        !res.body.num_pcs
+
+    console.log(req.body);
+    const date = req.body.today;
+    const status = req.body.status;
+    const initial = req.body.initial;
+    const po = req.body.poId;
+    const process = req.body.process;
+    const qty = req.body.qty;
+    const remarks = req.body.remarks;
+
+    if (!req.body.status ||
+        !req.body.initial ||
+        !req.body.poId ||
+        !req.body.process ||
+        !req.body.qty
     ) {
         res.status(400).send({
             message: "Content cannot be empty."
@@ -167,16 +177,31 @@ export const create = (req, res) => {
         return;
     }
 
-    Job.create(job)
+    const query = `\
+    INSERT INTO jobs(_timestamp, status, author_initial, po_id, process, num_pcs, remarks) \
+    values(CURRENT_TIMESTAMP(),\'${status}\',\'${initial}\',${po},\'${process}\',\'${qty}\',\'${remarks}\');`;
+
+    sequelize.query(query, { type: QueryTypes.INSERT })
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "An error occured while creating Job."
+                    err.message || "An error occurred while retrieving Jobs."
             });
         });
+
+    //Job.create(job)
+    //    .then(data => {
+    //        res.send(data);
+    //    })
+    //    .catch(err => {
+    //        res.status(500).send({
+    //            message:
+    //                err.message || "An error occured while creating Job."
+    //        });
+    //    });
 };
 export const deleteOne = (req, res) => {
     const id = req.params.id;

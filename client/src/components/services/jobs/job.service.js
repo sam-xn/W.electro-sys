@@ -55,6 +55,7 @@ const update = (id, data) => {
 };
 
 const create = (data) => {
+    console.log(data);
     return http.post("/jobs", data);
 };
 

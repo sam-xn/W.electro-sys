@@ -25,7 +25,7 @@ export default function Order() {
             .catch((e) => {
                 console.log(e);
             });
-    }, []);
+    }, [jobs.length]);
 
     useEffect(() => {
         JobService.getPO(params.id)
