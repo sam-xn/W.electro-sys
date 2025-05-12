@@ -1,24 +1,55 @@
 import db from '../models/index.js'
 
+import { QueryTypes } from 'sequelize';
+
 const Op = db.Sequelize.Op;
 const Customer = db.customers;
 
+const sequelize = db.sequelize;
+
+//export const create = (req, res) => {
+//    if (!res.body.company_name) {
+//        res.status(400).send({
+//            message: "Content cannot be empty."
+//        });
+//        return;
+//    }
+
+//    Customer.create(customer)
+//        .then(data => {
+//            res.send(data);
+//        })
+//        .catch(err => {
+//            res.status(500).send({
+//                message:
+//                    err.message || "An error occured while creating Customer."
+//            });
+//        });
+//};
+
 export const create = (req, res) => {
-    if (!res.body.company_name) {
+    if (!req.body.newCompany || !req.body.newContactEmail) {
         res.status(400).send({
             message: "Content cannot be empty."
         });
         return;
     }
 
-    Customer.create(customer)
+    const email = req.body.newContactEmail;
+    const company = req.body.newCompany;
+
+    const query = `\
+    INSERT INTO customers(company, primary_contact) \
+    values(\'${company}\',\'${email}\');`;
+
+    sequelize.query(query, { type: QueryTypes.INSERT })
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "An error occured while creating Customer."
+                    err.message || "An error occurred while retrieving Jobs."
             });
         });
 };

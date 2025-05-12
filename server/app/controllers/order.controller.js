@@ -1,7 +1,6 @@
 import db from '../models/index.js'
 
 import { QueryTypes } from 'sequelize';
-import { sql } from '@sequelize/core';
 
 const Op = db.Sequelize.Op;
 const Order = db.orders;
@@ -10,14 +9,14 @@ const sequelize = db.sequelize;
 
 export const create = (req, res) => {
 
-    if (!req.body.poNum || !req.body.customer || !req.body.status) {
+    if (!req.body.poNum || !req.body.po_customer || !req.body.status) {
         res.status(400).send({
             message: "Content cannot be empty."
         });
         return;
     }
 
-    const customer = req.body.customer;
+    const customer = req.body.po_customer;
     const poNum = req.body.poNum;
     const status = req.body.status;
 

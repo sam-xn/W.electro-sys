@@ -84,7 +84,7 @@ export default function NewJob() {
 
                 </div>
 
-                <div className="bg-white grid grid-cols-4 place-content-center mx-4 mb-4 pt-4 pb-8 max-w-full border border-slate-500">
+                <div className="bg-white grid grid-cols-4 mx-4 mb-4 pt-4 pb-8 max-w-full border border-slate-500">
                     <div className="ml-8">
                         <div className={label_classname}>
                             Date:
