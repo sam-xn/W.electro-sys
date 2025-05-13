@@ -252,7 +252,7 @@ export default function Order() {
                                         </Link>
                                     </div>   
                                     <div className="my-4">
-                                        <Link className={button_classname} to={`/jobs/${job.id}/update`}>
+                                        <Link className={button_classname} to={`jobs/${job.id}/update`}>
                                             Finish Job
                                         </Link>
                                     </div>

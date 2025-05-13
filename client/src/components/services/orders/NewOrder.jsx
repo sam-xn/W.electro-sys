@@ -68,7 +68,7 @@ function NewOrder() {
 
 
     const label_classname = "font-bold text-md text-[#544B76] border-b pl-4 pb-1 pt-2";
-    const input_classname = "focus:outline-none border-b pl-24 pb-1 pt-2 col-span-3";
+    const input_classname = "focus:outline-none border-b pb-1 pt-2 col-span-3";
 
     return (
         <>

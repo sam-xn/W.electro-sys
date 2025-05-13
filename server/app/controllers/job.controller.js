@@ -135,7 +135,20 @@ export const findAllSearch = (req, res) => {
 export const update = (req, res) => {
     const id = req.params.id;
 
-    Job.update(req.body, { where: { id: id } })
+    const initial = req.body.initial;
+    const notes = req.body.notes;
+    const diff_level = req.body.diff_level;
+    const rack = req.body.rack;
+    const status = "processed";
+
+    const query = `\
+    UPDATE jobs \
+    SET status=${status}, operator_initial=\'${initial}\', operator_notes=\'${notes}\', diff_level=${diff_level}, rack_type=\'${rack}\' \
+    WHERE id=${id};`;
+
+    sequelize.query(query, { type: QueryTypes.UPDATE })
+    //    .then(data => {
+    //Job.update(req.body, { where: { id: id } })
         .then(num => {
             if (num === 1) {
                 res.send({

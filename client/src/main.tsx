@@ -43,6 +43,10 @@ const router = createBrowserRouter([
                 element: <NewJob />
             },
             {
+                path: "/orders/:poId/jobs/:id/update",
+                element: <UpdateJob />
+            },
+            {
                 path: "/orders/:id/contacts",
                 element: <Outlet />
             },
@@ -53,10 +57,6 @@ const router = createBrowserRouter([
             {
                 path: "/jobs/status/:status",
                 element: <Jobs />
-            },
-            {
-                path: "/jobs/:id/update",
-                element: <UpdateJob />
             },
             {
                 path: "/jobs/:id/print",

@@ -7,42 +7,22 @@ export default function UpdateJob() {
 
     const navigate = useNavigate();
     const params = useParams();
+    console.log(params)
+    const [initial, setInitial] = useState("");
+    const [notes, setNotes] = useState("");
+    const [rack, setRack] = useState("");
+    const [diff_level, setDiff_level] = useState("");
 
-    //const form, setForm = useState([]);
+    const [submitted, setSubmitted] = useState(false);
 
-    const [tag, setTag] = useState([]);
-    const [submitted, setSubmitted] = useState();
-
-    useEffect(() => {
-        if (params.id)
-            JobService.get(params.id)
-                .then((response) => {
-                    setTag(response.data[0]);
-                    console.log(response.data[0])
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-        else console.log("new job");
-    }, []);
-    console.log(tag)
-
-    function setValues() {
-
-    }
     function saveJob() {
-
-        // params.id ? update : create
-
-        //JobService.create(tag)
-        //    .then((response) => {
-        //        console.log(response.data);
-        //        setSubmitted(true);
-        //        navigate(`/orders/${response.data[0]}`);
-        //    })
-        //    .catch((e) => {
-        //        console.log(e);
-        //    });
+        JobService.update(params.id, { initial, notes, rack, diff_level })
+            .then((response) => {
+                navigate(`/orders/${params.poId}`)
+            })
+            .catch((e) => {
+                console.log(e);
+            });
     };
 
 
@@ -67,9 +47,9 @@ export default function UpdateJob() {
                         </div>
                         <input className={input_classname}
                             type="text"
-                            value={tag.operator_initial}
+                            value={initial}
                             placeholder="- input required -"
-                            onChange={(e) => setValues(e.target.value)}
+                            onChange={(e) => setInitial(e.target.value)}
                         />
 
                         <div className={label_classname}>
@@ -77,18 +57,17 @@ export default function UpdateJob() {
                         </div>
                         <input className={input_classname}
                             type="text"
-                            value={tag.diff_level}
-                            placeholder="input appreciated"
-                            onChange={(e) => setValues(e.target.value)}
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
                         />
                         <div className={label_classname}>
                             Rack Type:
                         </div>
                         <input className={input_classname}
                             type="text"
-                            value={tag.operator_notes}
-                            placeholder="input appreciated"
-                            onChange={(e) => setValues(e.target.value)}
+                            value={rack}
+                            placeholder="change to radio buttons"
+                            onChange={(e) => setRack(e.target.value)}
                         />
 
                         <div className={label_classname}>
@@ -96,25 +75,26 @@ export default function UpdateJob() {
                         </div>
                         <input className={input_classname}
                             type="text"
-                            value={tag.rack_type}
-                            placeholder="input appreciated"
-                            onChange={(e) => setValues(e.target.value)}
+                            value={diff_level}
+                            placeholder="change to radio buttons"
+                            onChange={(e) => setDiff_level(e.target.value)}
                         />
 
-                        
-                    {/*</div>*/}
-                    {/*<div className="mr-8 grid-cols-3 w-full">*/}
-
-                    {/*</div>*/}
                 </div>
 
-                <div className="grid place-content-center ">
+                <div className="grid place-content-center my-8">
                     <div></div>
                     <button
-                        className="text-white py-1 rounded my-8 w-sm bg-[#544B76] outline"
+                        className="text-white py-1 my-2 rounded w-sm bg-[#544B76] outline"
                         onClick={saveJob}
                     >
                         Submit Finished Job
+                    </button>
+                    <button
+                        className="text-white py-1 my-2 rounded w-sm bg-[#544B76] outline"
+                        onClick={() => navigate(`/orders/${params.poId}`)}
+                    >
+                        Discard Updates
                     </button>
                     <div></div>
                 </div>

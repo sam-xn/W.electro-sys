@@ -11,7 +11,7 @@ export default (sequelize, Sequelize) => {
         num_pcs: { type: Sequelize.STRING(100), allowNull: false },
         remarks: { type: Sequelize.TEXT },
 
-        operator_inital: { type: Sequelize.STRING(100) },
+        operator_initial: { type: Sequelize.STRING(100) },
         operator_notes: { type: Sequelize.STRING },
         diff_level: { type: Sequelize.INTEGER },
         rack_type: { type: Sequelize.STRING(100) },
