@@ -7,7 +7,8 @@ export default (sequelize, Sequelize) => {
         po_num: { type: Sequelize.STRING(100), allowNull: false },
         status: { type: Sequelize.STRING(100), allowNull: false },
 
-        notes: { type: Sequelize.TEXT }
+        notes: { type: Sequelize.TEXT },
+        receipt_notes: { type: Sequelize.TEXT }
     });
     return Order;
 }

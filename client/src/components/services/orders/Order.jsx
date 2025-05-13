@@ -15,7 +15,7 @@ export default function Order() {
     const [newNote, setNewNote] = useState(po.notes);
 
     const [addReceiptNote, setAddReceiptNote] = useState(false);
-    const [newReceiptNote, setNewReceiptNote] = useState(receipts.notes);
+    const [newReceiptNote, setNewReceiptNote] = useState(po.receipt_notes);
 
     useEffect(() => {
         OrderService.get(params.id)
@@ -25,7 +25,7 @@ export default function Order() {
             .catch((e) => {
                 console.log(e);
             });
-    }, [jobs.length]);
+    }, [addNote, addReceiptNote]);
 
     useEffect(() => {
         JobService.getPO(params.id)
@@ -35,7 +35,7 @@ export default function Order() {
             .catch((e) => {
                 console.log(e);
             });
-    }, []);
+    }, [jobs.length]);
 
     useEffect(() => {
         ReceiptService.getPO(params.id)
@@ -167,22 +167,35 @@ export default function Order() {
     }, []);
 
     function fnAddNote() {
+        setNewNote(po.notes);
         if (!addNote) setAddNote(true);
         else setAddNote(false);
     }
 
     function fnAddReceiptNote() {
+         setNewReceiptNote(po.receipt_notes);
         if (!addReceiptNote) setAddReceiptNote(true);
         else setAddReceiptNote(false);
     }
     function saveNote() {
-        //OrderService.updateNote(params.id, { newNote })
-        //    .then((resposnse) => {
-        //        //setAddNote(false);
-        //    })
-        //    .catch((e) => {
-        //        console.log(e);
-        //    });
+        OrderService.updateNote(params.id, { newNote })
+            .then((response) => {
+                setAddNote(false);
+                setNewNote
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }
+
+    function saveReceiptNote() {
+        OrderService.updateReceiptNote(params.id, { newReceiptNote })
+            .then((response) => {
+                setAddReceiptNote(false);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
     }
     function discardNote() {
         setNewNote(po.notes);
@@ -190,18 +203,8 @@ export default function Order() {
     }
 
     function discardReceiptNote() {
-        setNewReceiptNote(po.notes);
+        setNewReceiptNote(po.receipt_notes);
         setAddReceiptNote(false);
-    }
-
-    function saveReceiptNote() {
-        //OrderService.updateNote(params.id, { newNote })
-        //    .then((resposnse) => {
-                //setAddReceiptNote(false);
-        //    })
-        //    .catch((e) => {
-        //        console.log(e);
-        //    });
     }
 
     const div_classname = "max-w-full mr-4 p-8 rounded shadow border border-slate-500";
@@ -274,7 +277,7 @@ export default function Order() {
                         className={addnote_classname}
                         onClick={fnAddNote}
                     >
-                        Add Notes
+                        Update Notes
                     </button>
                 </div>
 
@@ -379,7 +382,7 @@ export default function Order() {
                         className={addnote_classname}
                         onClick={fnAddReceiptNote}
                     >
-                        Add Notes
+                        Update Notes
                     </button>
                 </div>
                 {addReceiptNote ?

@@ -27,6 +27,10 @@ const updateNote = (id, data) => {
     return http.put(`/orders/${id}/notes`, data);
 };
 
+const updateReceiptNote = (id, data) => {
+    return http.put(`/orders/${id}/receipt_notes`, data);
+};
+
 const remove = (id) => {
     return http.delete(`/orders/${id}`);
 };
@@ -50,6 +54,7 @@ export default {
     create,
     update,
     updateNote,
+    updateReceiptNote,
     remove,
     findByCriteria,
 };

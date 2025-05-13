@@ -99,8 +99,9 @@ export const findOne = (req, res) => {
 
 export const updateNotes = (req, res) => {
     const id = req.params.id;
-    console.log(data);
-    const query = `UPDATE orders SET notes=${data} WHERE id=${id};`;
+    const note = req.body.newNote;
+
+    const query = `UPDATE orders SET notes=\'${note}\' WHERE id=${id};`;
     
     sequelize.query(query, { type: QueryTypes.UPDATE })
         .then(data => {
@@ -113,6 +114,25 @@ export const updateNotes = (req, res) => {
             });
         });
 };
+
+export const updateReceiptNotes = (req, res) => {
+    const id = req.params.id;
+    const note = req.body.newReceiptNote;
+
+    const query = `UPDATE orders SET receipt_notes=\'${note}\' WHERE id=${id};`;
+
+    sequelize.query(query, { type: QueryTypes.UPDATE })
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "An error occurred while retrieving Jobs."
+            });
+        });
+};
+
 
 export const update = (req, res) => {
     const id = req.params.id;

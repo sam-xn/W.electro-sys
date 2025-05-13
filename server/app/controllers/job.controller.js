@@ -147,8 +147,6 @@ export const update = (req, res) => {
     WHERE id=${id};`;
 
     sequelize.query(query, { type: QueryTypes.UPDATE })
-    //    .then(data => {
-    //Job.update(req.body, { where: { id: id } })
         .then(num => {
             if (num === 1) {
                 res.send({
