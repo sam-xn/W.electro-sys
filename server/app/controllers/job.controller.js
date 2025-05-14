@@ -7,31 +7,83 @@ const Job = db.jobs;
 
 const sequelize = db.sequelize;
 
-export const findOne = (req, res) => {
-    const id = req.params.id;
+export const findAllExact = (req, res) => {
 
-    const query = `\
-    SELECT orders.po_num, orders.customer, \
-    jobs.* \
-    FROM jobs join orders on orders.id = jobs.po_id \
-    WHERE jobs.id=${id};`;
+    const customer = req.params.customer;
+    const status = req.params.status;
 
-    sequelize.query(query, { type: QueryTypes.SELECT })
+    const query = [];
+
+    const query_base = "\
+    SELECT jobs.id, jobs._timestamp, jobs.process, jobs.num_pcs, jobs.status, \
+    orders.id as orderId, orders.customer, orders.po_num, orders.status as orderStatus \
+    FROM jobs JOIN orders ON \
+    jobs.po_id=orders.id ";
+
+    query.push(query_base);
+
+    const conditions = [];
+    const c1 = customer ? " orders.customer = '" + customer + "' " : null;
+    const c4 = status ? " jobs.status = '" + status + "' " : null;
+    conditions.push(c1, c4);
+
+    const query_conditions = [];
+
+    conditions.forEach((c) => {
+        if (c) query_conditions.push(c);
+    })
+
+    const string_WHERE = " WHERE ";
+    if (query_conditions.length > 0) {
+        query.push(string_WHERE);
+        query.push(query_conditions[0]);
+        query_conditions.splice(0, 1);
+    }
+
+    const string_AND = " AND ";
+    while (query_conditions.length > 0) {
+        query.push(string_AND);
+        query.push(query_conditions[0]);
+        query_conditions.splice(0, 1);
+    }
+
+    query.push(";");
+
+    var query_string = "";
+    query.forEach((str) => { query_string += str });
+
+    sequelize.query(query_string, { type: QueryTypes.SELECT })
         .then(data => {
-            if (data) {
-                res.send(data);
-            } else {
-                res.status(404).send({
-                    message: `Cannot find Job with id=${id}.`
-                });
-            }
+            res.send(data);
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving Job with id=" + id
+                message:
+                    err.message || "An error occurred while retrieving Jobs."
             });
         });
 };
+
+export const findAllList = (req, res) => {
+    const jobIds = req.params.jobIds;
+
+    const query = `\
+    SELECT orders.id as orderId, orders.po_num, orders.customer, orders.status as orderStatus, \
+    jobs.id, jobs.status as jobStatus, jobs.process, jobs.num_pcs as qtyReceived, jobs._timestamp \
+    FROM jobs JOIN orders ON orders.id=jobs.po_id \
+    WHERE jobs.id IN (${jobIds});`;
+
+    sequelize.query(query, { type: QueryTypes.SELECT })
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "An error occured while retrieving Jobs."
+            });
+        });
+}
 
 export const findAllPO = (req, res) => {
 
@@ -66,7 +118,7 @@ export const findAllSearch = (req, res) => {
 
     const query_base = "\
     SELECT jobs.id, jobs._timestamp, jobs.process, jobs.num_pcs, jobs.status, \
-    orders.id as orderId, orders.customer, orders.po_num, orders.status \
+    orders.id as orderId, orders.customer, orders.po_num, orders.status as orderStatus \
     FROM jobs JOIN orders ON \
     jobs.po_id=orders.id ";
 
@@ -116,22 +168,6 @@ export const findAllSearch = (req, res) => {
             });
 };
 
-//export const findAll = (req, res) => {
-//    const title = req.query.title;
-//    const condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
-
-//    Job.findAll({ where: condition })
-//        .then(data => {
-//            res.send(data);
-//        })
-//        .catch(err => {
-//            res.status(500).send({
-//                message:
-//                    err.message || "An error occurred while retrieving Jobs."
-//            });
-//        });
-//};
-
 export const update = (req, res) => {
     const id = req.params.id;
 
@@ -167,7 +203,6 @@ export const update = (req, res) => {
 
 export const create = (req, res) => {
 
-    console.log(req.body);
     const date = req.body.today;
     const status = req.body.status;
     const initial = req.body.initial;
@@ -202,36 +237,52 @@ export const create = (req, res) => {
                     err.message || "An error occurred while retrieving Jobs."
             });
         });
-
-    //Job.create(job)
-    //    .then(data => {
-    //        res.send(data);
-    //    })
-    //    .catch(err => {
-    //        res.status(500).send({
-    //            message:
-    //                err.message || "An error occured while creating Job."
-    //        });
-    //    });
 };
-export const deleteOne = (req, res) => {
-    const id = req.params.id;
 
-    Job.destroy({ where: { id: id } })
-        .then(num => {
-            if (num === 1) {
-                res.send({
-                    message: "Job deleted."
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete Job with id=${id}. Possible cause: not found.`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete Job with id=" + id
-            });
-        });
-};
+//export const findOne = (req, res) => {
+//    const id = req.params.id;
+
+//    const query = `\
+//    SELECT orders.po_num, orders.customer, \
+//    jobs.* \
+//    FROM jobs join orders on orders.id = jobs.po_id \
+//    WHERE jobs.id=${id};`;
+
+//    sequelize.query(query, { type: QueryTypes.SELECT })
+//        .then(data => {
+//            if (data) {
+//                res.send(data);
+//            } else {
+//                res.status(404).send({
+//                    message: `Cannot find Job with id=${id}.`
+//                });
+//            }
+//        })
+//        .catch(err => {
+//            res.status(500).send({
+//                message: "Error retrieving Job with id=" + id
+//            });
+//        });
+//};
+
+//export const deleteOne = (req, res) => {
+//    const id = req.params.id;
+
+//    Job.destroy({ where: { id: id } })
+//        .then(num => {
+//            if (num === 1) {
+//                res.send({
+//                    message: "Job deleted."
+//                });
+//            } else {
+//                res.send({
+//                    message: `Cannot delete Job with id=${id}. Possible cause: not found.`
+//                });
+//            }
+//        })
+//        .catch(err => {
+//            res.status(500).send({
+//                message: "Could not delete Job with id=" + id
+//            });
+//        });
+//};

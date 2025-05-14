@@ -1,17 +1,42 @@
 import db from '../models/index.js'
 
+import { QueryTypes } from 'sequelize';
+
 const Op = db.Sequelize.Op;
 const Deliverable = db.deliverables;
 
-export const create = (req, res) => {
-    if (!res.body.job_id || !res.body.partial || !num_pcs) {
-        res.status(400).send({
-            message: "Content cannot be empty."
-        });
-        return;
-    }
+const sequelize = db.sequelize;
 
-    Deliverable.create(deliverable)
+//export const create = (req, res) => {
+//    if (!res.body.job_id || !res.body.partial || !num_pcs) {
+//        res.status(400).send({
+//            message: "Content cannot be empty."
+//        });
+//        return;
+//    }
+
+//    Deliverable.create(deliverable)
+//        .then(data => {
+//            res.send(data);
+//        })
+//        .catch(err => {
+//            res.status(500).send({
+//                message:
+//                    err.message || "An error occured while creating Deliverable."
+//            });
+//        });
+//};
+export const create = (req, res) => {
+
+    const partial = req.body.partial;
+    const num_pcs = req.body.qty;
+    const job_id = req.body.jobId;
+    const receipt_id = req.body.receiptId;
+
+    const query = `INSERT INTO deliverables(partial, num_pcs, job_id, receipt_id) \
+    values(${partial}, \'${num_pcs}\', ${job_id}, ${receipt_id});`;
+
+    sequelize.query(query, { type: QueryTypes.INSERT })
         .then(data => {
             res.send(data);
         })
@@ -22,6 +47,30 @@ export const create = (req, res) => {
             });
         });
 };
+
+//export const findReceipt = (req, res) => {
+//    const receiptId = req.params.id;
+
+//    const query = `\
+//    SELECT deliverables.id, deliverables.partial, deliverables.num_pcs, receipts.id as receiptId, \
+//    orders.po_num, orders.customer, orders.status as orderStatus, orders.id as orderId, \
+//    jobs.id as jobId, jobs.status as jobStatus, jobs.process, jobs.num_pcs as qtyReceived \
+//    FROM receipts JOIN deliverables on receipts.id=deliverables.receipt_id \
+//    JOIN jobs on jobs.id=deliverables.job_id \
+//    JOIN orders on orders.id=jobs.po_id \
+//    WHERE receipts.id=${receiptId};`;
+
+//    sequelize.query(query, { type: QueryTypes.SELECT })
+//        .then(data => {
+//            res.send(data);
+//        })
+//        .catch(err => {
+//            res.status(500).send({
+//                message:
+//                    err.message || "An error occured while creating Deliverable."
+//            });
+//        });
+//};
 
 export const findAll = (req, res) => {
     const title = req.query.title;

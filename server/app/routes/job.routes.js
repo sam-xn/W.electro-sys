@@ -4,9 +4,11 @@ import express from 'express';
 export default (app) => {
     let router = express.Router();
 
-    router.get("/:id", jobs.findOne);
+
+    router.get("/exact/status=:status/customer=:customer", jobs.findAllExact);
 
     router.get("/PO/id=:id", jobs.findAllPO);
+    router.get("/list/jobIds=:jobIds", jobs.findAllList);
 
     router.get("/", jobs.findAllSearch);
     router.get("/status/:status", jobs.findAllSearch);
@@ -28,7 +30,9 @@ export default (app) => {
 
     router.put("/:id", jobs.update);
     router.post("/", jobs.create);
-    router.delete("/:id", jobs.deleteOne);
+    //router.delete("/:id", jobs.deleteOne);
+    //router.get("/:id", jobs.findOne);
+
 
     app.use("/api/jobs", router);
 }

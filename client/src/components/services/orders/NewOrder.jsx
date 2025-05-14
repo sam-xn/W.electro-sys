@@ -8,7 +8,7 @@ import ContactService from "../customers/contact.service";
 function NewOrder() {
 
     const navigate = useNavigate();
-    const params = useParams();
+    //const params = useParams();
 
     const [status, setStatus] = useState("open");
     const [poNum, setPoNum] = useState("");

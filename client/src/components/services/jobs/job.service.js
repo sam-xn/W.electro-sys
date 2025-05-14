@@ -11,12 +11,16 @@ const get = (id) => {
     return http.get(`/jobs/${id}`); 
 };
 
-//const getAll = () => {
-//    return http.get("/jobs");
-//};
+const getList = (jobIds) => {
+    return http.get(`/jobs/list/jobIds=${jobIds}`);
+};
 
 const getPO = (id) => {
     return http.get(`/jobs/PO/id=${id}`);
+};
+
+const getExact = (status, customer) => {
+    return http.get(`/jobs/exact/status=${status}/customer=${customer}`);
 };
 
 const findByCriteria = (status, customer, PO, process) => {
@@ -65,11 +69,12 @@ const remove = (id) => {
 
 
 export default {
-    //getAll,
     get,
+    getList,
+    getPO, 
+    getExact,
+    findByCriteria,
     create,
     update,
-    remove,
-    getPO,
-    findByCriteria,
+    remove
 };

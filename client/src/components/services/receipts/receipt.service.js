@@ -12,7 +12,6 @@ const getAll = () => {
 };
 
 const get = (id) => {
-    console.log(id);
     return http.get(`/receipts/${id}`);
 };
 

@@ -12,6 +12,7 @@ export default (app) => {
     router.delete("/:id", deliverables.deleteOne);
 
     //router.get("/", deliverables.); with search criteria
+    //router.get("/receipt/:id", deliverables.findReceipt);
 
     app.use("/api/deliverables", router);
 }

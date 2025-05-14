@@ -7,7 +7,7 @@ export default function UpdateJob() {
 
     const navigate = useNavigate();
     const params = useParams();
-    console.log(params)
+    
     const [initial, setInitial] = useState("");
     const [notes, setNotes] = useState("");
     const [rack, setRack] = useState("");

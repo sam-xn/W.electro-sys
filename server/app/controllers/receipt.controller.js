@@ -8,7 +8,10 @@ const Receipt = db.receipts;
 const sequelize = db.sequelize;
 
 export const create = (req, res) => {
-    Receipt.create(receipt)
+
+    let query = `INSERT INTO receipts() values();`;
+
+    Receipt.create()
         .then(data => {
             res.send(data);
         })
@@ -48,7 +51,6 @@ export const findAllList = (req, res) => {
     JOIN jobs on deliverables.job_id=jobs.id \
     JOIN orders on orders.id=jobs.po_id \
     WHERE receipts.id IN (${rIds});`;
-    console.log(query);
 
     sequelize.query(query, { type: QueryTypes.SELECT })
         .then(data => {

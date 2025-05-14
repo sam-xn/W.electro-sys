@@ -94,7 +94,7 @@ export default function Receipts() {
                 });
 
                 setReceipts(r);
-                console.log(r);
+                //console.log(r);
             })
             .catch((e) => {
                 console.log(e);
@@ -194,7 +194,7 @@ export default function Receipts() {
                 });
 
                 setReceipts(r);
-                console.log(r);
+                //console.log(r);
             })
             .catch((e) => {
                 console.log(e);
