@@ -149,13 +149,13 @@ export default function NewJob() {
 
                 <div className="pt-4">
                     <button
-                        className="text-white mb-4 mx-8 py-1 rounded w-sm bg-[#544B76] outline"
+                        className="text-white mb-4 mx-8 py-1 rounded w-sm bg-[#544B76] outline hover:bg-blue-800"
                         onClick={saveJob}
                     >
                         Submit
                     </button>
                     <button
-                        className="text-white mb-4 mx-8 py-1 rounded w-sm bg-[#544B76] outline"
+                        className="text-white mb-4 mx-8 py-1 rounded w-sm bg-[#544B76] outline hover:bg-red-800"
                         onClick={saveJob}
                     >
                         Discard

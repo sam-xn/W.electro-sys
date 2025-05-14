@@ -21,7 +21,7 @@ export default function NewReceipt() {
     const [deliverables, setDeliverables] = useState([]);
 
     const [currentDel, setCurrentDel] = useState("");
-    const [delPartial, setDelPartial] = useState([]);
+    const [inputPartial, setInputPartial] = useState([]);
 
     const [qty, setQty] = useState("");
     const [delQty, setDelQty] = useState([]);
@@ -298,8 +298,8 @@ export default function NewReceipt() {
                 ...jobIds,
                 e.target.id
             ]);
-            setDelPartial([
-                ...delPartial,
+            setInputPartial([
+                ...inputPartial,
                 { id: e.target.id, partial: false }
             ]);
         }
@@ -307,8 +307,8 @@ export default function NewReceipt() {
             setJobIds(
                 jobIds.filter(a => a !== e.target.id)
             );
-            setDelPartial(
-                delPartial.filter(a => a.id !== e.target.id)
+            setInputPartial(
+                inputPartial.filter(a => a.id !== e.target.id)
             );
         }
     }
@@ -316,7 +316,7 @@ export default function NewReceipt() {
     function togglePartial(target) {
         //console.log(target)
 
-        let t = delPartial;
+        let t = inputPartial;
         if (target.value === "partial") {
             t.forEach((del) => { if (del.id === target.name) del.partial = true; });
 
@@ -325,12 +325,10 @@ export default function NewReceipt() {
             t.forEach((del) => { if (del.id === target.name) del.partial = false; });
             setDelQty(delQty.filter(a => a.id !== +target.name));
         }
-        setDelPartial(t);
+        setInputPartial(t);
         setCurrentDel(target.name + target.value);
-
-
     }
-
+    console.log(delQty);
     function submitDel(jobId) {
         let t = delQty.filter(a => a.id !== jobId);
         setDelQty([
@@ -342,27 +340,68 @@ export default function NewReceipt() {
     function saveReceipt() {
         if (jobIds.length == 0) return;
 
-        let jobs = jobIds;
-        let d = DeliverableService;
-        ReceiptService.create()
-            .then((response) => {
-                const receiptId = response.data.id;
-                const partial = false;
-                const qty = 0;
-                jobs.forEach((jobId) => {
-                    d.create({ partial, qty, jobId, receiptId })
-                        .then((response) => {
-                            //console.log(response);
-                        })
-                        .catch((e) => {
-                            console.log(e);
-                        });
+        let d = [];
+        let jobId, receiptId, newQty, partial, newDel;
+        deliverables.forEach(del => {
+            del.jobs.forEach(job => {
+                //console.log(job.id);
+
+                jobId = job.id;
+                if (delQty.find(a => +a.id === +job.id) === undefined) {
+                    //console.log("found a no-match");
+                    newQty = job.qtyReceived;
+                    partial = 0;
+                }
+                delQty.forEach(a => {
+                    if (+a.id === +job.id) {
+                        newQty = a.qty;
+                        partial = 1;
+                    }
                 });
-                navigate(`${receiptId}`)
-            })
-            .catch((e) => {
-                console.log(e);
+
+                newDel = { partial, newQty, jobId, receiptId };
+                d.push(newDel);
+                //jobId = job.id;
+
+                //if (delQty.find(a => +a.id === +job.id) === undefined) {
+                //    partial = 0;
+                //    newQty = job.qtyReceived;
+                //}
+                //else {
+                //    partial = 1;
+                //    newQty = delQty.find(a => a.id === +job.id).qty;
+                //}
+                    
+                //newDel = { partial, qty, jobId, receiptId };
+
+                //d.push(newDel);
             });
+        });
+
+
+        console.log(d);
+
+        //let jobs = jobIds;
+        //let d = DeliverableService;
+        //ReceiptService.create()
+        //    .then((response) => {
+        //        const receiptId = response.data.id;
+        //        const partial = false;
+        //        const qty = 0;
+        //        jobs.forEach((jobId) => {
+        //            d.create({ partial, qty, jobId, receiptId })
+        //                .then((response) => {
+        //                    //console.log(response);
+        //                })
+        //                .catch((e) => {
+        //                    console.log(e);
+        //                });
+        //        });
+        //        navigate(`${receiptId}`)
+        //    })
+        //    .catch((e) => {
+        //        console.log(e);
+        //    });
     }
 
     const label_classname = "font-bold text-md text-[#544B76] border-b pl-4 pb-1 pt-2";
@@ -469,8 +508,8 @@ export default function NewReceipt() {
                                                                     type="radio"
                                                                     value="partial"
                                                                     name={job.id}
-                                                                    checked={delPartial.find((a) => a.id == job.id) === undefined
-                                                                        ? "" : (delPartial.find((a) => a.id == job.id).partial
+                                                                    checked={inputPartial.find((a) => a.id == job.id) === undefined
+                                                                        ? "" : (inputPartial.find((a) => a.id == job.id).partial
                                                                             ? "checked" : "")}
                                                                     onChange={(e) => togglePartial(e.target)}
                                                                 /> Partial pickup
@@ -478,16 +517,16 @@ export default function NewReceipt() {
                                                                     type="radio"
                                                                     value="full"
                                                                     name={job.id}
-                                                                    checked={delPartial.find((a) => a.id == job.id) === undefined
-                                                                        ? "checked" : (delPartial.find((a) => a.id == job.id).partial
+                                                                    checked={inputPartial.find((a) => a.id == job.id) === undefined
+                                                                        ? "checked" : (inputPartial.find((a) => a.id == job.id).partial
                                                                             ? "" : "checked")}
                                                                     onChange={(e) => togglePartial(e.target)}
                                                                 /> Full pickup
                                                             </form>
 
-                                                            {delPartial.find((a) => a.id == job.id) === undefined
+                                                            {inputPartial.find((a) => a.id == job.id) === undefined
                                                                 ? <></>
-                                                                : <> {delPartial.find((a) => a.id == job.id).partial
+                                                                : <> {inputPartial.find((a) => a.id == job.id).partial
                                                                     ? <>
                                                                         <div className="flex justify-center gap-4 mt-6">
                                                                             <div className="font-bold text-md text-[#544B76] border-b pb-1 pt-2">
@@ -499,14 +538,12 @@ export default function NewReceipt() {
                                                                                 onChange={(e) => setQty(e.target.value)}
                                                                             />
                                                                             <button
-                                                                                className="outline bg-[#544B76] text-white hover:bg-blue-700"
+                                                                                className={`outline ${delQty.find((a) => a.id == job.id) === undefined ? "bg-[#544B76]" : "bg-blue-800"} text-white hover:bg-blue-700`}
                                                                                 
                                                                                 onClick={() => submitDel(job.id)}
                                                                             > {delQty.find((a) => a.id == job.id) === undefined
                                                                                 ? "Submit" : "Submitted"}
                                                                             </button>
-
-                                                                            
                                                                         </div>
                                                                     </>
                                                                     : <></>}
@@ -515,22 +552,20 @@ export default function NewReceipt() {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {/*<div></div>*/}
                                             </>
                                         )}
                                     </div>
-
                                 </>
                             )}
                             <div className="pt-8 mx-8 grid grid-cols-2 place-items-center border-t border-slate-500">
                                 <button
-                                    className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline hover:bg-red-700"
+                                    className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline hover:bg-red-800"
                                     onClick={() => navigate(`/receipts`)}
                                 >
                                     Discard Receipt
                                 </button>
                                 <button
-                                    className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline hover:bg-blue-700"
+                                    className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline hover:bg-blue-800"
                                     onClick={saveReceipt}
                                 >
                                     Create Delivery Slip

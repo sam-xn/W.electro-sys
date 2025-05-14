@@ -167,18 +167,18 @@ function NewOrder() {
                     />
                 </div>
 
-                <div className="grid grid-cols-1 place-items-center pt-4 mx-8">
+                <div className="flex place-items-center gap-4 pt-4 mx-8">
                     <button
-                        className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline"
-                        onClick={saveOrder}
-                    >
-                        Submit
-                    </button>
-                    <button
-                        className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline"
+                        className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline  hover:bg-red-800"
                         onClick={saveOrder}
                     >
                         Discard
+                    </button>
+                    <button
+                        className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline  hover:bg-blue-800"
+                        onClick={saveOrder}
+                    >
+                        Submit
                     </button>
                 </div>
             </div>

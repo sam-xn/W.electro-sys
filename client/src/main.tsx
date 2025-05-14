@@ -16,7 +16,6 @@ import PrintJob from './components/services/jobs/PrintJob.jsx'
 import Receipts from './components/services/receipts/Receipts.jsx'
 import PrintReceipt from './components/services/receipts/PrintReceipt.jsx'
 import NewReceipt from './components/services/receipts/NewReceipt.jsx'
-import UpdateReceipt from './components/services/receipts/UpdateReceipt.jsx'
 
 const router = createBrowserRouter([
     {
@@ -74,10 +73,6 @@ const router = createBrowserRouter([
             {
                 path: "/receipts/new",
                 element: <NewReceipt />
-            },
-            {
-                path: "/receipts/new/:id",
-                element: <UpdateReceipt />
             },
             {
                 path: "/customers",

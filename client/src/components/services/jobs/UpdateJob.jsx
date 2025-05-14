@@ -80,20 +80,21 @@ export default function UpdateJob() {
 
                 </div>
 
-                <div className="grid place-content-center my-8">
+                <div className="flex place-content-center gap-4 mt-8 mb-12">
                     <div></div>
                     <button
-                        className="text-white py-1 my-2 rounded w-sm bg-[#544B76] outline"
-                        onClick={saveJob}
-                    >
-                        Submit Finished Job
-                    </button>
-                    <button
-                        className="text-white py-1 my-2 rounded w-sm bg-[#544B76] outline"
+                        className="text-white py-1 my-2 rounded w-sm bg-[#544B76] outline  hover:bg-red-800"
                         onClick={() => navigate(`/orders/${params.poId}`)}
                     >
                         Discard Updates
                     </button>
+                    <button
+                        className="text-white py-1 my-2 rounded w-sm bg-[#544B76] outline  hover:bg-blue-800"
+                        onClick={saveJob}
+                    >
+                        Submit Finished Job
+                    </button>
+
                     <div></div>
                 </div>
 
