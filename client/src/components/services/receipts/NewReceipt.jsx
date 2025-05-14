@@ -20,8 +20,11 @@ export default function NewReceipt() {
     const [jobIds, setJobIds] = useState([]);
     const [deliverables, setDeliverables] = useState([]);
 
-    const [tPartial, setTPartial] = useState([]);
     const [currentDel, setCurrentDel] = useState("");
+    const [delPartial, setDelPartial] = useState([]);
+
+    const [qty, setQty] = useState("");
+    const [delQty, setDelQty] = useState([]);
 
     //setProcessedJobs, setReceivedJobs
     useEffect(() => {
@@ -295,8 +298,8 @@ export default function NewReceipt() {
                 ...jobIds,
                 e.target.id
             ]);
-            setTPartial([
-                ...tPartial,
+            setDelPartial([
+                ...delPartial,
                 { id: e.target.id, partial: false }
             ]);
         }
@@ -304,8 +307,8 @@ export default function NewReceipt() {
             setJobIds(
                 jobIds.filter(a => a !== e.target.id)
             );
-            setTPartial(
-                tPartial.filter(a => a.id !== e.target.id)
+            setDelPartial(
+                delPartial.filter(a => a.id !== e.target.id)
             );
         }
     }
@@ -313,17 +316,29 @@ export default function NewReceipt() {
     function togglePartial(target) {
         //console.log(target)
 
-        let t = tPartial;
+        let t = delPartial;
         if (target.value === "partial") {
             t.forEach((del) => { if (del.id === target.name) del.partial = true; });
+
         }
         else {
             t.forEach((del) => { if (del.id === target.name) del.partial = false; });
+            setDelQty(delQty.filter(a => a.id !== +target.name));
         }
-        setTPartial(t);
+        setDelPartial(t);
         setCurrentDel(target.name + target.value);
+
+
     }
 
+    function submitDel(jobId) {
+        let t = delQty.filter(a => a.id !== jobId);
+        setDelQty([
+            ...t,
+            { id: jobId, qty: qty}
+        ]);
+        setQty("");
+    }
     function saveReceipt() {
         if (jobIds.length == 0) return;
 
@@ -435,10 +450,10 @@ export default function NewReceipt() {
                                 <>
                                     <div className="p-1 mx-4 text-[#544B76] font-bold text-md"> {`PO # ${po.po_num}`} </div>
 
-                                    <div className="grid grid-cols-3 justify-between gap-4 mx-4 my-4 pb-8">
+                                    <div className="grid grid-cols-1 justify-between gap-4 mx-8 my-4 pb-8">
                                         {po.jobs.map((job, job_index) =>
                                             <>
-                                                <div className={"ml-16 bg-white col-span-2 " + div_classname} key={[job_index, job.id]}>
+                                                <div className={"ml-16 bg-white " + div_classname} key={[job_index, job.id]}>
                                                     <div className="grid grid-cols-3">
                                                         <div>
                                                             <div className="border-b border-slate-500">
@@ -454,23 +469,45 @@ export default function NewReceipt() {
                                                                     type="radio"
                                                                     value="partial"
                                                                     name={job.id}
-                                                                    checked={tPartial.find((a) => a.id == job.id) === undefined ? "" : ( tPartial.find((a) => a.id == job.id).partial ? "checked" : "" ) }
+                                                                    checked={delPartial.find((a) => a.id == job.id) === undefined
+                                                                        ? "" : (delPartial.find((a) => a.id == job.id).partial
+                                                                            ? "checked" : "")}
                                                                     onChange={(e) => togglePartial(e.target)}
                                                                 /> Partial pickup
                                                                 <input
                                                                     type="radio"
                                                                     value="full"
                                                                     name={job.id}
-                                                                    checked={tPartial.find((a) => a.id == job.id) === undefined ? "checked" : (tPartial.find((a) => a.id == job.id).partial ? "" : "checked")}
+                                                                    checked={delPartial.find((a) => a.id == job.id) === undefined
+                                                                        ? "checked" : (delPartial.find((a) => a.id == job.id).partial
+                                                                            ? "" : "checked")}
                                                                     onChange={(e) => togglePartial(e.target)}
                                                                 /> Full pickup
                                                             </form>
 
-                                                            {tPartial.find((a) => a.id == job.id) === undefined
+                                                            {delPartial.find((a) => a.id == job.id) === undefined
                                                                 ? <></>
-                                                                : <> {tPartial.find((a) => a.id == job.id).partial
+                                                                : <> {delPartial.find((a) => a.id == job.id).partial
                                                                     ? <>
-                                                                        <div className="flex justify-center gap-6">partial</div>
+                                                                        <div className="flex justify-center gap-4 mt-6">
+                                                                            <div className="font-bold text-md text-[#544B76] border-b pb-1 pt-2">
+                                                                                Qty:
+                                                                            </div>
+                                                                            <input className="focus:outline-none border-b max-w-xs pb-1 pt-2"
+                                                                                type="text"
+                                                                                placeholder="input required"
+                                                                                onChange={(e) => setQty(e.target.value)}
+                                                                            />
+                                                                            <button
+                                                                                className="outline bg-[#544B76] text-white hover:bg-blue-700"
+                                                                                
+                                                                                onClick={() => submitDel(job.id)}
+                                                                            > {delQty.find((a) => a.id == job.id) === undefined
+                                                                                ? "Submit" : "Submitted"}
+                                                                            </button>
+
+                                                                            
+                                                                        </div>
                                                                     </>
                                                                     : <></>}
                                                                 </>
@@ -478,17 +515,12 @@ export default function NewReceipt() {
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <div></div>
-
+                                                {/*<div></div>*/}
                                             </>
                                         )}
-
                                     </div>
 
-                                    
                                 </>
-
                             )}
                             <div className="pt-8 mx-8 grid grid-cols-2 place-items-center border-t border-slate-500">
                                 <button

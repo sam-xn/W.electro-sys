@@ -25,8 +25,6 @@ export default function UpdateJob() {
             });
     };
 
-
-
     const label_classname = "font-bold text-md text-[#544B76] border-b pl-4 pb-1 pt-2 ml-8";
     const input_classname = "col-span-2 focus:outline-none border-b pl-16 pb-1 pt-2 mr-8";
 
