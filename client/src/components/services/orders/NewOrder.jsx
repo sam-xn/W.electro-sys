@@ -35,14 +35,14 @@ function NewOrder() {
 
         if (customer == "new") {
 
-            ContactService.create({ newContactName, newContactEmail })
+            ContactService.create({ newContactName, newContactEmail, newCompany })
                 .then((response) => {
                 })
                 .catch((e) => {
                     console.log(e);
                 });
 
-            CustomerService.create({ newCompany, newContactEmail })
+            CustomerService.create({ newCompany })
                 .then((response) => {
                     //setSubmitted(true);
                     //navigate(`/orders/${response.data[0]}`);

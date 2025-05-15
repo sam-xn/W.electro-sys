@@ -10,13 +10,26 @@ export default function CustomersNavbar() {
                 as="li"
                 variant="small"
                 color=""
+                className={ty_classname}
+            >
+                <Link
+                    className="flex items-center"
+                    to="/customers/type/primary"
+                >
+                    Primary
+                </Link>
+            </Typography>
+            <Typography
+                as="li"
+                variant="small"
+                color=""
                 className={ ty_classname }
             >
                 <Link
                     className="flex items-center"
-                    to="/customers"
+                    to="/customers/type/accounting"
                 >
-                    Customers
+                    Accounting
                 </Link>
             </Typography>
         </ul>

@@ -11,11 +11,11 @@ const getAll = () => {
     return http.get("/customers");
 };
 
-const getAllJoinContacts = (company) => {
-    if (!company || company == "") return http.get(`/customers/all`);
-    else return http.get(`/customers/${company}`);
+//const getAllJoinContacts = (company) => {
+//    if (!company || company == "") return http.get(`/customers/all`);
+//    else return http.get(`/customers/${company}`);
     
-};
+//};
 
 const get = (id) => {
     return http.get(`/customers/${id}`);
@@ -39,7 +39,7 @@ const findByTitle = (company) => {
 
 export default {
     getAll,
-    getAllJoinContacts,
+    //getAllJoinContacts,
     get,
     create,
     update,

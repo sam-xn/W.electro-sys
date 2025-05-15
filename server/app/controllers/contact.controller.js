@@ -28,7 +28,7 @@ const sequelize = db.sequelize;
 //};
 
 export const create = (req, res) => {
-    if (!req.body.newContactEmail || !req.body.newContactName) {
+    if (!req.body.newContactEmail || !req.body.newContactName || !req.body.newCompany) {
         res.status(400).send({
             message: "Content cannot be empty."
         });
@@ -37,10 +37,11 @@ export const create = (req, res) => {
 
     const email = req.body.newContactEmail;
     const name = req.body.newContactName;
+    const company = req.body.newCompany;
 
     const query = `\
-    INSERT INTO contacts(name, email) \
-    values(\'${name}\',\'${email}\');`;
+    INSERT INTO contacts(name, email, company) \
+    values(\'${name}\',\'${email}\',\'${company}\');`;
 
     sequelize.query(query, { type: QueryTypes.INSERT })
         .then(data => {
@@ -53,7 +54,44 @@ export const create = (req, res) => {
             });
         });
 };
-    
+
+
+export const findAllCompany = (req, res) => {
+
+    const type = req.params.type;
+    const company = req.params.company;
+
+    const query = `SELECT * FROM contacts WHERE type='${type}' AND company LIKE '%${company}%';`;
+
+    sequelize.query(query, { type: QueryTypes.SELECT })
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "An error occurred while retrieving contacts."
+            });
+        });
+};
+
+export const findAllType = (req, res) => {
+
+    const type = req.params.type;
+    const query = `SELECT * FROM contacts WHERE type ='${type}';`;
+
+    sequelize.query(query, { type: QueryTypes.SELECT })
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "An error occurred while retrieving contacts."
+            });
+        });
+};
+
 export const findAll = (req, res) => {
     const title = req.query.title;
     const condition = title ? { title: { [Op.like]: `%${title}%` } } : null;

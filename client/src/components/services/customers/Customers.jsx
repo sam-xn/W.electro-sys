@@ -4,33 +4,35 @@ import { Link, useParams } from "react-router-dom";
 import CustomersNavbar from './CustomersNavbar';
 import { Search } from "lucide-react";
 
-import CustomerService from "./customer.service";
+import ContactService from "./contact.service";
 
-export default function Customer() {
+export default function Customers() {
 
     const [customers, setCustomers] = useState([]);
-    const filter = useParams();
+    const params = useParams();
 
     useEffect(() => {
-        CustomerService.getAllJoinContacts()
+        const type = params.type ? params.type : "primary";
+        ContactService.getAllType(type)
             .then((response) => {
                 setCustomers(response.data.sort((a, b) => a.company - b.company)); 
             })
             .catch((e) => {
                 console.log(e);
             });
-    }, []);
+    }, [params]);
 
     // ------------------------------------------------------------------------------------ SearchBar 
 
     //const [searchDate, setSearchDate] = useState("");
-    const [searchCustomer, setSearchCustomer] = useState("");
+    const [searchCompany, setSearchCompany] = useState("");
     
     //const onChangeSearchDate = (e) => { setSearchDate(e.target.value); };
-    const onChangeSearchCustomer = (e) => { setSearchCustomer(e.target.value); };
+    const onChangeSearchCompany = (e) => { setSearchCompany(e.target.value); };
     function findBy(e) {
         e.preventDefault();
-        CustomerService.getAllJoinContacts(searchCustomer)
+        const type = params.type ? params.type : "primary";
+        ContactService.getAllCompany(searchCompany, type)
             .then((response) => {
                 setCustomers(response.data.sort((a, b) => a.id - b.id));
             })
@@ -70,8 +72,8 @@ export default function Customer() {
                                 id="customer"
                                 className={input_classname}
                                 placeholder={"Find by company"}
-                                value={searchCustomer}
-                                onChange={onChangeSearchCustomer}
+                                value={searchCompany}
+                                onChange={onChangeSearchCompany}
                             />
                         </div>
                     </form>
@@ -82,10 +84,10 @@ export default function Customer() {
                         <thead>
                             <tr className="text-[#544B76]">
                                 <th className={th_classname}>
-                                    Primary Contact
+                                    Company
                                 </th>
                                 <th className={th_classname}>
-                                    Company
+                                    {`${params.type ? String(params.type).charAt(0).toUpperCase() + String(params.type).slice(1) : "Primary "} Contact `}
                                 </th>
                                 <th className={th_classname}>
                                     Email
@@ -98,14 +100,14 @@ export default function Customer() {
                                 <>
                                     <tr className="even:bg-white odd:bg-[#eff1fc]">
                                         <td className={td_classname}
-                                            key={[index, customer.name]}
-                                        >
-                                            {customer.name}
-                                        </td>
-                                        <td className={td_classname}
                                             key={[index, customer.company]}
                                         >
                                             {customer.company}
+                                        </td>
+                                        <td className={td_classname + " text-center"}
+                                            key={[index, customer.name]}
+                                        >
+                                            {customer.name}
                                         </td>
                                         <td className={td_classname}
                                             key={[index, customer.email]}
@@ -131,7 +133,7 @@ export default function Customer() {
                     <div>{
                         customers.length == 0 ?
                             <div className="text-sm px-8 py-2 bg-[#eff1fc]">
-                                No {filter.status ? filter.status : ''} customers to display.
+                                No {params.type ? params.type: ''} customers to display.
                             </div>
                             : <div></div>
                     }</div>

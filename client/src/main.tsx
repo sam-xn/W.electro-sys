@@ -17,7 +17,7 @@ import Receipts from './components/services/receipts/Receipts.jsx'
 import PrintReceipt from './components/services/receipts/PrintReceipt.jsx'
 import NewReceipt from './components/services/receipts/NewReceipt.jsx'
 import Customers from './components/services/customers/Customers.jsx'
-//import Contacts from './components/services/customers/Contacts.jsx'
+import Contacts from './components/services/customers/Contacts.jsx'
 
 const router = createBrowserRouter([
     {
@@ -79,12 +79,15 @@ const router = createBrowserRouter([
             {
                 path: "/customers",
                 element: <Customers />
+            },
+            {
+                path: "/customers/type/:type",
+                element: <Customers />
+            },
+            {
+                path: "/customers/:id/contacts",
+                element: <Contacts />
             }
-            //,
-            //{
-            //    path: "/customers/:id/contacts",
-            //    element: <Contacts />
-            //}
         ]
     }
 ])

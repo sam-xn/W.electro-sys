@@ -11,6 +11,15 @@ const getAll = () => {
     return http.get("/contacts");
 };
 
+const getAllType = (type) => {
+    if (!type || type === '') return http.get(`/contacts`);
+    return http.get(`/contacts/type/${type}`);
+};
+
+const getAllCompany = (company, type) => {
+    return http.get(`/contacts/type/${type}/company/${company}`);
+};
+
 const get = (id) => {
     return http.get(`/contacts/${id}`);
 };
@@ -27,12 +36,14 @@ const remove = (id) => {
     return http.delete(`/contacts/${id}`);
 };
 
-const findByTitle = (company_name) => {
-    return http.get(`/contacts?company=${company_name}`);
+const findByTitle = (company) => {
+    return http.get(`/contacts?company=${company}`);
 };
 
 export default {
     getAll,
+    getAllCompany,
+    getAllType,
     get,
     create,
     update,

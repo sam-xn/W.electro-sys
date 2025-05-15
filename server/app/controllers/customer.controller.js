@@ -7,33 +7,33 @@ const Customer = db.customers;
 
 const sequelize = db.sequelize;
 
-export const findAllJoinContacts = (req, res) => {
+//export const findAllJoinContacts = (req, res) => {
 
-    const company = req.params.company;
+//    const company = req.params.company;
 
-    let query = `\
-    SELECT customers.*, contacts.name, contacts.email \
-    FROM customers \
-    JOIN contacts on customers.primary_contact=contacts.email `;
+//    let query = `\
+//    SELECT customers.*, contacts.* \
+//    FROM customers \
+//    JOIN contacts on customers.company=contacts.company `;
 
-    if (company) query += ` WHERE company LIKE '%${company}%'`;
+//    if (company) query += ` WHERE company LIKE '%${company}%'`;
 
-    query += ";";
+//    query += ";";
 
-    sequelize.query(query, { type: QueryTypes.SELECT })
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "An error occurred while retrieving customers."
-            });
-        });
-}
+//    sequelize.query(query, { type: QueryTypes.SELECT })
+//        .then(data => {
+//            res.send(data);
+//        })
+//        .catch(err => {
+//            res.status(500).send({
+//                message:
+//                    err.message || "An error occurred while retrieving customers."
+//            });
+//        });
+//}
 
 export const create = (req, res) => {
-    if (!req.body.newCompany || !req.body.newContactEmail) {
+    if (!req.body.newCompany) {
         res.status(400).send({
             message: "Content cannot be empty."
         });
@@ -41,11 +41,10 @@ export const create = (req, res) => {
     }
 
     const email = req.body.newContactEmail;
-    const company = req.body.newCompany;
 
     const query = `\
-    INSERT INTO customers(company, primary_contact) \
-    values(\'${company}\',\'${email}\');`;
+    INSERT INTO customers(company) \
+    values(\'${company}\');`;
 
     sequelize.query(query, { type: QueryTypes.INSERT })
         .then(data => {
@@ -61,7 +60,7 @@ export const create = (req, res) => {
 
 export const findAll = (req, res) => {
     const company = req.query.company;
-    const condition = company_name ? { company_name: { [Op.like]: `%${company_name}%` } } : null;
+    const condition = company ? { company: { [Op.like]: `%${company}%` } } : null;
 
     Customer.findAll({ where: condition })
         .then(data => {
@@ -76,7 +75,7 @@ export const findAll = (req, res) => {
 };
 
 export const findOne = (req, res) => {
-    const id = req.params.company_name;
+    const id = req.params.company;
 
     Customer.findByPk(id)
         .then(data => {
@@ -96,7 +95,7 @@ export const findOne = (req, res) => {
 };
 
 export const update = (req, res) => {
-    const id = req.params.company_name;
+    const id = req.params.company;
 
     Customer.update(req.body, { where: { id: id } })
         .then(num => {
@@ -118,7 +117,7 @@ export const update = (req, res) => {
 };
 
 export const deleteOne = (req, res) => {
-    const id = req.params.company_name;
+    const id = req.params.company;
 
     Customer.destroy({ where: { id: id } })
         .then(num => {
@@ -140,7 +139,7 @@ export const deleteOne = (req, res) => {
 };
 
 //export const create = (req, res) => {
-//    if (!res.body.company_name) {
+//    if (!res.body.company) {
 //        res.status(400).send({
 //            message: "Content cannot be empty."
 //        });
