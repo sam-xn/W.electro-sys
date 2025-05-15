@@ -125,10 +125,10 @@ export const findAllSearch = (req, res) => {
     query.push(query_base);
 
     const conditions = [];
-    const c1 = customer ? " orders.customer LIKE '%" + customer + "%' " : null;
-    const c2 = PO ? " orders.po_num LIKE '%" + PO + "%' " : null;
-    const c3 = process ? " jobs.process LIKE '%" + process + "%' " : null;
-    const c4 = status ? " jobs.status LIKE '%" + status + "%' " : null;
+    const c1 = customer ? ` orders.customer LIKE '%${customer}%'` : null;
+    const c2 = PO ? ` orders.po_num LIKE '%${PO}%'` : null;
+    const c3 = process ? ` jobs.process LIKE '%${process}%'` : null;
+    const c4 = status ? ` jobs.status LIKE '%${status}%'` : null;
     conditions.push(c1, c2, c3, c4);
 
     const query_conditions = [];

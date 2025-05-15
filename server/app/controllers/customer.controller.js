@@ -7,25 +7,30 @@ const Customer = db.customers;
 
 const sequelize = db.sequelize;
 
-//export const create = (req, res) => {
-//    if (!res.body.company_name) {
-//        res.status(400).send({
-//            message: "Content cannot be empty."
-//        });
-//        return;
-//    }
+export const findAllJoinContacts = (req, res) => {
 
-//    Customer.create(customer)
-//        .then(data => {
-//            res.send(data);
-//        })
-//        .catch(err => {
-//            res.status(500).send({
-//                message:
-//                    err.message || "An error occured while creating Customer."
-//            });
-//        });
-//};
+    const company = req.params.company;
+
+    let query = `\
+    SELECT customers.*, contacts.name, contacts.email \
+    FROM customers \
+    JOIN contacts on customers.primary_contact=contacts.email `;
+
+    if (company) query += ` WHERE company LIKE '%${company}%'`;
+
+    query += ";";
+
+    sequelize.query(query, { type: QueryTypes.SELECT })
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "An error occurred while retrieving customers."
+            });
+        });
+}
 
 export const create = (req, res) => {
     if (!req.body.newCompany || !req.body.newContactEmail) {
@@ -55,7 +60,7 @@ export const create = (req, res) => {
 };
 
 export const findAll = (req, res) => {
-    const company_name = req.query.company_name;
+    const company = req.query.company;
     const condition = company_name ? { company_name: { [Op.like]: `%${company_name}%` } } : null;
 
     Customer.findAll({ where: condition })
@@ -133,3 +138,24 @@ export const deleteOne = (req, res) => {
             });
         });
 };
+
+//export const create = (req, res) => {
+//    if (!res.body.company_name) {
+//        res.status(400).send({
+//            message: "Content cannot be empty."
+//        });
+//        return;
+//    }
+
+//    Customer.create(customer)
+//        .then(data => {
+//            res.send(data);
+//        })
+//        .catch(err => {
+//            res.status(500).send({
+//                message:
+//                    err.message || "An error occured while creating Customer."
+//            });
+//        });
+//};
+

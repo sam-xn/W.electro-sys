@@ -6,8 +6,10 @@ export default (app) => {
 
     router.post("/", customers.create);
     router.get("/", customers.findAll);
+    router.get("/all", customers.findAllJoinContacts);
+    router.get("/:company", customers.findAllJoinContacts);
 
-    router.get("/:id", customers.findOne);
+    //router.get("/:id", customers.findOne);
     router.put("/:id", customers.update);
     router.delete("/:id", customers.deleteOne);
 

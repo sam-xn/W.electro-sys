@@ -208,21 +208,24 @@ export default function Order() {
     }
 
     const div_classname = "max-w-full mr-4 p-8 rounded shadow border border-slate-500";
-    const button_classname = "grid py-2 px-2 mx-18 md:mx-6 text-center text-sm font-bold shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-white hover:bg-[#DEE1F4] rounded-md";
-    const addnote_classname = "text-[#544B76] text-sm bg-white outline outline-slate-500 shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 hover:outline-none hover:bg-[#DEE1F4] rounded";
+    const button_classname = "grid py-2 px-2 mx-18 md:mx-6 text-center text-sm font-bold shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-[#544B76] text-white hover:bg-[#DEE1F4] rounded-md";
+    const addnote_classname = "bg-[#544B76] text-sm outline outline-slate-500 shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 hover:outline-none hover:bg-[#DEE1F4]";
     return (
         <>
             <div className={"bg-[#eff1fc] " + div_classname}>
                 <div className="text-[#544B76]">
-                    <div className="font-bold text-xl grid grid-cols-2 border-b border-slate-500 p-1">
-                        <div> Purchase Order </div>
-                        <div className="grid place-items-end px-12">{`| status: ${po.status}`}</div>
+                    <div className="border-b border-slate-500 p-1 font-bold">
+                        <div className="text-xl flex justify-between gap-2 py-2 px-8">
+                            <div>{`${new Date(po._timestamp).toDateString()}`}</div>
+                            <div>{`${String(po.customer).toUpperCase()}`}</div>
+                            <div >{`PO # ${po.po_num}`}</div>
+                        </div>
                     </div>
-                    <div className="text-xl font-bold underline grid grid-cols-3 justify-between gap-2 py-2 px-8">
-                        <div>{`PO # ${po.po_num}`}</div>
-                        <div>{`${String(po.customer).toUpperCase()}`}</div>
-                        <div>{`${new Date(po._timestamp).toDateString()}`}</div>
+                    <div className="grid place-content-end items-center pt-2 font-bold">
+                        {`Status: ${po.status}`}
+                        <button className="outline bg-[#544B76] text-white mx-2 px-4 py-0.5">Update</button>
                     </div>
+
 
                     {po.notes ? 
                         <div className="px-8 pt-4 flex gap-4">
@@ -230,35 +233,43 @@ export default function Order() {
                             <div className="text-xl"> {`${po.notes}`} </div>
                         </div>
                     : ""}
-                    </div>
+                </div>
                 <div className="grid grid-cols-4 justify-between gap-4 mx-4 my-8 pb-8 border-b border-slate-500">
                     {jobs.map((job, index) => 
                         <>
-                            <div className={"bg-white "+div_classname} key={ [index,job.id] }>
-                                <div className="flex place-content-between border-b border-slate-500">
-                                    <div className="font-bold">{index + 1}</div>
-                                    <div className="text-sm pt-1">{`status: ${job.status}`}</div>
-                                </div>
-
-                                <div className="grid grid-cols-1 my-4">
-                                    <div className="py-4">{`Date: ${new Date(job._timestamp).toDateString()}`}</div>
-                                    <div className="">{`Process: ${job.process}`}</div>
-                                    <div className="">{`Qty: ${job.num_pcs}`}</div>
-                                    <div className="py-4">{`Remarks: ${job.remarks}`}</div>
-                                </div>
-                                <div className="text-sm flex place-content-end">{`job # WE-${job.id}`}</div>
-
-                                <div className="border-t border-slate-500">
-                                    <div className="my-4">
-                                        <Link className={button_classname} to={`/jobs/${job.id}/print`}>
-                                            Print Tag
-                                        </Link>
-                                    </div>   
-                                    <div className="my-4">
-                                        <Link className={button_classname} to={`jobs/${job.id}/update`}>
-                                            Finish Job
-                                        </Link>
+                            <div>
+                                <div className={"bg-white "+div_classname} key={ [index,job.id] }>
+                                    <div className="flex place-content-between border-b border-slate-500">
+                                    <div className="text-sm pt-1 font-bold">{`WE-${job.id}`}</div>
+                                    <div className="text-sm pt-1 font-bold">{`${job.status}`}</div>
                                     </div>
+
+
+                                    <div className="grid grid-cols-1 my-4">
+                                        <div className="py-4">{`Date: ${new Date(job._timestamp).toDateString()}`}</div>
+                                        <div className="">{`Process: ${job.process}`}</div>
+                                        <div className="">{`Qty: ${job.num_pcs}`}</div>
+                                        <div className="py-4">{`Remarks: ${job.remarks}`}</div>
+                                    </div>
+
+                                
+                                </div>
+                                {/*<div className="border-t border-slate-500">*/}
+                                {/*    <div className="mt-4 mb-1">*/}
+                                {/*        <Link className={button_classname} to={`/jobs/${job.id}/print`}>*/}
+                                {/*            <p className="text-white">Print Tag</p>*/}
+                                {/*        </Link>*/}
+                                {/*    </div>   */}
+                                {/*    <div className="mb-4 mt-1">*/}
+                                {/*        <Link className={button_classname} to={`jobs/${job.id}/update`}>*/}
+                                {/*            <p className="text-white">Finish Job</p>*/}
+                                {/*        </Link>*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
+                                <div className="mt-2">
+                                    <Link className={button_classname} to={`/jobs/${job.id}/print`}>
+                                        <p className="text-white">View</p>
+                                    </Link>
                                 </div>
                             </div>
                         </>
@@ -267,17 +278,17 @@ export default function Order() {
 
                 <div className="pb-2 gap-4 grid grid-cols-4">
                     <Link className={button_classname} to={`new`}>
-                        Add Jobs
+                        <p className="text-white">Add Jobs</p>
                     </Link>
                     <div></div>
                     <Link className={button_classname} to={`contacts`}>
-                        View Contacts
+                        <p className="text-white">View Contacts</p>
                     </Link>
                     <button
                         className={addnote_classname}
                         onClick={fnAddNote}
                     >
-                        Update Notes
+                        <p className="text-white">Update Notes</p>
                     </button>
                 </div>
 
@@ -356,9 +367,9 @@ export default function Order() {
                                 </div>
 
                                 <div className="border-t border-slate-500 mt-4">
-                                    <div className="my-4">
+                                    <div className="my-4 bg-">
                                         <Link className={button_classname} to={`/receipts/${receipt.id}`}>
-                                            Print Receipt
+                                            <p className="text-white">Print Receipt</p>
                                         </Link>
                                     </div>
                                     {/*<div className="my-4">*/}
@@ -382,7 +393,7 @@ export default function Order() {
                         className={addnote_classname}
                         onClick={fnAddReceiptNote}
                     >
-                        Update Notes
+                        <p className="text-white">Update Notes</p>
                     </button>
                 </div>
                 {addReceiptNote ?

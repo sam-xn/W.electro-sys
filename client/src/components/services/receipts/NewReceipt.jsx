@@ -532,7 +532,7 @@ export default function NewReceipt() {
                                                                             <div className="font-bold text-md text-[#544B76] border-b pb-1 pt-2">
                                                                                 Qty:
                                                                             </div>
-                                                                            <input className="focus:outline-none border-b max-w-xs pb-1 pt-2"
+                                                                            <input className="focus:outline-none text-center border-b max-w-xs pb-1 pt-2"
                                                                                 type="text"
                                                                                 placeholder="input required"
                                                                                 onChange={(e) => setQty(e.target.value)}

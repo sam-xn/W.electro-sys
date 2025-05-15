@@ -11,6 +11,12 @@ const getAll = () => {
     return http.get("/customers");
 };
 
+const getAllJoinContacts = (company) => {
+    if (!company || company == "") return http.get(`/customers/all`);
+    else return http.get(`/customers/${company}`);
+    
+};
+
 const get = (id) => {
     return http.get(`/customers/${id}`);
 };
@@ -27,12 +33,13 @@ const remove = (id) => {
     return http.delete(`/customers/${id}`);
 };
 
-const findByTitle = (company_name) => {
-    return http.get(`/customers?company_name=${company_name}`);
+const findByTitle = (company) => {
+    return http.get(`/customers?company=${company}`);
 };
 
 export default {
     getAll,
+    getAllJoinContacts,
     get,
     create,
     update,

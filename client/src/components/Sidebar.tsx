@@ -66,12 +66,12 @@ export default function Sidebar() {
     return (
         <>
             <aside className="h-auto w-[calc(100%+25px)] border border-slate-500 rounded-sm mr-6 mb-16 bg-[#eff1fc]">
-                <div className="flex gap-2 justify-center mr-6 mb-2">
+                <div className="flex gap-2 justify-center mr-6 mt-2">
                     <div className="pt-8">
                         <HardDrive color="#544B76" size="18" />
                     </div>
-                    <Link className="pt-6 border-b border-[#544B76] pb-8 text-lg hover:border-b" to={'/'}>
-                            w.electro-sys
+                    <Link className="pt-6 border-b border-[#544B76] pb-6 text-lg hover:text-xl" to={'/'}>
+                            w. electro - sys
                     </Link>
                 </div>
                 <nav className="p-4 md:p-5">
