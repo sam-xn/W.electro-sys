@@ -6,6 +6,8 @@ import { Search } from "lucide-react";
 
 import ContactService from "./contact.service";
 
+import Modal from './Modal';
+import Contacts from './Contacts';
 export default function Customers() {
 
     const [customers, setCustomers] = useState([]);
@@ -40,6 +42,43 @@ export default function Customers() {
                 console.log(e);
             });
     }
+
+    // ------------------------------------------------------------------------------------ Modal 
+
+    const [open, setOpen] = useState(false);
+    const [contacts, setContacts] = useState([]);
+    const [modalCompany, setModalCompany] = useState("");
+
+    const handleClose = () => { setOpen(false); };
+    const handleOpen = (c) => { setOpen(true); setModalCompany(c); };
+
+    useEffect(() => {
+        if (!modalCompany) return;
+        ContactService.getCompany(modalCompany)
+            .then((response) => {
+
+                const d = response.data;
+                const c = { primary: null, accounting: null, other: [] };
+                d.forEach(r => {
+                    switch (r.type) {
+                        case "primary":
+                            c.primary = r;
+                            break;
+                        case "accounting":
+                            c.accounting = r;
+                            break;
+                        default:
+                            c.other.push(r);
+                    }
+                });
+
+                setContacts(c);
+                console.log(c)
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }, [modalCompany, contacts.length]);
 
     const input_classname = "block flex-1 border-0 bg-transparent py-1.5 px-3 text-slate-900 placeholder:text-slate-400 focus:ring-0 sm:text-sm sm:leading-6";
     const th_classname = "h-12 px-4 align-middle font-medium border-b border-slate-500";
@@ -117,12 +156,18 @@ export default function Customers() {
                                         <td className={td_classname}
                                             key={index, customer.company, customer.company}
                                         >
-                                            <Link
-                                                className={button_classname}
-                                                to={`/customers/${customer.company}`}
-                                            >
+                                            {/*<Link*/}
+                                            {/*    className={button_classname}*/}
+                                            {/*    to={`/customers/${customer.company}/contacts`}*/}
+                                            {/*>*/}
+                                            {/*    View Contacts*/}
+                                            {/*</Link>*/}
+                                            <button className={button_classname} type="button" onClick={() => handleOpen(customer.company)}>
                                                 View Contacts
-                                            </Link>
+                                            </button>
+                                            <Modal isOpen={open} onClose={handleClose}>
+                                                <Contacts company={modalCompany} contacts={contacts}/>
+                                            </Modal>
                                         </td>
                                     </tr>
                                 </>

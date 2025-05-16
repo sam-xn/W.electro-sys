@@ -55,6 +55,23 @@ export const create = (req, res) => {
         });
 };
 
+export const findCompany = (req, res) => {
+
+    const company = req.params.company;
+
+    const query = `SELECT * FROM contacts WHERE company='${company}';`;
+
+    sequelize.query(query, { type: QueryTypes.SELECT })
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "An error occurred while retrieving contacts."
+            });
+        });
+};
 
 export const findAllCompany = (req, res) => {
 

@@ -10,6 +10,7 @@ export default (app) => {
     //router.get("/company/:company", contacts.findAllCompany);
     router.get("/type/:type", contacts.findAllType);
     router.get("/type/:type/company/:company", contacts.findAllCompany);
+    router.get("/company/:company", contacts.findCompany);
 
     router.get("/:id", contacts.findOne);
     router.put("/:id", contacts.update);

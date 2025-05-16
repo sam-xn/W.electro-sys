@@ -20,6 +20,11 @@ const getAllCompany = (company, type) => {
     return http.get(`/contacts/type/${type}/company/${company}`);
 };
 
+const getCompany = (company) => {
+    if (company === "") return ({});
+    return http.get(`/contacts/company/${company}`);
+};
+
 const get = (id) => {
     return http.get(`/contacts/${id}`);
 };
@@ -43,6 +48,7 @@ const findByTitle = (company) => {
 export default {
     getAll,
     getAllCompany,
+    getCompany,
     getAllType,
     get,
     create,
