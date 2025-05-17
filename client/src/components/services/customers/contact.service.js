@@ -17,6 +17,7 @@ const getAllType = (type) => {
 };
 
 const getAllCompany = (company, type) => {
+    if (!company || company === '') return http.get(`/contacts/type/${type}`);
     return http.get(`/contacts/type/${type}/company/${company}`);
 };
 

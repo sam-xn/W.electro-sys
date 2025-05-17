@@ -44,7 +44,8 @@ export default function Orders() {
     const th_classname = "h-12 px-4 align-middle font-medium border-b border-slate-500";
     const td_classname = "p-2 border border-slate-300";
     const button_classname = "grid text-center text-sm font-medium shadow-xs ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-background hover:bg-[#DEE1F4] rounded-md py-2";
-    const newPO_classname = "grid text-center text-sm shadow-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-background hover:bg-[#DEE1F4] rounded-md py-3 bg-[#eff1fc]";
+    //const newPO_classname = "grid text-center text-sm shadow-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-background hover:bg-[#DEE1F4] rounded-md py-3 bg-[#eff1fc]";
+    const newPO_classname = "grid py-2 px-2 mx-18 md:mx-6 text-center text-sm font-bold shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-[#544B76] text-white hover:bg-[#DEE1F4] rounded-md";
 
     return (
         <>
@@ -61,7 +62,7 @@ export default function Orders() {
                         className={newPO_classname}
                         to={'/orders/new'}
                     >
-                        Create New PO
+                        <p className="text-white hover:text-[#544B76]">Create New PO</p>
                     </Link>
                 </div>
             </div>

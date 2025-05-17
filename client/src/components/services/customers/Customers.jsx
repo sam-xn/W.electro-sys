@@ -26,10 +26,8 @@ export default function Customers() {
 
     // ------------------------------------------------------------------------------------ SearchBar 
 
-    //const [searchDate, setSearchDate] = useState("");
     const [searchCompany, setSearchCompany] = useState("");
     
-    //const onChangeSearchDate = (e) => { setSearchDate(e.target.value); };
     const onChangeSearchCompany = (e) => { setSearchCompany(e.target.value); };
     function findBy(e) {
         e.preventDefault();
@@ -92,7 +90,7 @@ export default function Customers() {
             </div>
             <div className="grid grid-cols-4">
                 <div className="p-4 pt-6 border-b border-slate-500 text-[#544B76]">
-                    Customers
+                    Customers {`${params.type ? " : "+String(params.type).charAt(0).toUpperCase() + String(params.type).slice(1)+" Contacts" : ""}`}
                 </div>
             </div>
 
@@ -137,7 +135,7 @@ export default function Customers() {
                         <tbody>
                             { customers.map((customer, index) => (
                                 <>
-                                    <tr className="even:bg-white odd:bg-[#eff1fc]">
+                                    <tr className="even:bg-white odd:bg-[#eff1fc] items-center">
                                         <td className={td_classname}
                                             key={[index, customer.company]}
                                         >
@@ -162,11 +160,15 @@ export default function Customers() {
                                             {/*>*/}
                                             {/*    View Contacts*/}
                                             {/*</Link>*/}
+                                            <div className="flex border place-content-center">
                                             <button className={button_classname} type="button" onClick={() => handleOpen(customer.company)}>
                                                 View Contacts
-                                            </button>
+                                                </button>
+                                            </div>
+
+
                                             <Modal isOpen={open} onClose={handleClose}>
-                                                <Contacts company={modalCompany} contacts={contacts}/>
+                                                <Contacts company={modalCompany} contacts={contacts} />
                                             </Modal>
                                         </td>
                                     </tr>

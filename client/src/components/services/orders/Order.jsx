@@ -208,7 +208,7 @@ export default function Order() {
     }
 
     const div_classname = "max-w-full mr-4 p-8 rounded shadow border border-slate-500";
-    const button_classname = "grid py-2 px-2 mx-18 md:mx-6 text-center text-sm font-bold shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-[#544B76] text-white hover:bg-[#DEE1F4] rounded-md";
+    const button_classname = "grid py-2 px-2 mx-18 md:mx-6 text-center text-sm font-bold shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-[#544B76] hover:bg-[#DEE1F4] rounded-md";
     const addnote_classname = "bg-[#544B76] text-sm outline outline-slate-500 shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 hover:outline-none hover:bg-[#DEE1F4]";
     return (
         <>
@@ -267,8 +267,8 @@ export default function Order() {
                                 {/*    </div>*/}
                                 {/*</div>*/}
                                 <div className="mt-2">
-                                    <Link className={button_classname} to={`/jobs/${job.id}/print`}>
-                                        <p className="text-white">View</p>
+                                    <Link className="grid text-center text-sm font-medium shadow-xs ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-white hover:bg-[#DEE1F4] rounded-md py-2 my-1 mr-4" to={`/jobs/${job.id}/print`}>
+                                        <p className="text-[#544B76] hover">View Job</p>
                                     </Link>
                                 </div>
                             </div>
@@ -278,17 +278,17 @@ export default function Order() {
 
                 <div className="pb-2 gap-4 grid grid-cols-4">
                     <Link className={button_classname} to={`new`}>
-                        <p className="text-white">Add Jobs</p>
+                        <p className="text-white hover:text-[#544B76]">Add Jobs</p>
                     </Link>
                     <div></div>
                     <Link className={button_classname} to={`contacts`}>
-                        <p className="text-white">View Contacts</p>
+                        <p className="text-white hover:text-[#544B76]">View Contacts</p>
                     </Link>
                     <button
                         className={addnote_classname}
                         onClick={fnAddNote}
                     >
-                        <p className="text-white">Update Notes</p>
+                        <p className="text-white hover:text-[#544B76]">Update Notes</p>
                     </button>
                 </div>
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Navbar, Typography } from "@material-tailwind/react";
-export default function CustomersNavbar() {
+export default function CustomersNavbar({ modalOpen }) {
 
     const ty_classname = "p-1 font-normal hover:border-b border-[#A295AF]";
     const navList = (
