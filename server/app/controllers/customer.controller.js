@@ -1,160 +1,36 @@
 import db from '../models/index.js'
 
-import { QueryTypes } from 'sequelize';
-
-const Op = db.Sequelize.Op;
 const Customer = db.customers;
+const Contact = db.contacts;
 
-const sequelize = db.sequelize;
+export const createFromPO = (req, res) => {
 
-//export const findAllJoinContacts = (req, res) => {
-
-//    const company = req.params.company;
-
-//    let query = `\
-//    SELECT customers.*, contacts.* \
-//    FROM customers \
-//    JOIN contacts on customers.company=contacts.company `;
-
-//    if (company) query += ` WHERE company LIKE '%${company}%'`;
-
-//    query += ";";
-
-//    sequelize.query(query, { type: QueryTypes.SELECT })
-//        .then(data => {
-//            res.send(data);
-//        })
-//        .catch(err => {
-//            res.status(500).send({
-//                message:
-//                    err.message || "An error occurred while retrieving customers."
-//            });
-//        });
-//}
-
-export const create = (req, res) => {
-    if (!req.body.newCompany) {
-        res.status(400).send({
-            message: "Content cannot be empty."
-        });
+    if (!req.body.company || !req.body.fname || !req.body.email) {
+        res.status(400).send({ message: "Content cannot be empty." });
         return;
     }
 
-    const email = req.body.newContactEmail;
-
-    const query = `\
-    INSERT INTO customers(company) \
-    values(\'${company}\');`;
-
-    sequelize.query(query, { type: QueryTypes.INSERT })
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "An error occurred while retrieving Jobs."
-            });
-        });
-};
-
-export const findAll = (req, res) => {
-    const company = req.query.company;
-    const condition = company ? { company: { [Op.like]: `%${company}%` } } : null;
-
-    Customer.findAll({ where: condition })
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "An error occurred while retrieving Customers."
-            });
-        });
-};
-
-export const findOne = (req, res) => {
-    const id = req.params.company;
-
-    Customer.findByPk(id)
-        .then(data => {
-            if (data) {
-                res.send(data);
-            } else {
-                res.status(404).send({
-                    message: `Cannot find Customer with id=${id}.`
+    Customer.create( req.body )
+        .then(data => { res.send(data); })
+        .then((data) => {
+            Contact.create({ company: req.body.company, fname: req.body.fname, lname: req.body.lname, email: req.body.email, phone: req.body.phone })
+                .then(data => { res.send(data); })
+                .catch(err => {
+                    res.status(500).send({ message: err.message || "An error occurred while creating Contact." });
                 });
-            }
         })
         .catch(err => {
-            res.status(500).send({
-                message: "Error retrieving Customer with id=" + id
-            });
+            res.status(500).send({ message: err.message || "An error occurred while creating Customer." });
         });
 };
 
-export const update = (req, res) => {
-    const id = req.params.company;
-
-    Customer.update(req.body, { where: { id: id } })
+export const _delete = (req, res) => {
+    Customer.destroy({ where: { company: req.params.company } })
         .then(num => {
-            if (num === 1) {
-                res.send({
-                    message: "Customer updated."
-                });
-            } else {
-                res.send({
-                    message: `Cannot update Customer with id=${id}. Possible causes: not found or empty req.body.`
-                });
-            }
+            if (num === 1) { res.send({ message: "Customer deleted." }); }
+            else { res.send({ message: `Cannot delete Customer with company=${req.params.copmany}. Possible cause: not found.` }); }
         })
         .catch(err => {
-            res.status(500).send({
-                message: "Error updating Customer with id=" + id
-            });
+            res.status(500).send({ message: `Could not delete Customer with company=${req.params.company}.` });
         });
 };
-
-export const deleteOne = (req, res) => {
-    const id = req.params.company;
-
-    Customer.destroy({ where: { id: id } })
-        .then(num => {
-            if (num === 1) {
-                res.send({
-                    message: "Customer deleted."
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete Customer with id=${id}. Possible cause: not found.`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete Customer with id=" + id
-            });
-        });
-};
-
-//export const create = (req, res) => {
-//    if (!res.body.company) {
-//        res.status(400).send({
-//            message: "Content cannot be empty."
-//        });
-//        return;
-//    }
-
-//    Customer.create(customer)
-//        .then(data => {
-//            res.send(data);
-//        })
-//        .catch(err => {
-//            res.status(500).send({
-//                message:
-//                    err.message || "An error occured while creating Customer."
-//            });
-//        });
-//};
-

@@ -4,16 +4,9 @@ import express from 'express';
 export default (app) => {
     let router = express.Router();
 
-    router.post("/", customers.create);
-    router.get("/", customers.findAll);
-    //router.get("/all", customers.findAllJoinContacts);
-    //router.get("/:company", customers.findAllJoinContacts);
+    router.post("/", customers.createFromPO);
 
-    //router.get("/:id", customers.findOne);
-    router.put("/:id", customers.update);
-    router.delete("/:id", customers.deleteOne);
-
-    //router.get("/", customers.); with search criteria
+    router.delete("/:company", customers._delete);
 
     app.use("/api/customers", router);
 }

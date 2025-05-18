@@ -5,23 +5,12 @@ export default (app) => {
     let router = express.Router();
 
     router.post("/", orders.create);
-    router.get("/", orders.findAll);
 
-    router.get("/:id", orders.findOne);
+    router.get("/:id", orders.find);
+    router.get("/search/:status", orders.search);
+
     router.put("/:id", orders.update);
-    router.put("/:id/notes", orders.updateNotes);
-    router.put("/:id/receipt_notes", orders.updateReceiptNotes);
-
-    router.delete("/:id", orders.deleteOne);
-
-    router.get("/status/:status", orders.findAllSearch);
-    router.get("/status/:status/search/customer=:customer", orders.findAllSearch);
-    router.get("/status/:status/search/PO=:PO", orders.findAllSearch);
-    router.get("/status/:status/search/customer=:customer/PO=:PO", orders.findAllSearch);
-
-    router.get("/search/customer=:customer", orders.findAllSearch);
-    router.get("/search/PO=:PO", orders.findAllSearch);
-    router.get("/search/customer=:customer/PO=:PO", orders.findAllSearch);
+    router.delete("/:id", orders._delete);
     
     app.use("/api/orders", router);
 }

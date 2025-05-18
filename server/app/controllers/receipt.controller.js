@@ -1,216 +1,134 @@
 import db from '../models/index.js'
 
-import { QueryTypes } from 'sequelize';
-
-const Op = db.Sequelize.Op;
 const Receipt = db.receipts;
+const Deliverable = db.deliverables;
+const Job = db.jobs;
+const Op = db.Sequelize.Op;
 
-const sequelize = db.sequelize;
+export const createWithDeliverables = (req, res) => {
 
-export const create = (req, res) => {
+    if (!req.body || !req.body.deliverables) {
+        res.status(400).send({ message: "Content cannot be empty." });
+        return;
+    }
 
-    let query = `INSERT INTO receipts() values();`;
-
-    Receipt.create()
-        .then(data => {
-            res.send(data);
+    Receipt.create({})
+        .then(data => { res.send(data); return data[0]; })
+        .then(receiptId => {
+            req.body.deliverables.forEach( deliverable => {
+                Deliverables.create({ partial: deliverable.partial, qty: deliverable.qty, job_id: deliverable.qty, receiptId: receiptId })
+                    .then(data => { res.send(data); })
+                    .catch(err => {
+                        res.status(500).send({ message: err.message || "An error occurred while creating Deliverable." });
+                    });
+            });
         })
         .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "An error occured while creating Receipt."
-            });
+            res.status(500).send({ message: err.message || "An error occurred while creating Receipt." });
         });
 };
 
-export const findAll = (req, res) => {
-    const title = req.query.title;
-    const condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+export const findOrder = (req, res) => {
 
-    Receipt.findAll({ where: condition })
-        .then(data => {
-            res.send(data);
-        })
+    if (!req.params.po_id) {
+        req.status(400).send({ message: "Content cannot be empty." });
+        return;
+    }
+
+    Receipt.hasMany(Deliverable, { foreignKey: 'receipt_id' });
+    Deliverable.belongsTo(Receipt, { foreignKey: 'receipt_id' });
+
+    Deliverable.belongsTo(Job, { foreignKey: 'job_id' });
+    Job.hasMany(Deliverable, { foreignKey: 'job_id' });
+    
+    Receipt.findAll({ include: [{ 
+        model: Deliverable, required: false, right: true, attributes: [],
+        include: [{
+            model: Job, required: true, attributes: [], where: { po_id: req.params.po_id }
+    }] }] })
+        .then(data => { res.send(data); })
         .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "An error occurred while retrieving Receipts."
-            });
+            res.status(500).send({ message: err.message || "An error occurred while retrieving Jobs." });
         });
 };
 
-export const findAllList = (req, res) => {
-    const rIds = req.params.id;
+export const findList = (req, res) => {
 
-    let query = `\
-    SELECT receipts.*, \
-    deliverables.id as dId, deliverables.partial, deliverables.num_pcs, \
-    jobs.id as jobId, jobs.process, jobs.po_id, orders.po_num \
-    FROM receipts \
-    JOIN deliverables on deliverables.receipt_id=receipts.id \
-    JOIN jobs on deliverables.job_id=jobs.id \
-    JOIN orders on orders.id=jobs.po_id \
-    WHERE receipts.id IN (${rIds});`;
+    if (!req.body || !req.body.receiptIds) {
+        res.status(400).send({ message: "Content cannot be empty." });
+        return;
+    }
 
-    sequelize.query(query, { type: QueryTypes.SELECT })
-        .then(data => {
-            res.send(data);
-        })
+    Receipt.hasMany(Deliverable, { foreignKey: 'receipt_id' });
+    Deliverable.belongsTo(Receipt, { foreignKey: 'receipt_id' });
+
+    Deliverable.belongsTo(Job, { foreignKey: 'job_id' });
+    Job.hasMany(Deliverable, { foreignKey: 'job_id' });
+
+    Job.belongsTo(Order, { foreignKey: 'po_id' });
+    Order.hasMany(Job, { foreignKey: 'po_id' });
+
+    Receipt.findAll({
+        where: { id: { [Op.any]: req.body.receiptIds } },
+        include: [{
+            model: Deliverable, required: true, attributes: [],
+            include: [{
+                model: Job, required: true, attributes: [],
+                include: [{
+                    model: Orders, required: true, attributes: []
+    }] }] }] })
+        .then(data => { res.send(data); })
         .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "An error occurred while retrieving receipts."
-            });
+            res.status(500).send({ message: err.message || "An error occurred while retrieving Receipts." });
         });
 }
 
-export const findAllPO = (req, res) => {
-    const poId = req.params.id;
+export const search = (req, res) => {
 
-    const query = `\
-    SELECT receipts.id \
-    FROM receipts \
-    JOIN deliverables on deliverables.receipt_id=receipts.id \
-    JOIN jobs on deliverables.job_id=jobs.id \
-    WHERE jobs.po_id=${poId};`;
-
-    sequelize.query(query, { type: QueryTypes.SELECT })
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "An error occurred while retrieving receipts."
-            });
-        });
-};
-
-export const findAllSearch = (req, res) => {
-
-    const customer = req.params.customer;
-    const PO = req.params.PO;
-    const DS = req.params.DS;
-
-    const query = [];
-
-    const query_base = "\
-    SELECT receipts.*, \
-    deliverables.id as dId, deliverables.partial, deliverables.num_pcs, \
-    jobs.id as jobId, jobs.process, jobs.po_id, \
-    orders.po_num, orders.customer \
-    FROM receipts \
-    JOIN deliverables ON deliverables.receipt_id = receipts.id \
-    JOIN jobs ON jobs.id=deliverables.job_id \
-    JOIN orders ON orders.id=jobs.po_id ";
-
-    query.push(query_base);
-
-    const conditions = [];
-    const c1 = customer ? " orders.customer LIKE '%" + customer + "%' " : null;
-    const c2 = PO ? " orders.po_num LIKE '%" + PO + "%' " : null;
-    const c3 = DS ? " receipts.id LIKE '%" + DS + "%' " : null;
-    conditions.push(c1, c2, c3);
-
-    const query_conditions = [];
-
-    conditions.forEach((c) => {
-        if (c) query_conditions.push(c);
-    })
-
-    const string_WHERE = " WHERE ";
-    if (query_conditions.length > 0) {
-        query.push(string_WHERE);
-        query.push(query_conditions[0]);
-        query_conditions.splice(0,1);
+    if (!req.body || !req.body.receiptIds) {
+        res.status(400).send({ message: "Content cannot be empty." });
+        return;
     }
 
-    const string_AND = " AND ";
-    while (query_conditions.length > 0) {
-        query.push(string_AND);
-        query.push(query_conditions[0]);
-        query_conditions.splice(0,1);
-    }
+    const receiptConditions = {};
+    if (req.query.id) receiptConditions.id = { [Op.like]: `%${req.query.id}%` }
 
-    query.push(";");
+    const orderConditions = {};
+    if (req.query.customer) orderConditions.customer = { [Op.like]: `%${req.query.customer}%` }
+    if (req.query.po_num) orderConditions.po_num = { [Op.like]: `%${req.query.po_num}%` }
 
-    var query_string = "";
-    query.forEach((str) => { query_string += str });
+    Receipt.hasMany(Deliverable, { foreignKey: 'receipt_id' });
+    Deliverable.belongsTo(Receipt, { foreignKey: 'receipt_id' });
 
-    console.log(query_string);
+    Deliverable.belongsTo(Job, { foreignKey: 'job_id' });
+    Job.hasMany(Deliverable, { foreignKey: 'job_id' });
 
-    sequelize.query( query_string, { type: QueryTypes.SELECT })
-        .then(data => {
-                res.send(data);
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message:
-                        err.message || "An error occurred while retrieving receipts."
-                });
-            });
-};
+    Job.belongsTo(Order, { foreignKey: 'po_id' });
+    Order.hasMany(Job, { foreignKey: 'po_id' });
 
-export const findOne = (req, res) => {
-    const id = req.params.id;
-
-    Receipt.findByPk(id)
-        .then(data => {
-            if (data) {
-                res.send(data);
-            } else {
-                res.status(404).send({
-                    message: `Cannot find Receipt with id=${id}.`
-                });
-            }
-        })
+    Receipt.findAll({
+        where: receiptConditions,
+        include: [{
+            model: Deliverable, required: true, attributes: [], 
+            include: [{
+                model: Job, required: true, attributes: [],
+                include: [{
+                    model: Orders, required: true, attributes: [], where: orderConditions,
+    }] }] }] })
+        .then(data => { res.send(data); })
         .catch(err => {
-            res.status(500).send({
-                message: "Error retrieving Receipt with id=" + id
-            });
+            res.status(500).send({ message: err.message || "An error occurred while retrieving Receipts." });
         });
 };
 
-export const update = (req, res) => {
-    const id = req.params.id;
-
-    Receipt.update(req.body, { where: { id: id } })
+export const _delete = (req, res) => {
+    Receipt.destroy({ where: { id: req.params.id } })
         .then(num => {
-            if (num === 1) {
-                res.send({
-                    message: "Receipt updated."
-                });
-            } else {
-                res.send({
-                    message: `Cannot update Receipt with id=${id}. Possible causes: not found or empty req.body.`
-                });
-            }
+            if (num === 1) { res.send({ message: "Receipt deleted." }); }
+            else { res.send({ message: `Cannot delete Receipt with id=${req.params.id}. Possible cause: not found.` }); }
         })
         .catch(err => {
-            res.status(500).send({
-                message: "Error updating Receipt with id=" + id
-            });
+            res.status(500).send({ message: `Could not delete Receipt with id=${req.params.id}` });
         });
 };
 
-export const deleteOne = (req, res) => {
-    const id = req.params.id;
-
-    Receipt.destroy({ where: { id: id } })
-        .then(num => {
-            if (num === 1) {
-                res.send({
-                    message: "Receipt deleted."
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete Receipt with id=${id}. Possible cause: not found.`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete Receipt with id=" + id
-            });
-        });
-};

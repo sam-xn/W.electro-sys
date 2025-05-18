@@ -1,6 +1,3 @@
-// import Job from './job.model.js'
-// import Receipt from './receipt.model.js'
-
 export default (sequelize, Sequelize) => {
     const Deliverable = sequelize.define("deliverable", { 
         id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },

@@ -4,23 +4,13 @@ import express from 'express';
 export default (app) => {
     let router = express.Router();
 
-    router.post("/", receipts.create);
-    router.get("/", receipts.findAllSearch);
+    router.post("/", receipts.createWithDeliverables);
 
-    router.get("/:id", receipts.findOne);
-    router.put("/:id", receipts.update);
-    router.delete("/:id", receipts.deleteOne);
+    router.get("/orders/:poId", receipts.findOrder);
+    router.get("/list", receipts.findList);
+    router.get("/search", receipts.search);
 
-    router.get("/PO/id=:id", receipts.findAllPO);
-    router.get("/PO/list/id=:id", receipts.findAllList);
-
-    router.get("/search/customer=:customer", receipts.findAllSearch);
-    router.get("/search/PO=:PO", receipts.findAllSearch);
-    router.get("/search/DS=:DS", receipts.findAllSearch);
-    router.get("/search/customer=:customer/PO=:PO", receipts.findAllSearch);
-    router.get("/search/customer=:customer/DS=:DS", receipts.findAllSearch);
-    router.get("/search/customer=:customer/PO=:PO/DS=:DS", receipts.findAllSearch);
-    router.get("/search/PO=:PO/DS=:DS", receipts.findAllSearch);    
+    router.delete("/:id", receipts._delete);
 
     app.use("/api/receipts", router);
 }

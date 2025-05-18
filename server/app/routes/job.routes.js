@@ -4,35 +4,16 @@ import express from 'express';
 export default (app) => {
     let router = express.Router();
 
+    router.post("/", jobs.createWithTag);
 
-    router.get("/exact/status=:status/customer=:customer", jobs.findAllExact);
-
-    router.get("/PO/id=:id", jobs.findAllPO);
-    router.get("/list/jobIds=:jobIds", jobs.findAllList);
-
-    router.get("/", jobs.findAllSearch);
-    router.get("/status/:status", jobs.findAllSearch);
-    router.get("/status/:status/search/customer=:customer", jobs.findAllSearch);
-    router.get("/status/:status/search/PO=:PO", jobs.findAllSearch);
-    router.get("/status/:status/search/process=:process", jobs.findAllSearch);
-    router.get("/status/:status/search/customer=:customer/PO=:PO", jobs.findAllSearch);
-    router.get("/status/:status/search/customer=:customer/process=:process", jobs.findAllSearch);
-    router.get("/status/:status/search/customer=:customer/PO=:PO/process=:process", jobs.findAllSearch);
-    router.get("/status/:status/search/PO=:PO/process=:process", jobs.findAllSearch);
-
-    router.get("/search/customer=:customer", jobs.findAllSearch);
-    router.get("/search/PO=:PO", jobs.findAllSearch);
-    router.get("/search/process=:process", jobs.findAllSearch);
-    router.get("/search/customer=:customer/PO=:PO", jobs.findAllSearch);
-    router.get("/search/customer=:customer/process=:process", jobs.findAllSearch);
-    router.get("/search/customer=:customer/PO=:PO/process=:process", jobs.findAllSearch);
-    router.get("/search/PO=:PO/process=:process", jobs.findAllSearch);
+    router.get("/customer/:status/:customer", jobs.findCustomer);
+    router.get("/list", jobs.findList);
+    router.get("/order/:poId", jobs.findOrder);
+    router.get("/search/:status", jobs.search);
 
     router.put("/:id", jobs.update);
-    router.post("/", jobs.create);
-    //router.delete("/:id", jobs.deleteOne);
-    //router.get("/:id", jobs.findOne);
 
+    router.delete("/:id", jobs._delete);
 
     app.use("/api/jobs", router);
 }

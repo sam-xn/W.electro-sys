@@ -1,12 +1,14 @@
 export default (sequelize, Sequelize) => {
     const Contact = sequelize.define("contact", {
-        email: { type: Sequelize.STRING(100), primaryKey: true, allowNull: false },
-        name: { type: Sequelize.STRING(100), allowNull: false },
-        last: { type: Sequelize.STRING(100) },
+        id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 
-        company: { type: Sequelize.STRING(100), references: { model: 'contacts', key: 'email' } },
-        //dept: { type: Sequelize.STRING(100) },
-        type: { type: Sequelize.STRING(100), defaultValue: 'primary' }
+        email: { type: Sequelize.STRING(100) },
+        fname: { type: Sequelize.STRING(100), allowNull: false },
+        lname: { type: Sequelize.STRING(100) },
+        phone: { type: Sequelize.STRING(100) },
+
+        company: { type: Sequelize.STRING(100), references: { model: 'customers', key: 'company' } },
+        type: { type: Sequelize.STRING(100), defaultValue: 'primary' } // primary | accounting | other
     });
     return Contact;
 }

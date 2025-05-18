@@ -2,12 +2,14 @@ import express from 'express'
 import cors from 'cors'
 import db from './app/models/index.js'
 
+import contactRoutes from './app/routes/contact.routes.js'
+import customerRoutes from './app/routes/customer.routes.js'
 import orderRoutes from './app/routes/order.routes.js'
+import orderNoteRoutes from './app/routes/order_note.routes.js'
 import jobRoutes from './app/routes/job.routes.js'
 import receiptRoutes from './app/routes/receipt.routes.js'
+import receiptNoteRoutes from './app/routes/receipt_note.routes.js'
 import deliverableRoutes from './app/routes/deliverable.routes.js'
-import customerRoutes from './app/routes/customer.routes.js'
-import contactRoutes from './app/routes/contact.routes.js'
 
 const app = express();
 
@@ -20,15 +22,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-    res.json({ message: "WEMF-DB backend." })
+    res.json({ message: "WEMF-DB." })
 });
 
+contactRoutes(app);
+customerRoutes(app);
 orderRoutes(app);
+orderNoteRoutes(app);
 jobRoutes(app);
 receiptRoutes(app);
+receiptNoteRoutes(app);
 deliverableRoutes(app);
-customerRoutes(app);
-contactRoutes(app);
 
 db.sequelize.sync().then(() => {
     console.log("Synced db.");

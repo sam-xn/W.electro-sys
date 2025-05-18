@@ -5,18 +5,14 @@ export default (app) => {
     let router = express.Router();
 
     router.post("/", contacts.create);
-    router.get("/", contacts.findAll);
 
-    //router.get("/company/:company", contacts.findAllCompany);
-    router.get("/type/:type", contacts.findAllType);
-    router.get("/type/:type/company/:company", contacts.findAllCompany);
     router.get("/company/:company", contacts.findCompany);
+    router.get("/type/:type", contacts.findType);
+    router.get("/search", contacts.searchCompany);
 
-    router.get("/:id", contacts.findOne);
     router.put("/:id", contacts.update);
-    router.delete("/:id", contacts.deleteOne);
 
-    //router.get("/", contacts.); with search criteria
+    router.delete("/:id", contacts._delete);
 
     app.use("/api/contacts", router);
 }
