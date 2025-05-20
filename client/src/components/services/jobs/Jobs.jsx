@@ -12,7 +12,7 @@ export default function Jobs() {
     const filter = useParams();
 
     useEffect(() => {
-        JobService.findByCriteria(filter.status, searchCustomer, searchPO, searchProcess)
+        JobService.search(filter.status, searchCustomer, searchPO, searchProcess)
             .then((response) => {
                 setJobs(response.data.sort((a, b) => b.id - a.id)); 
             })
@@ -35,7 +35,7 @@ export default function Jobs() {
 
     function findBy(e) {
         e.preventDefault();
-        JobService.findByCriteria(filter.status, searchCustomer, searchPO, searchProcess)
+        JobService.search(filter.status, searchCustomer, searchPO, searchProcess)
             .then((response) => {
                 setJobs(response.data.sort((a, b) => b.id - a.id));
             })
@@ -152,9 +152,9 @@ export default function Jobs() {
                                             {new Date(job._timestamp).toDateString()}
                                         </td>
                                         <td className={td_classname}
-                                            key={[index, job.id, job.customer]}
+                                            key={[index, job.id, job.order.customer]}
                                         >
-                                            {job.customer}
+                                            {job.order.customer}
                                         </td>
                                         <td className={td_classname}
                                             key={[index, job.id, job.process]}
@@ -162,18 +162,18 @@ export default function Jobs() {
                                             {job.process}
                                         </td>
                                         <td className={td_classname}
-                                            key={[index, job.id, job.po_num]}
+                                            key={[index, job.id, job.order.po_num]}
                                         >
-                                            {job.po_num}
+                                            {job.order.po_num}
                                         </td>
                                         <td className={td_classname}
                                             key={index, job.id, job.id}
                                         >
                                             <Link
                                                 className={button_classname}
-                                                to={`/orders/${job.orderId}`}
+                                                to={`/jobs/${job.order.id}`}
                                             >
-                                                View Order
+                                                View Job
                                             </Link>
                                         </td>
                                     </tr>

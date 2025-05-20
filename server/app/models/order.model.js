@@ -5,7 +5,7 @@ export default (sequelize, Sequelize) => {
 
         po_num: { type: Sequelize.STRING(100), allowNull: false },
         status: { type: Sequelize.STRING(100), allowNull: false },
-        customer: { type: Sequelize.STRING(100), allowNull: false, references: { model: 'customers', key: 'company' } },
+        customer: { type: Sequelize.STRING(100), allowNull: false, references: { model: 'customers', key: 'company' }, onUpdate: 'cascade' },
     });
     return Order;
 }

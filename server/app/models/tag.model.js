@@ -3,7 +3,7 @@ export default (sequelize, Sequelize) => {
         jobId: { type: Sequelize.INTEGER, primaryKey: true, references: { model: 'jobs', key: 'id' } }, // ==jobs.id
 
         author_initial: { type: Sequelize.STRING(100), allowNull: false },
-        remarks: { type: Sequelize.TEXT },
+        //remarks: { type: Sequelize.TEXT },
 
         operator_initial: { type: Sequelize.STRING(100) },
         operator_notes: { type: Sequelize.STRING },

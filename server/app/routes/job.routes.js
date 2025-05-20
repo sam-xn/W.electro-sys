@@ -6,10 +6,13 @@ export default (app) => {
 
     router.post("/", jobs.createWithTag);
 
-    router.get("/customer/:status/:customer", jobs.findCustomer);
-    router.get("/list", jobs.findList);
+
     router.get("/order/:poId", jobs.findOrder);
+    router.get("/customer/:status/:customer", jobs.findCustomer);
+    router.get("/list/:jobIds", jobs.findList);
     router.get("/search/:status", jobs.search);
+
+    router.get("/:id", jobs.findJob);
 
     router.put("/:id", jobs.update);
 

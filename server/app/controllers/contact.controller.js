@@ -4,12 +4,12 @@ const Contact = db.contacts;
 const Op = db.Sequelize.Op;
 
 export const create = (req, res) => {
-    if (!req.body.email || !req.body.fname) {
+    if (!req.body.newContactEmail || !req.body.newContactName) {
         res.status(400).send({ message: "Content cannot be empty." });
         return;
     }
 
-    Contact.create( req.body )
+    Contact.create({ fname: req.body.newContactName, email: req.body.newContactEmail, company: req.body.newCompany })
         .then(data => { res.send(data); })
         .catch(err => {
             res.status(500).send({ message: err.message || "An error occurred while retrieving Jobs." });
@@ -38,6 +38,14 @@ export const _delete = (req, res) => {
         });
 };
 
+export const findAll = (req, res) => {
+    Contact.findAll()
+        .then(data => { res.send(data); })
+        .catch(err => {
+            res.status(500).send({ message: err.message || "An error occurred while retrieving contacts." });
+        });
+};
+
 export const findCompany = (req, res) => {
     Contact.findAll({ where: { company: req.params.company } })
         .then(data => { res.send(data); })
@@ -56,12 +64,12 @@ export const findType = (req, res) => {
 
 export const searchCompany = (req, res) => {
 
-    if (!req.query.company) {
+    if (!req.query.company || !req.params.type) {
         res.status(400).send({ message: "Content cannot be empty." });
         return;
     }
 
-    Contact.findAll({ where: { company: { [Op.like]: `%${req.query.company}%` } } })
+    Contact.findAll({ where: { type: req.params.type, company: { [Op.like]: `%${req.query.company}%` } } })
         .then(data => { res.send(data); })
         .catch(err => {
             res.status(500).send({ message: err.message || "An error occurred while retrieving Contacts." });

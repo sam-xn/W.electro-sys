@@ -8,7 +8,7 @@ export default (app) => {
 
     router.get("/company/:company", contacts.findCompany);
     router.get("/type/:type", contacts.findType);
-    router.get("/search", contacts.searchCompany);
+    router.get("/search/:type", contacts.searchCompany);
 
     router.put("/:id", contacts.update);
 

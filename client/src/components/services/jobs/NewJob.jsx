@@ -3,54 +3,62 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import JobService from "./job.service";
 import OrderService from "../orders/order.service";
+
+import Error from '../../Error';
 export default function NewJob() {
+    // ---------------------------------------------------- ErrorModal 
+    const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    function handleClose() { setError(false); }
+    // --------------------------------------------------- /ErrorModal 
 
     const navigate = useNavigate();
     const params = useParams();
 
     const [po, setPo] = useState({});
-    const [submitted, setSubmitted] = useState();
-
-    useEffect(() => {
-            OrderService.get(params.id)
-                .then((response) => {
-                    setPo(response.data);
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-    }, []);
-
-    const [status, setStatus] = useState("received");
+    const [status, setStatus] = useState("");
     const [qty, setQty] = useState("");
     const [process, setProcess] = useState("");
     const [remarks, setRemarks] = useState("");
     const [initial, setInitial] = useState("");
 
-    function saveJob() {
-
-        let today = new Date();
-        let poId = po.id;
-
-        // add error checks before sending http
-
-        let tag = { today, status, initial, poId, process, qty, remarks };
-        JobService.create(tag)
+    useEffect(() => {
+        OrderService.get(params.id)
             .then((response) => {
-                //setSubmitted(true);
+                setPo(response.data);
+                setStatus(response.data.status);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }, []);
+
+    function saveJob() {
+        if (process === "" || qty === "" || initial === "") {
+            setError(true);
+            setErrorMessage("Please enter Qty, Process, and Initial to submit a new Job. ");
+            return;
+        }
+
+        const tag = { status: status, author_initial: initial, po_id: po.id, process: process, qty: qty, remarks: remarks };
+
+        JobService.create(tag)
+            .then(() => {
                 navigate(`/orders/${po.id}`);
             })
             .catch((e) => {
                 console.log(e);
             });
-        setSubmitted(false);
     };
+
 
     const label_classname = "font-bold text-md text-[#544B76] border-b pl-4 pb-1 pt-2";
     const input_classname = "focus:outline-none border-b pl-16 pb-1 pt-2";
 
     return (
         <>
+            {error ? <Error isOpen={error} onClose={handleClose}> {errorMessage} </Error> : <></> }
+
             <div className="max-w-lg mx-4 py-8 px-8 mb-12 bg-[#eff1fc] rounded shadow border border-slate-500">
 
                 <div className="p-1 text-[#544B76] font-bold text-xl border-b border-slate-500">
@@ -62,12 +70,14 @@ export default function NewJob() {
 
                     <div className="text-[#544B76] font-bold ml-4 mb-2"> Status </div>
                     <div></div>
+
                     <div className="ml-8">
                         <input className=""
                             type="radio"
                             name="status"
                             value="incoming"
-                            onChange={(e) => setStatus(e.target.value)}
+                            checked={ status === "incoming" ? "checked" : "" }
+                            onChange={(e) => setStatus(e)}
                         />
                         <label className="text-md px-2"> Incoming </label>
                     </div>
@@ -76,8 +86,8 @@ export default function NewJob() {
                             type="radio"
                             name="status"
                             value="received"
-                            defaultChecked
-                            onChange={(e) => setStatus(e.target.value)}
+                            checked={ status === "incoming" ? "" : "checked" }
+                            onChange={(e) => setStatus(e)}
                         />
                         <label className="text-md px-2"> Received </label>
                     </div>
@@ -156,7 +166,7 @@ export default function NewJob() {
                     </button>
                     <button
                         className="text-white mb-4 mx-8 py-1 rounded w-sm bg-[#544B76] outline hover:bg-red-800"
-                        onClick={saveJob}
+                        onClick={(e) => navigate(`/orders/${params.id}`)}
                     >
                         Discard
                     </button>

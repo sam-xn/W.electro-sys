@@ -7,74 +7,65 @@ const http = axios.create({
     },
 });
 
-const get = (id) => {
-    return http.get(`/jobs/${id}`); 
+const create = (data) => {
+    return http.post("/jobs", data);
+};
+
+const getJob = (id) => {
+    return http.get(`/jobs/${id}`);
+};
+
+const getOrder = (poId) => {
+    return http.get(`/jobs/order/${poId}`);
+};
+
+const getCustomer = (status, customer) => {
+    if (status === "select") status = null;
+    return http.get(`/jobs/customer/${status}/${customer}`);
 };
 
 const getList = (jobIds) => {
-    return http.get(`/jobs/list/jobIds=${jobIds}`);
+    return http.get(`/jobs/list/${jobIds}`);
 };
 
-const getPO = (id) => {
-    return http.get(`/jobs/PO/id=${id}`);
-};
+const search = (status, customer, po_num, process) => {
+    const queries = [];
 
-const getExact = (status, customer) => {
-    return http.get(`/jobs/exact/status=${status}/customer=${customer}`);
-};
-
-const findByCriteria = (status, customer, PO, process) => {
-    if (!status == "") status = "/status/" + status;
-    else status = "";
-
-    if (!customer == "") {
-        if (!PO == "") {
-            if (!process == "")
-                return http.get(`/jobs${status}/search/customer=${customer}/PO=${PO}/process=${process}`);
-            else
-                return http.get(`/jobs${status}/search/customer=${customer}/PO=${PO}`);
-        } else {
-            if (!process == "")
-                return http.get(`/jobs${status}/search/customer=${customer}/process=${process}`);
-            else
-                return http.get(`/jobs${status}/search/customer=${customer}`);
-        }
+    if (customer) queries.push(`?customer=${customer}`);
+    if (po_num) {
+        if (queries.length > 0) queries.push("&")
+        else queries.push("?");
+        queries[queries.length - 1] += `po_num=${po_num}`;
     }
-    else {
-        if (!PO == "") {
-            if (!process == "")
-                return http.get(`/jobs${status}/search/PO=${PO}/process=${process}`);
-            else
-                return http.get(`/jobs${status}/search/PO=${PO}`);
-        } else {
-            if (!process == "")
-                return http.get(`/jobs${status}/search/process=${process}`);
-            else return http.get(`/jobs${status}`);
-        }
+    if (process) {
+        if (queries.length > 0) queries.push("&")
+        else queries.push("?");
+        queries[queries.length - 1] += `process=${process}`;
     }
+
+    let request = "";
+    if (status) request += status;
+    else request += "all";
+
+    queries.forEach(q => request += q);
+
+    return http.get(`/jobs/search/${request}`);
 };
 
 const update = (id, data) => {
     return http.put(`/jobs/${id}`, data);
 };
 
-const create = (data) => {
-    console.log(data);
-    return http.post("/jobs", data);
-};
-
 const remove = (id) => {
     return http.delete(`/jobs/${id}`);
 };
-
-
 export default {
-    get,
-    getList,
-    getPO, 
-    getExact,
-    findByCriteria,
     create,
+    getJob,
+    getOrder,
+    search,
+    getCustomer,
+    getList,
     update,
-    remove
+    remove,
 };

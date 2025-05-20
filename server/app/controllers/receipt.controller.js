@@ -3,25 +3,27 @@ import db from '../models/index.js'
 const Receipt = db.receipts;
 const Deliverable = db.deliverables;
 const Job = db.jobs;
+const Order = db.orders;
 const Op = db.Sequelize.Op;
 
 export const createWithDeliverables = (req, res) => {
 
-    if (!req.body || !req.body.deliverables) {
+    if (!req.body.deliverables_data) {
         res.status(400).send({ message: "Content cannot be empty." });
         return;
     }
 
     Receipt.create({})
-        .then(data => { res.send(data); return data[0]; })
-        .then(receiptId => {
-            req.body.deliverables.forEach( deliverable => {
-                Deliverables.create({ partial: deliverable.partial, qty: deliverable.qty, job_id: deliverable.qty, receiptId: receiptId })
-                    .then(data => { res.send(data); })
+        .then(data => {
+            req.body.deliverables_data.forEach(d => {
+                //console.log(data.dataValues.id)
+                Deliverable.create({ receipt_id: data.id, partial: d.partial, qty: d.newQty, job_id: d.jobId })
                     .catch(err => {
                         res.status(500).send({ message: err.message || "An error occurred while creating Deliverable." });
                     });
-            });
+            })
+
+            res.send(data);
         })
         .catch(err => {
             res.status(500).send({ message: err.message || "An error occurred while creating Receipt." });
@@ -30,31 +32,7 @@ export const createWithDeliverables = (req, res) => {
 
 export const findOrder = (req, res) => {
 
-    if (!req.params.po_id) {
-        req.status(400).send({ message: "Content cannot be empty." });
-        return;
-    }
-
-    Receipt.hasMany(Deliverable, { foreignKey: 'receipt_id' });
-    Deliverable.belongsTo(Receipt, { foreignKey: 'receipt_id' });
-
-    Deliverable.belongsTo(Job, { foreignKey: 'job_id' });
-    Job.hasMany(Deliverable, { foreignKey: 'job_id' });
-    
-    Receipt.findAll({ include: [{ 
-        model: Deliverable, required: false, right: true, attributes: [],
-        include: [{
-            model: Job, required: true, attributes: [], where: { po_id: req.params.po_id }
-    }] }] })
-        .then(data => { res.send(data); })
-        .catch(err => {
-            res.status(500).send({ message: err.message || "An error occurred while retrieving Jobs." });
-        });
-};
-
-export const findList = (req, res) => {
-
-    if (!req.body || !req.body.receiptIds) {
+    if (!req.params.poId) {
         res.status(400).send({ message: "Content cannot be empty." });
         return;
     }
@@ -69,13 +47,13 @@ export const findList = (req, res) => {
     Order.hasMany(Job, { foreignKey: 'po_id' });
 
     Receipt.findAll({
-        where: { id: { [Op.any]: req.body.receiptIds } },
+        attributes: ['id'],
         include: [{
             model: Deliverable, required: true, attributes: [],
             include: [{
-                model: Job, required: true, attributes: [],
+                model: Job, required: true, attributes: [], where: { po_id: req.params.poId },
                 include: [{
-                    model: Orders, required: true, attributes: []
+                    model: Order, required: true, attributes: []
     }] }] }] })
         .then(data => { res.send(data); })
         .catch(err => {
@@ -83,12 +61,36 @@ export const findList = (req, res) => {
         });
 }
 
-export const search = (req, res) => {
+export const findList = (req, res) => {
 
-    if (!req.body || !req.body.receiptIds) {
+    if (!req.params.receiptIds) {
         res.status(400).send({ message: "Content cannot be empty." });
         return;
     }
+    const rIds = (String(req.params.receiptIds)).split(','); 
+
+    Receipt.hasMany(Deliverable, { foreignKey: 'receipt_id' });
+    Deliverable.belongsTo(Receipt, { foreignKey: 'receipt_id' });
+
+    Deliverable.belongsTo(Job, { foreignKey: 'job_id' });
+    Job.hasMany(Deliverable, { foreignKey: 'job_id' });
+
+    Receipt.findAll({
+        where: { id: { [Op.in]: rIds } },
+        include: [{
+            model: Deliverable, required: true, attributes: ['id', 'qty', 'partial'],
+            include: [{
+                model: Job, required: true, attributes: ['id', 'process', ['qty', 'qtyRcvd']],
+                include: [{
+                    model: Order, required: true, attributes: ['id', 'po_num']
+    }] }] }] })
+        .then(data => { res.send(data); })
+        .catch(err => {
+            res.status(500).send({ message: err.message || "An error occurred while retrieving Jobs." });
+        });
+};
+
+export const search = (req, res) => {
 
     const receiptConditions = {};
     if (req.query.id) receiptConditions.id = { [Op.like]: `%${req.query.id}%` }
@@ -107,13 +109,14 @@ export const search = (req, res) => {
     Order.hasMany(Job, { foreignKey: 'po_id' });
 
     Receipt.findAll({
-        where: receiptConditions,
+        attributes: ['id','_timestamp'],
+        where: receiptConditions, 
         include: [{
-            model: Deliverable, required: true, attributes: [], 
+            model: Deliverable, required: true, attributes: ['job_id'],
             include: [{
-                model: Job, required: true, attributes: [],
+                model: Job, required: true, attributes: ['po_id'],
                 include: [{
-                    model: Orders, required: true, attributes: [], where: orderConditions,
+                    model: Order, required: true, attributes: ['po_num', 'customer', 'status'], where: orderConditions,
     }] }] }] })
         .then(data => { res.send(data); })
         .catch(err => {

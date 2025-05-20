@@ -7,7 +7,7 @@ export default (sequelize, Sequelize) => {
         lname: { type: Sequelize.STRING(100) },
         phone: { type: Sequelize.STRING(100) },
 
-        company: { type: Sequelize.STRING(100), references: { model: 'customers', key: 'company' } },
+        company: { type: Sequelize.STRING(100), references: { model: 'customers', key: 'company' }, onUpdate: 'cascade' },
         type: { type: Sequelize.STRING(100), defaultValue: 'primary' } // primary | accounting | other
     });
     return Contact;

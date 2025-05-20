@@ -1,26 +1,26 @@
 import db from '../models/index.js'
 
 const Customer = db.customers;
-const Contact = db.contacts;
 
-export const createFromPO = (req, res) => {
+export const create = (req, res) => {
 
-    if (!req.body.company || !req.body.fname || !req.body.email) {
+    if (!req.body.newCompany) {
         res.status(400).send({ message: "Content cannot be empty." });
         return;
     }
 
-    Customer.create( req.body )
+    Customer.create({ company: req.body.newCompany })
         .then(data => { res.send(data); })
-        .then((data) => {
-            Contact.create({ company: req.body.company, fname: req.body.fname, lname: req.body.lname, email: req.body.email, phone: req.body.phone })
-                .then(data => { res.send(data); })
-                .catch(err => {
-                    res.status(500).send({ message: err.message || "An error occurred while creating Contact." });
-                });
-        })
         .catch(err => {
             res.status(500).send({ message: err.message || "An error occurred while creating Customer." });
+        });
+};
+
+export const findAll = (req, res) => {
+    Customer.findAll()
+        .then(data => { res.send(data); })
+        .catch(err => {
+            res.status(400).send({ message: err.message || "An error occurred while retrieving customers."});
         });
 };
 

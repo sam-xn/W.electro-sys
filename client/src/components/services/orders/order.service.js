@@ -7,54 +7,45 @@ const http = axios.create({
     },
 });
 
-const getAll = () => {
-    return http.get("/orders");
+const create = (data) => {
+    return http.post("/orders", data);
 };
 
 const get = (id) => {
     return http.get(`/orders/${id}`);
 };
 
-const create = (data) => {
-    return http.post("/orders", data);
+const search = (status, customer, po_num) => {
+    const queries = [];
+
+    if (customer) queries.push(`?customer=${customer}`);
+    if (po_num) {
+        if (queries.length > 0) queries.push("&")
+        else queries.push("?");
+        queries[queries.length - 1] += `po_num=${po_num}`;
+    }
+
+    let request = "";
+    if (status) request += status;
+    else request += "all";
+
+    queries.forEach(q => request += q);
+
+    return http.get(`/orders/search/${request}`);
 };
 
 const update = (id, data) => {
     return http.put(`/orders/${id}`, data);
 };
 
-const updateNote = (id, data) => {
-    return http.put(`/orders/${id}/notes`, data);
-};
-
-const updateReceiptNote = (id, data) => {
-    return http.put(`/orders/${id}/receipt_notes`, data);
-};
-
 const remove = (id) => {
     return http.delete(`/orders/${id}`);
 };
 
-const findByCriteria = (status, customer, PO) => {
-    if (!status=="") status = "/status/" + status;
-    else status = "";
-
-    if (!customer == "") {
-        if (!PO == "") return http.get(`/orders${status}/search/customer=${customer}/PO=${PO}`);
-        else return http.get(`/orders${status}/search/customer=${customer}`);
-    }
-    else if (!PO == "") return http.get(`/orders${status}/search/PO=${PO}`);
-
-    else return http.get(`/orders${status}`);
-};
-
 export default {
-    getAll,
-    get,
     create,
+    get,
+    search,
     update,
-    updateNote,
-    updateReceiptNote,
-    remove,
-    findByCriteria,
+    remove
 };

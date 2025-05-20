@@ -4,7 +4,9 @@ import express from 'express';
 export default (app) => {
     let router = express.Router();
 
-    router.post("/", customers.createFromPO);
+    router.post("/", customers.create);
+
+    router.get("/", customers.findAll);
 
     router.delete("/:company", customers._delete);
 

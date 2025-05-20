@@ -1,16 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Navbar, Typography } from "@material-tailwind/react";
 export default function CustomersNavbar({ modalOpen }) {
 
+    const params = useParams();
     const ty_classname = "p-1 font-normal hover:border-b border-[#A295AF]";
+
     const navList = (
         <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
             <Typography
                 as="li"
                 variant="small"
                 color=""
-                className={ty_classname}
+                className={ty_classname + (params ? (params.type === "primary" ? " border-b border-[#A295AF]" : "") : "")}
             >
                 <Link
                     className="flex items-center"
@@ -23,7 +25,7 @@ export default function CustomersNavbar({ modalOpen }) {
                 as="li"
                 variant="small"
                 color=""
-                className={ ty_classname }
+                className={ty_classname + (params ? (params.type === "accounting" ? " border-b border-[#A295AF]" : "") : "")}
             >
                 <Link
                     className="flex items-center"

@@ -7,69 +7,52 @@ const http = axios.create({
     },
 });
 
-const getAll = () => {
-    return http.get("/receipts");
-};
-
-const get = (id) => {
-    return http.get(`/receipts/${id}`);
-};
-
 const create = (data) => {
     return http.post("/receipts", data);
 };
 
-const update = (id, data) => {
-    return http.put(`/receipts/${id}`, data);
+const getOrder = (poId) => {
+    return http.get(`/receipts/order/${poId}`);
+};
+
+const getList = (receiptIds) => { 
+    return http.get(`/receipts/list/${receiptIds}`);
+};
+
+const search = (id, customer, po_num) => {
+    const queries = [];
+
+    if (id) queries.push(`?id=${id}`);
+    if (customer) {
+        if (queries.length > 0) queries.push("&")
+        else queries.push("?");
+        queries[queries.length - 1] += `customer=${customer}`;
+    }
+    if (po_num) {
+        if (queries.length > 0) queries.push("&")
+        else queries.push("?");
+        queries[queries.length - 1] += `po_num=${po_num}`;
+    }
+
+    let request = "";
+    queries.forEach(q => request += q);
+
+    return http.get(`/receipts/search${request}`);
 };
 
 const remove = (id) => {
     return http.delete(`/receipts/${id}`);
 };
 
-const getPOList = (rIds) => {
-    return http.get(`/receipts/PO/list/id=${rIds}`);
-};
-
-const getPO = (PO) => {
-    return http.get(`/receipts/PO/id=${PO}`);
-};
-
-const findByCriteria = (customer, PO, DS) => {
-    if (!customer == "") {
-        if (!PO == "") {
-            if (!DS == "")
-                return http.get(`/receipts/search/customer=${customer}/PO=${PO}/DS=${DS}`);
-            else
-                return http.get(`/receipts/search/customer=${customer}/PO=${PO}`);
-        } else {
-            if (!DS == "")
-                return http.get(`/receipts/search/customer=${customer}/DS=${DS}`);
-            else
-                return http.get(`/receipts/search/customer=${customer}`);
-        }
-    }
-    else {
-        if (!PO == "") {
-            if (!DS == "")
-                return http.get(`/receipts/search/PO=${PO}/DS=${DS}`);
-            else
-                return http.get(`/receipts/search/PO=${PO}`);
-        } else {
-            if (!DS == "")
-                return http.get(`/receipts/search/DS=${DS}`);
-            else return http.get(`/receipts`);
-        }
-    }
+const update = (id, data) => {
+    return http.put(`/receipts/${id}`, data);
 };
 
 export default {
-    getAll,
-    get,
-    getPO,
-    getPOList,
     create,
+    getOrder,
+    getList,
+    search,
     update,
     remove,
-    findByCriteria,
 };

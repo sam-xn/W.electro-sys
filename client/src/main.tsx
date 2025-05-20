@@ -10,8 +10,9 @@ import Orders from './components/services/orders/Orders.jsx'
 import Order from './components/services/orders/Order.jsx'
 import NewOrder from './components/services/orders/NewOrder.jsx'
 import Jobs from './components/services/jobs/Jobs.jsx'
+import Job from './components/services/jobs/Job.jsx'
 import NewJob from './components/services/jobs/NewJob.jsx'
-import UpdateJob from './components/services/jobs/UpdateJob.jsx'
+import FinishJob from './components/services/jobs/FinishJob.jsx'
 import PrintJob from './components/services/jobs/PrintJob.jsx'
 import Receipts from './components/services/receipts/Receipts.jsx'
 import PrintReceipt from './components/services/receipts/PrintReceipt.jsx'
@@ -26,7 +27,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "/orders",
-                element: <Orders />
+                element: <Orders />,
             },
             {
                 path: "/orders/status/:status",
@@ -45,16 +46,24 @@ const router = createBrowserRouter([
                 element: <NewJob />
             },
             {
-                path: "/orders/:poId/jobs/:id/update",
-                element: <UpdateJob />
-            },
-            {
                 path: "/orders/:id/contacts",
                 element: <Outlet />
             },
+            //{
+            //    path: "/orders/:poId/job/:id/update",
+            //    element: <FinishJob />
+            //},
             {
                 path: "/jobs",
                 element: <Jobs />
+            },
+            {
+                path: "/jobs/:id",
+                element: <Job />
+            },
+            {
+                path: "/jobs/:id/update",
+                element: <FinishJob />
             },
             {
                 path: "/jobs/status/:status",
@@ -83,12 +92,11 @@ const router = createBrowserRouter([
             {
                 path: "/customers/type/:type",
                 element: <Customers />
+            },
+            {
+                path: "/settings",
+                element: <Outlet />
             }
-            //,
-            //{
-            //    path: "/customers/:company/contacts",
-            //    element: <Contacts />
-            //}
         ]
     }
 ])

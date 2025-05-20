@@ -4,158 +4,170 @@ import { useParams, Link } from "react-router-dom";
 import OrderService from "./order.service";
 import JobService from "../jobs/job.service";
 import ReceiptService from "../receipts/receipt.service";
+import ContactService from "../customers/contact.service";
+
+import Contacts from './Contacts'
+
+import Modal from './Modal';
 
 export default function Order() {
     const params = useParams();
+
     const [po, setPo] = useState([]);
-    const [jobs, setJobs] = useState([]);
-    const [receipts, setReceipts] = useState([]);
 
     const [addNote, setAddNote] = useState(false);
     const [newNote, setNewNote] = useState(po.notes);
 
+    const [receipts, setReceipts] = useState([]);
+
     const [addReceiptNote, setAddReceiptNote] = useState(false);
     const [newReceiptNote, setNewReceiptNote] = useState(po.receipt_notes);
+
+    // ------------------------------------------------------------------------------------ PO
 
     useEffect(() => {
         OrderService.get(params.id)
             .then((response) => {
-                setPo(response.data);
+                setPo(response.data); 
             })
             .catch((e) => {
                 console.log(e);
             });
     }, [addNote, addReceiptNote]);
 
+
+    // ------------------------------------------------------------------------------------ Jobs 
+    const [jobs, setJobs] = useState([]);
+
     useEffect(() => {
-        JobService.getPO(params.id)
+        JobService.getOrder(params.id) 
             .then((response) => {
-                setJobs(response.data);
+                setJobs(response.data); 
             })
             .catch((e) => {
                 console.log(e);
             });
     }, [jobs.length]);
 
+    // ------------------------------------------------------------------------------------ Modal 
+
+    const [open, setOpen] = useState(false);
+    const [contacts, setContacts] = useState([]);
+
     useEffect(() => {
-        ReceiptService.getPO(params.id)
+        //const customer = po?.customer ? po.customer : "";
+        ContactService.getCompany(po.customer)
             .then((response) => {
-                ReceiptService.getPOList(response.data.map((rId) => rId.id))
+
+                const d = response.data;
+                const c = { primary: null, accounting: null, other: [] };
+                d.forEach(r => {
+                    switch (r.type) {
+                        case "primary":
+                            c.primary = {
+                                name: r.fname + (r.lname ? " " + r.lname : ""),
+                                email: r.email
+                            }; break;
+                        case "accounting":
+                            c.accounting = {
+                                name: r.fname + (r.lname ? " " + r.lname : ""),
+                                email: r.email
+                            }; break;
+                        default:
+                            c.other.push({
+                                name: r.fname + (r.lname ? " " + r.lname : ""),
+                                email: r.email
+                            });
+                    }
+                });
+
+                setContacts(c);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }, [contacts.length]);
+
+    // ------------------------------------------------------------------------------------ Receipt 
+
+    useEffect(() => {
+        ReceiptService.getOrder(params.id)
+            .then((response) => { 
+                const rIds = response.data.map(rId => rId.id); 
+                let rIds_str = "";
+                rIds.forEach(rId => rIds_str += String(rId) + ',');
+
+                ReceiptService.getList(rIds_str.slice(0,-1))
                     .then((response) => {
                         let d = response.data; 
-                        let cr, pr;
-                        let r = [];
 
-                        for (let i = 0; i < d.length; i++) {
+                        const r = [];
+                        let cd;
+                        let pd;
+                        d.forEach(receipt => {
+                            receipt.deliverables.sort((a, b) => a.job.po_id - b.job.po_id);
+                            r.push({
+                                id: receipt.id,
+                                _timestamp: receipt._timestamp,
+                                orders: []
+                            });
+                            for (let i = 0; i < receipt.deliverables.length; i++) {
 
-                            cr = d[i];
-
-                            if (i == 0) {
-                                r.push({
-                                    id: cr.id,
-                                    _timestamp: cr._timestamp,
-                                    notes: cr.notes,
-                                    deliverables: [{
-                                        dId: cr.dId,
-                                        jobId: cr.jobId,
-                                        partial: cr.partial,
-                                        num_pcs: cr.num_pcs,
-                                        process: cr.process,
-                                        po_id: cr.po_id,
-                                        po_num: cr.po_num
-                                    }]
-                                });
-                                pr = cr;
-                                continue;
-                            }
-
-                            if (cr.id != pr.id) {
-                                r.push({
-                                    id: cr.id,
-                                    _timestamp: cr._timestamp,
-                                    notes: cr.notes,
-                                    deliverables: [{
-                                        dId: cr.dId,
-                                        jobId: cr.jobId,
-                                        partial: cr.partial,
-                                        num_pcs: cr.num_pcs,
-                                        process: cr.process,
-                                        po_id: cr.po_id,
-                                        po_num: cr.po_num
-                                    }]
-                                });
-                            }
-
-                            else {
-                                r[r.length-1].deliverables.push({
-                                    dId: cr.dId,
-                                    jobId: cr.jobId,
-                                    partial: cr.partial,
-                                    num_pcs: cr.num_pcs,
-                                    process: cr.process,
-                                    po_id: cr.po_id,
-                                    po_num: cr.po_num
-                                })
-                            }
-
-                            pr = cr;
-                        }
-
-                        r.forEach((rt) => {
-                            rt.deliverables = rt.deliverables.sort((a,b) => a.po_id - b.po_id); 
-
-                            d = [];
-                            let cd, pd;
-                            for (let i = 0; i < rt.deliverables.length; i++) {
-
-                                cd = rt.deliverables[i];
+                                cd = receipt.deliverables[i];
 
                                 if (i == 0) {
-                                    d.push({
-                                        po_id: cd.po_id,
-                                        po_num: cd.po_num,
+                                    r[r.length - 1].orders.push({
+                                        id: cd.job.order.id,
+                                        po_num: cd.job.order.po_num,
                                         deliverables: [{
-                                            dId: cd.dId,
-                                            jobId: cd.jobId,
+                                            id: cd.id,
+                                            qty: cd.qty,
                                             partial: cd.partial,
-                                            num_pcs: cd.num_pcs,
-                                            process: cd.process
-                                    }]});
-
-                                    pd = cd; 
+                                            job: {
+                                                id: cd.job.id,
+                                                process: cd.job.process,
+                                                qtyRcvd: cd.job.qtyRcvd
+                                            }
+                                        }]
+                                    });
+                                    pd = cd;
                                     continue;
                                 }
 
-                                if (cd.po_id != pd.po_id) {
-                                    d.push({
-                                        po_id: cd.po_id,
-                                        po_num: cd.po_num,
+                                if (pd.job.order.id != cd.job.order.id) {
+                                    r[r.length - 1].orders.push({
+                                        id: cd.job.order.id,
+                                        po_num: cd.job.order.po_num,
                                         deliverables: [{
-                                            dId: cd.dId,
-                                            jobId: cd.jobId,
+                                            id: cd.id,
+                                            qty: cd.qty,
                                             partial: cd.partial,
-                                            num_pcs: cd.num_pcs,
-                                            process: cd.process
-                                    }]});
-                                }
-
-                                else {
-                                    d[d.length-1].deliverables.push({
-                                        dId: cd.dId,
-                                        jobId: cd.jobId,
-                                        partial: cd.partial,
-                                        num_pcs: cd.num_pcs,
-                                        process: cd.process
+                                            job: {
+                                                id: cd.job.id,
+                                                process: cd.job.process,
+                                                qtyRcvd: cd.job.qtyRcvd
+                                            }
+                                        }]
                                     });
                                 }
 
+                                else {
+                                    r[r.length - 1].orders[r[r.length - 1].orders.length - 1].deliverables.push({
+                                        id: cd.id,
+                                        qty: cd.qty,
+                                        partial: cd.partial,
+                                        job: {
+                                            id: cd.job.id,
+                                            process: cd.job.process,
+                                            qtyRcvd: cd.job.qtyRcvd
+                                        }
+                                    });
+                                }
                                 pd = cd;
                             }
-                            rt.deliverables = d;
                         });
 
                         setReceipts(r);
-                        //console.log(r);
                     })
                     .catch ((e) => {
                         console.log(e);
@@ -189,13 +201,13 @@ export default function Order() {
     }
 
     function saveReceiptNote() {
-        OrderService.updateReceiptNote(params.id, { newReceiptNote })
-            .then((response) => {
-                setAddReceiptNote(false);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
+        //OrderService.updateReceiptNote(params.id, { newReceiptNote })
+        //    .then((response) => {
+        //        setAddReceiptNote(false);
+        //    })
+        //    .catch((e) => {
+        //        console.log(e);
+        //    });
     }
     function discardNote() {
         setNewNote(po.notes);
@@ -215,7 +227,7 @@ export default function Order() {
             <div className={"bg-[#eff1fc] " + div_classname}>
                 <div className="text-[#544B76]">
                     <div className="border-b border-slate-500 p-1 font-bold">
-                        <div className="text-xl flex justify-between gap-2 py-2 px-8">
+                        <div className="text-xl flex gap-12 py-2 px-8">
                             <div>{`${new Date(po._timestamp).toDateString()}`}</div>
                             <div>{`${String(po.customer).toUpperCase()}`}</div>
                             <div >{`PO # ${po.po_num}`}</div>
@@ -234,7 +246,7 @@ export default function Order() {
                         </div>
                     : ""}
                 </div>
-                <div className="grid grid-cols-4 justify-between gap-4 mx-4 my-8 pb-8 border-b border-slate-500">
+                <div className="grid grid-cols-4 justify-between gap-4 mx-4 my-8 pb-8 border-b border-slate-500 items-center">
                     {jobs.map((job, index) => 
                         <>
                             <div>
@@ -245,29 +257,18 @@ export default function Order() {
                                     </div>
 
 
-                                    <div className="grid grid-cols-1 my-4">
+                                    <div className="grid grid-cols-1 mt-4">
                                         <div className="py-4">{`Date: ${new Date(job._timestamp).toDateString()}`}</div>
+                                        <div className="">{`Qty: ${job.qty}`}</div>
                                         <div className="">{`Process: ${job.process}`}</div>
-                                        <div className="">{`Qty: ${job.num_pcs}`}</div>
-                                        <div className="py-4">{`Remarks: ${job.remarks}`}</div>
+                                        <div className="pt-4 text-sm text-red-700">{job.remarks ? `${job.remarks}` : ""}</div>
                                     </div>
 
                                 
                                 </div>
-                                {/*<div className="border-t border-slate-500">*/}
-                                {/*    <div className="mt-4 mb-1">*/}
-                                {/*        <Link className={button_classname} to={`/jobs/${job.id}/print`}>*/}
-                                {/*            <p className="text-white">Print Tag</p>*/}
-                                {/*        </Link>*/}
-                                {/*    </div>   */}
-                                {/*    <div className="mb-4 mt-1">*/}
-                                {/*        <Link className={button_classname} to={`jobs/${job.id}/update`}>*/}
-                                {/*            <p className="text-white">Finish Job</p>*/}
-                                {/*        </Link>*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
                                 <div className="mt-2">
-                                    <Link className="grid text-center text-sm font-medium shadow-xs ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-white hover:bg-[#DEE1F4] rounded-md py-2 my-1 mr-4" to={`/jobs/${job.id}/print`}>
+                                    <Link className="grid text-center text-sm font-medium shadow-xs ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-white hover:bg-[#DEE1F4] rounded-md py-2 my-1 mr-4"
+                                        to={`/jobs/${job.id}`}>
                                         <p className="text-[#544B76] hover">View Job</p>
                                     </Link>
                                 </div>
@@ -281,9 +282,17 @@ export default function Order() {
                         <p className="text-white hover:text-[#544B76]">Add Jobs</p>
                     </Link>
                     <div></div>
-                    <Link className={button_classname} to={`contacts`}>
-                        <p className="text-white hover:text-[#544B76]">View Contacts</p>
-                    </Link>
+                    {/*<Link className={button_classname} to={`contacts`}>*/}
+                    {/*    <p className="text-white hover:text-[#544B76]">View Contacts</p>*/}
+                    {/*</Link>*/}
+                    <div className="flex place-content-stretch">
+                        <button className={button_classname + "max-w-200%"} type="button" onClick={() => setOpen(true)}>
+                            <p className="text-white hover:text-[#544B76]">View Contacts</p>
+                        </button>
+                        <Modal isOpen={open} onClose={() => setOpen(false)}>
+                            <Contacts company={po.customer} contacts={contacts} />
+                        </Modal>
+                    </div>
                     <button
                         className={addnote_classname}
                         onClick={fnAddNote}
@@ -330,6 +339,8 @@ export default function Order() {
                     <div> Receipts </div>
                 </div>
 
+                 {/*------------------------------------------------------------------------------------ Receipts */}
+
                 <div className="grid grid-cols-2 justify-between mx-4 mt-4">
                     {receipts.map((receipt, index) =>
                         <>
@@ -343,20 +354,20 @@ export default function Order() {
                                     <div className="pb-8">{`Delivery Slip # ${receipt.id}`}</div>
 
                                     <div className="pb-8 px-4">
-                                        {receipts[index].deliverables.map((d, d_index) =>
+                                        {receipts[index].orders.map((po, po_index) =>
                                             <>
                                                 <div className="font-bold pt-4">
-                                                    {`PO # ${d.po_num}`}
+                                                    {`PO # ${po.po_num}`}
                                                 </div>
                                                     
-                                                {d.deliverables.map((deliverable, deliverable_index) =>
+                                                {po.deliverables.map((d, d_index) =>
                                                     <>
                                                         <div className="flex gap-4">
                                                             <div>{`${d_index + 1}`}</div><div>|</div>
-                                                            <div>{`Qty: ${deliverable.num_pcs}`}</div>
-                                                            <div>{`${deliverable.process}`}</div>
+                                                            <div>{`Qty: ${d.qty}`}</div>
+                                                            <div>{`${d.job.process}`}</div>
                                                             <div className="">
-                                                                <i>{deliverable.partial ? ' --- partial pickup - job # WE-'+deliverable.jobId : ''}</i>
+                                                                <i>{d.partial ? ' --- partial pickup - WE-'+d.job.id : ''}</i>
                                                             </div>
                                                         </div>
                                                     </>

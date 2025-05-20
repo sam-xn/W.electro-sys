@@ -6,8 +6,8 @@ export default (app) => {
 
     router.post("/", receipts.createWithDeliverables);
 
-    router.get("/orders/:poId", receipts.findOrder);
-    router.get("/list", receipts.findList);
+    router.get("/order/:poId", receipts.findOrder);
+    router.get("/list/:receiptIds", receipts.findList);
     router.get("/search", receipts.search);
 
     router.delete("/:id", receipts._delete);

@@ -12,89 +12,46 @@ export default function Receipts() {
     const [receipts, setReceipts] = useState([]);
 
     useEffect(() => {
-        ReceiptService.findByCriteria(searchCustomer, searchPO, searchDS)
+        ReceiptService.search(searchDS, searchCustomer, searchPO)
             .then((response) => {
-                let d = response.data.sort((a,b) => b.id - a.id);
-                let cr, pr;
-                let r = [];
+                let r = response.data;
 
-                for (let i = 0; i < d.length; i++) {
+                const po = [];
+                let cd; let pd;
+                r.forEach(receipt => {
+                    receipt.deliverables.sort((a, b) => a.job.po_id - b.job.po_id)
+                    receipt.customer = receipt.deliverables[0].job.order.customer;
 
-                    cr = d[i];
+                    po.length = 0;
+                    for (let i = 0; i < receipt.deliverables.length; i++) {
 
-                    if (i == 0) {
-                        r.push({
-                            id: cr.id,
-                            _timestamp: cr._timestamp,
-                            notes: cr.notes,
-                            customer: cr.customer,
-                            process: cr.process,
-                            orders: [{
-                                po_id: cr.po_id,
-                                po_num: cr.po_num
-                            }]
-                        });
-                        pr = cr;
-                        continue;
-                    }
-
-                    if (cr.id != pr.id) {
-                        r.push({
-                            id: cr.id,
-                            _timestamp: cr._timestamp,
-                            notes: cr.notes,
-                            customer: cr.customer,
-                            process: cr.process,
-                            orders: [{
-                                po_id: cr.po_id,
-                                po_num: cr.po_num
-                            }]
-                        });
-                    }
-
-                    else {
-                        r[r.length - 1].orders.push({
-                            po_id: cr.po_id,
-                            po_num: cr.po_num
-                        })
-                    }
-
-                    pr = cr;
-                }
-
-                r.forEach((rt) => {
-                    rt.orders = rt.orders.sort((a, b) => a.po_id - b.po_id);
-
-                    d = [];
-                    let cpo, ppo;
-                    for (let i = 0; i < rt.orders.length; i++) {
-
-                        cpo = rt.orders[i];
+                        cd = receipt.deliverables[i];
 
                         if (i == 0) {
-                            d.push({
-                                po_id: cpo.po_id,
-                                po_num: cpo.po_num
+                            po.push({
+                                po_id: cd.job.po_id,
+                                po_num: cd.job.order.po_num,
+                                customer: cd.job.order.customer
                             });
-                            ppo = cpo;
+                            pd = cd;
                             continue;
                         }
-
-                        if (cpo.po_id != ppo.po_id) {
-                            d.push({
-                                po_id: cpo.po_id,
-                                po_num: cpo.po_num
+                        if (pd.job.po_id != cd.job.po_id) {
+                            po.push({
+                                po_id: cd.job.po_id,
+                                po_num: cd.job.order.po_num,
+                                customer: cd.job.order.customer
                             });
                         }
 
-                        ppo = cpo;
+                        pd = cd;
                     }
-
-                    rt.orders = d;
+                    receipt.orders = po;
+                    delete receipt.deliverables;
                 });
-
+                
                 setReceipts(r);
-                //console.log(r);
+
             })
             .catch((e) => {
                 console.log(e);
@@ -112,89 +69,43 @@ export default function Receipts() {
 
     function findBy(e) {
         e.preventDefault();
-        ReceiptService.findByCriteria(searchCustomer, searchPO, searchDS)
+        ReceiptService.search(searchDS, searchCustomer, searchPO)
             .then((response) => {
-                let d = response.data.sort((a, b) => b.id - a.id);
-                let cr, pr;
-                let r = [];
+                let r = response.data;
 
-                for (let i = 0; i < d.length; i++) {
+                const po = [];
+                let cd; let pd;
+                r.forEach(receipt => {
+                    receipt.deliverables.sort((a, b) => a.job.po_id - b.job.po_id)
+                    receipt.customer = receipt.deliverables[0].job.order.customer;
 
-                    cr = d[i];
+                    po.length = 0;
+                    for (let i = 0; i < receipt.deliverables.length; i++) {
 
-                    if (i == 0) {
-                        r.push({
-                            id: cr.id,
-                            _timestamp: cr._timestamp,
-                            notes: cr.notes,
-                            customer: cr.customer,
-                            process: cr.process,
-                            orders: [{
-                                po_id: cr.po_id,
-                                po_num: cr.po_num
-                            }]
-                        });
-                        pr = cr;
-                        continue;
-                    }
-
-                    if (cr.id != pr.id) {
-                        r.push({
-                            id: cr.id,
-                            _timestamp: cr._timestamp,
-                            notes: cr.notes,
-                            customer: cr.customer,
-                            process: cr.process,
-                            orders: [{
-                                po_id: cr.po_id,
-                                po_num: cr.po_num
-                            }]
-                        });
-                    }
-
-                    else {
-                        r[r.length - 1].orders.push({
-                            po_id: cr.po_id,
-                            po_num: cr.po_num
-                        })
-                    }
-
-                    pr = cr;
-                }
-
-                r.forEach((rt) => {
-                    rt.orders = rt.orders.sort((a, b) => a.po_id - b.po_id);
-
-                    d = [];
-                    let cpo, ppo;
-                    for (let i = 0; i < rt.orders.length; i++) {
-
-                        cpo = rt.orders[i];
+                        cd = receipt.deliverables[i];
 
                         if (i == 0) {
-                            d.push({
-                                po_id: cpo.po_id,
-                                po_num: cpo.po_num
+                            po.push({
+                                po_id: cd.job.po_id,
+                                po_num: cd.job.order.po_num
                             });
-                            ppo = cpo;
+                            pd = cd;
                             continue;
                         }
-
-                        if (cpo.po_id != ppo.po_id) {
-                            d.push({
-                                po_id: cpo.po_id,
-                                po_num: cpo.po_num
+                        if (pd.job.po_id != cd.job.po_id) {
+                            po.push({
+                                po_id: cd.job.po_id,
+                                po_num: cd.job.order.po_num
                             });
                         }
 
-                        ppo = cpo;
+                        pd = cd;
                     }
-
-                    rt.orders = d;
+                    receipt.orders = po;
+                    delete receipt.deliverables;
                 });
 
                 setReceipts(r);
-                //console.log(r);
             })
             .catch((e) => {
                 console.log(e);
@@ -205,7 +116,8 @@ export default function Receipts() {
     const th_classname = "h-12 px-4 align-middle font-medium border-b border-slate-500";
     const td_classname = "p-2 border border-slate-300";
     const button_classname = "grid text-center text-sm font-medium shadow-xs ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-background hover:bg-[#DEE1F4] rounded-md py-2";
-    const newDS_classname = "grid text-center text-sm font-medium shadow-xs ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-background hover:bg-[#DEE1F4] rounded-md py-3 bg-[#eff1fc]";
+    //const newDS_classname = "grid text-center text-sm font-medium shadow-xs ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-background hover:bg-[#DEE1F4] rounded-md py-3 bg-[#eff1fc]";
+    const newDS_classname = "grid py-2 px-2 mx-18 md:mx-6 text-center text-sm font-bold shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-[#544B76] text-white hover:bg-[#DEE1F4] rounded-md";
 
     return (
         <>
@@ -222,7 +134,7 @@ export default function Receipts() {
                         className={newDS_classname}
                         to={'/receipts/new'}
                     >
-                        Create New DS
+                        <p className="text-white">New Receipt</p>
                     </Link>
                 </div>
             </div>
@@ -319,19 +231,18 @@ export default function Receipts() {
                                             {receipt.id}
                                         </td>
                                         <td className={td_classname}
-                                            key={[index, receipt.id, receipt._timestamp]}
+                                            key={[index, receipt._timestamp]}
                                         >
                                             {new Date(receipt._timestamp).toDateString()}
                                         </td>
                                         <td className={td_classname}
-                                            key={[index, receipt.id, receipt.customer]}
+                                            key={[index, receipt.customer]}
                                         >
                                             {receipt.customer}
                                         </td>
                                         <td className={td_classname}
-                                            key={[index, receipt.id, receipt.po_num]}
+                                            key={[index]}
                                         >
-                                            
                                             <div className="grid grid-cols-1 gap-4">
                                                 {receipts[index].orders.map((po, po_index) => (
                                                     <>
@@ -339,7 +250,6 @@ export default function Receipts() {
                                                     </>
                                                 ))}
                                             </div>
-
                                         </td>
                                         <td className={td_classname}
                                             key={index, receipt.id}

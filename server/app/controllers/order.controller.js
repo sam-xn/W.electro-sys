@@ -28,15 +28,12 @@ export const find = (req, res) => {
 };
 
 export const search = (req, res) => {
-    if (!req.params.status) {
-        res.status(400).send({ message: "Content cannot be empty." });
-        return;
-    }
 
-    const conditions = { status: req.params.status };
+    const conditions = {};
 
-    if (req.query.customer) conditions.customer = { [Op.like]: `%${req.query.customer}%` }
-    if (req.query.po_num) conditions.po_num = { [Op.like]: `%${req.query.po_num}%` }
+    if (req.params.status !== "all") conditions.status = req.params.status; 
+    if (req.query.customer) conditions.customer = { [Op.like]: `%${req.query.customer}%` };
+    if (req.query.po_num) conditions.po_num = { [Op.like]: `%${req.query.po_num}%` };
 
     Order.findAll({ where: conditions })
         .then(data => { res.send(data); })

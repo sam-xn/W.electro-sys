@@ -12,7 +12,7 @@ export default function Orders() {
     const filter = useParams();
 
     useEffect(() => { 
-        OrderService.findByCriteria(filter.status, searchCustomer, searchPO)
+        OrderService.search(filter.status, searchCustomer, searchPO)
             .then((response) => {
                 setOrders(response.data.sort((a, b) => b.id - a.id)); 
             })
@@ -31,7 +31,7 @@ export default function Orders() {
 
     function findBy(e) {
         e.preventDefault();
-        OrderService.findByCriteria(filter.status, searchCustomer, searchPO)
+        OrderService.search(filter.status, searchCustomer, searchPO)
             .then((response) => {
                 setOrders(response.data.sort((a,b) => b.id - a.id));
                 })
@@ -62,7 +62,7 @@ export default function Orders() {
                         className={newPO_classname}
                         to={'/orders/new'}
                     >
-                        <p className="text-white hover:text-[#544B76]">Create New PO</p>
+                        <p className="text-white hover:text-[#544B76]">New Order</p>
                     </Link>
                 </div>
             </div>

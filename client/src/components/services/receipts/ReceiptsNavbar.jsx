@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Navbar, Typography } from "@material-tailwind/react";
 export default function ReceiptsNavbar() {
 
-    const ty_classname = "p-1 font-normal hover:border-b border-[#A295AF]";
+    const ty_classname = "p-1 font-normal hover:border-b border-[#A295AF] border-b border-[#A295AF]";
     const navList = (
         <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
             <Typography

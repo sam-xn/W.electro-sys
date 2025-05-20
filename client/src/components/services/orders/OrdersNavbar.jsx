@@ -1,16 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Navbar, Typography } from "@material-tailwind/react";
 export default function OrdersNavbar() {
 
+    const params = useParams();
     const ty_classname = "p-1 font-normal hover:border-b border-[#A295AF]";
+
     const navList = (
         <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
             <Typography
                 as="li"
                 variant="small"
                 color="blue-gray"
-                className={ ty_classname }
+                className={ty_classname + (params.status ? (params.status === "open" ? " border-b border-[#A295AF]" : "") : "")}
             >
                 <Link
                     className="flex items-center"
@@ -23,7 +25,7 @@ export default function OrdersNavbar() {
                 as="li"
                 variant="small"
                 color="blue-gray"
-                className={ ty_classname }
+                className={ty_classname + (params.status ? (params.status === "finished" ? " border-b border-[#A295AF]" : "") : "")}
             >
                 <Link
                     className="flex items-center"
@@ -36,7 +38,7 @@ export default function OrdersNavbar() {
                 as="li"
                 variant="small"
                 color="blue-gray"
-                className={ ty_classname }
+                className={ty_classname + (params.status ? (params.status === "priced" ? " border-b border-[#A295AF]" : "") : "")}
             >
                 <Link
                     className="flex items-center"
@@ -49,13 +51,26 @@ export default function OrdersNavbar() {
                 as="li"
                 variant="small"
                 color="blue-gray"
-                className={ ty_classname }
+                className={ty_classname + (params.status ? (params.status === "invoiced" ? " border-b border-[#A295AF]" : "") : "")}
             >
                 <Link
                     className="flex items-center"
                     to="/orders/status/invoiced"
                 >
                     Invoiced
+                </Link>
+            </Typography>
+            <Typography
+                as="li"
+                variant="small"
+                color="blue-gray"
+                className={ty_classname + (params.status ? "" : " border-b border-[#A295AF]")}
+            >
+                <Link
+                    className="flex items-center"
+                    to="/orders"
+                >
+                    All
                 </Link>
             </Typography>
         </ul>

@@ -5,7 +5,14 @@ import OrderService from "./order.service";
 import CustomerService from "../customers/customer.service";
 import ContactService from "../customers/contact.service";
 
+import Error from '../../Error';
+
 function NewOrder() {
+    // ---------------------------------------------------- ErrorModal 
+    const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    function handleClose() { setError(false); }
+    // --------------------------------------------------- /ErrorModal 
 
     const navigate = useNavigate();
     //const params = useParams();
@@ -13,8 +20,9 @@ function NewOrder() {
     const [status, setStatus] = useState("open");
     const [poNum, setPoNum] = useState("");
 
-    const [customer, setCustomer] = useState("");
+    const [customer, setCustomer] = useState("select");
     const [customerList, setCustomerList] = useState([]);
+
     const [newCompany, setNewCompany] = useState("");
     const [newContactName, setNewContactName] = useState("");
     const [newContactEmail, setNewContactEmail] = useState("");
@@ -29,41 +37,47 @@ function NewOrder() {
             });
     }, [customerList.length]);
 
+
     function saveOrder() {
 
-        let po_customer = customer;
-
-        if (customer == "new") {
-
-            ContactService.create({ newContactName, newContactEmail, newCompany })
-                .then((response) => {
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-
-            CustomerService.create({ newCompany })
-                .then((response) => {
-                    //setSubmitted(true);
-                    //navigate(`/orders/${response.data[0]}`);
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-
-            po_customer = newCompany;
+        if (customer === "select") {
+            setErrorMessage("Please select an existing customer or select New Customer to create a new contact.");
+            setError(true);
+            return;
+        }
+        else if (customer === "new" && (newCompany === "" || newContactName === "" || newContactEmail === "")) {
+            setErrorMessage("Please enter contact info.");
+            setError(true);
+            return;
+        }
+        else if (poNum === "") {
+            setErrorMessage("Please enter a PO number to continue.");
+            setError(true);
+            return;
         }
 
-        let po_data = { poNum, po_customer, status };
-        OrderService.create(po_data)
+        const newPo_data = { po_num: poNum, customer: customer, status: status };
+
+        if (customer == "new") {
+            CustomerService.create({ newCompany })
+                .catch((e) => {
+                    console.log(e);
+                });
+            ContactService.create({ newContactName, newContactEmail, newCompany })
+                .catch((e) => {
+                    console.log(e);
+                });
+
+            newPo_data.customer = newCompany;
+        }
+
+        OrderService.create(newPo_data)
             .then((response) => {
-                //setSubmitted(true);
-                navigate(`/orders/${response.data[0]}`);
+                navigate(`/orders/${response.data.id}`);
             })
             .catch((e) => {
                 console.log(e);
             });
-        setSubmitted(false);
     }
 
 
@@ -72,6 +86,8 @@ function NewOrder() {
 
     return (
         <>
+            {error ? <Error isOpen={error} onClose={handleClose}> {errorMessage} </Error> : <></>}
+
             <div className="max-w-1/2 mx-4 py-8 px-8 mb-12 bg-[#eff1fc] rounded shadow border border-slate-500">
 
                 <div className="p-1 text-[#544B76] font-bold text-xl border-b border-slate-500">
@@ -127,29 +143,29 @@ function NewOrder() {
                                     <input className={input_classname}
                                         type="text"
                                         value={newCompany}
-                                        placeholder="input required"
+                                        
                                         onChange={(e) => setNewCompany(e.target.value)}
                                     />
 
-                                    <div className={label_classname}> Contact name: </div>
+                                    <div className={label_classname}> Contact Name: </div>
                                     <input className={input_classname}
                                         type="text"
                                         value={newContactName}
-                                        placeholder="input required"
+                                        
                                         onChange={(e) => setNewContactName(e.target.value)}
                                     />
 
-                                    <div className={label_classname}> Contact email: </div>
+                                    <div className={label_classname}> Contact Email: </div>
                                     <input className={input_classname}
                                         type="text"
                                         value={newContactEmail}
-                                        placeholder="input required"
+                                        
                                         onChange={(e) => setNewContactEmail(e.target.value)}
                                     />
                                 </div>
 
-                                <div className="mt-8 mr-8 text-center text-sm text-slate-600">
-                                    <i>* Please check spelling before submitting.</i>
+                                <div className="mt-4 mr-8 text-center text-sm text-slate-600">
+                                    <i>* please confirm spelling before submitting.</i>
                                 </div>
                             </div>
                         )
@@ -162,7 +178,7 @@ function NewOrder() {
                     <input className={input_classname}
                         type="text"
                         value={poNum}
-                        placeholder="input required"
+                        
                         onChange={(e) => setPoNum(e.target.value)}
                     />
                 </div>

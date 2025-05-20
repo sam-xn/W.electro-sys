@@ -1,16 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Navbar, Typography } from "@material-tailwind/react";
 export default function JobsNavbar() {
 
+    const params = useParams();
     const ty_classname = "p-1 font-normal hover:border-b border-[#A295AF]";
+
     const navList = (
         <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
             <Typography
                 as="li"
                 variant="small"
                 color="blue-gray"
-                className={ ty_classname }
+                className={ty_classname + (params.status ? (params.status === "incoming" ? " border-b border-[#A295AF]" : "") : "")}
             >
                 <Link
                     className="flex items-center"
@@ -23,7 +25,7 @@ export default function JobsNavbar() {
                 as="li"
                 variant="small"
                 color="blue-gray"
-                className={ty_classname}
+                className={ty_classname + (params.status ? (params.status === "received" ? " border-b border-[#A295AF]" : "") : "")}
             >
                 <Link
                     className="flex items-center"
@@ -36,7 +38,7 @@ export default function JobsNavbar() {
                 as="li"
                 variant="small"
                 color="blue-gray"
-                className={ty_classname}
+                className={ty_classname + (params.status ? (params.status === "processed" ? " border-b border-[#A295AF]" : "") : "")}
             >
                 <Link
                     className="flex items-center"
@@ -49,13 +51,26 @@ export default function JobsNavbar() {
                 as="li"
                 variant="small"
                 color="blue-gray"
-                className={ty_classname}
+                className={ty_classname + (params.status ? (params.status === "delivered" ? " border-b border-[#A295AF]" : "") : "")}
             >
                 <Link
                     className="flex items-center"
                     to="/jobs/status/delivered"
                 >
                     Delivered
+                </Link>
+            </Typography>
+            <Typography
+                as="li"
+                variant="small"
+                color="blue-gray"
+                className={ty_classname + (params.status ? "" : " border-b border-[#A295AF]")}
+            >
+                <Link
+                    className="flex items-center"
+                    to="/jobs"
+                >
+                    All
                 </Link>
             </Typography>
         </ul>

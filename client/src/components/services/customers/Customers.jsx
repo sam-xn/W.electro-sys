@@ -15,7 +15,7 @@ export default function Customers() {
 
     useEffect(() => {
         const type = params.type ? params.type : "primary";
-        ContactService.getAllType(type)
+        ContactService.getType(type)
             .then((response) => {
                 setCustomers(response.data.sort((a, b) => a.company - b.company)); 
             })
@@ -32,7 +32,7 @@ export default function Customers() {
     function findBy(e) {
         e.preventDefault();
         const type = params.type ? params.type : "primary";
-        ContactService.getAllCompany(searchCompany, type)
+        ContactService.searchCompany(searchCompany, type)
             .then((response) => {
                 setCustomers(response.data.sort((a, b) => a.id - b.id));
             })
@@ -40,6 +40,10 @@ export default function Customers() {
                 console.log(e);
             });
     }
+
+    useEffect(() => {
+        setSearchCompany("");
+    }, [params]); 
 
     // ------------------------------------------------------------------------------------ Modal 
 
@@ -60,18 +64,24 @@ export default function Customers() {
                 d.forEach(r => {
                     switch (r.type) {
                         case "primary":
-                            c.primary = r;
-                            break;
+                            c.primary = {
+                                name: r.fname + (r.lname ? " "+r.lname : ""),
+                                email: r.email
+                            }; break;
                         case "accounting":
-                            c.accounting = r;
-                            break;
+                            c.accounting = {
+                                name: r.fname + (r.lname ? " " + r.lname : ""),
+                                email: r.email
+                            }; break;
                         default:
-                            c.other.push(r);
+                            c.other.push({
+                                name: r.fname + (r.lname ? " " + r.lname : ""),
+                                email: r.email
+                            });
                     }
                 });
 
                 setContacts(c);
-                console.log(c)
             })
             .catch((e) => {
                 console.log(e);
@@ -82,6 +92,7 @@ export default function Customers() {
     const th_classname = "h-12 px-4 align-middle font-medium border-b border-slate-500";
     const td_classname = "p-2 align-middle border border-slate-300";
     const button_classname = "grid text-center text-sm font-medium shadow-xs ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-background hover:bg-[#DEE1F4] rounded-md py-2";
+    const newPO_classname = "grid py-2 px-2 mx-18 md:mx-6 text-center text-sm font-bold shadow-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-[#544B76] text-white hover:bg-[#DEE1F4] rounded-md";
 
     return (
         <>
@@ -89,8 +100,17 @@ export default function Customers() {
                 <CustomersNavbar />
             </div>
             <div className="grid grid-cols-4">
-                <div className="p-4 pt-6 border-b border-slate-500 text-[#544B76]">
-                    Customers {`${params.type ? " : "+String(params.type).charAt(0).toUpperCase() + String(params.type).slice(1)+" Contacts" : ""}`}
+                <div className="text-md p-4 pt-6 border-b border-slate-500 text-[#544B76]">
+                    Customers {`${params.type ? " : " + String(params.type).charAt(0).toUpperCase() + String(params.type).slice(1) + " Contacts" : ""}`}
+                </div>
+                <div></div><div></div>
+                <div className="pt-8 pr-10">
+                    <Link
+                        className={newPO_classname}
+                        to={'/contacts/new'}
+                    >
+                        <p className="text-white hover:text-[#544B76]">New Order</p>
+                    </Link>
                 </div>
             </div>
 
@@ -142,9 +162,9 @@ export default function Customers() {
                                             {customer.company}
                                         </td>
                                         <td className={td_classname + " text-center"}
-                                            key={[index, customer.name]}
+                                            key={[index, customer.fname]}
                                         >
-                                            {customer.name}
+                                            {customer.fname}
                                         </td>
                                         <td className={td_classname}
                                             key={[index, customer.email]}
@@ -152,7 +172,7 @@ export default function Customers() {
                                             {customer.email}
                                         </td>
                                         <td className={td_classname}
-                                            key={index, customer.company, customer.company}
+                                            key={index, customer.id}
                                         >
                                             {/*<Link*/}
                                             {/*    className={button_classname}*/}

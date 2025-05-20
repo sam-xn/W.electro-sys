@@ -4,29 +4,38 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CustomerService from "../customers/customer.service";
 import JobService from "../jobs/job.service";
 import ReceiptService from "./receipt.service";
-import DeliverableService from "./deliverable.service";
 
 export default function NewReceipt() {
 
     const navigate = useNavigate();
 
+    /* default customer <select> returns [] before attempting to send http-get */
+    /* jobs populated & rendered after selection of customer -->  */
     const [customer, setCustomer] = useState("select");
     const [customerList, setCustomerList] = useState([]);
 
+    /* processed & received jobs: http-get returns jobsavailable for receipts */
+    /* jobs: combine processed & received jobs available for receipts */
     const [processedJobs, setProcessedJobs] = useState([]);
     const [receivedJobs, setReceivedJobs] = useState([]);
     const [jobs, setJobs] = useState([]);
 
+    /* jobIds: a list of ids sent as params in http get request, used to populate jobs displayed for each customer */
+    /* deliverables: array of data returned from http request on each jobIds change: display deliverable options only for selected jobs */
     const [jobIds, setJobIds] = useState([]);
     const [deliverables, setDeliverables] = useState([]);
 
-    const [currentDel, setCurrentDel] = useState("");
+    /* inputPartial: array saves an ordered list used to decide whether the deliverable radio is rendered as <checked> or <empty str> */
+    /* currentDel: e.target.name as deliverable-id when rendering inputPartial*/
     const [inputPartial, setInputPartial] = useState([]);
+    const [currentDel, setCurrentDel] = useState("");
 
-    const [qty, setQty] = useState("");
-    const [delQty, setDelQty] = useState([]);
+    /* qty, setQty: input qty for each deliverable set to partial, updates onChange of input */
+    /* delQty, setDelQty: array saves deliverables set to partial where newQty will be added to receipt. updates on togglePartial and addToReceipt */
+    const [qty, setQty] = useState(""); 
+    const [delQty, setDelQty] = useState([]); 
 
-    //setProcessedJobs, setReceivedJobs
+    // setCustomerList
     useEffect(() => {
         CustomerService.getAll()
             .then((response) => {
@@ -37,6 +46,144 @@ export default function NewReceipt() {
             });
     }, []);
 
+    function clearCustomer(e) {
+        setCustomer(e.target.value);
+        setCurrentDel("");
+        setInputPartial([]);
+        setQty("");
+        setDelQty([]);
+    }
+
+    //setProcessedJobs, setReceivedJobs
+    useEffect(() => {
+        if (customer === "select") {
+            setJobIds([]);
+            return;
+        }
+        JobService.getCustomer('processed', customer)
+            .then((response) => {
+                let d = response.data.sort((a, b) => a.orderId - b.orderId);
+                let cj, pj;
+                let j = [];
+
+                for (let i = 0; i < d.length; i++) {
+
+                    cj = d[i];
+
+                    if (i == 0) {
+                        j.push({
+                            orderId: cj.order.id,
+                            po_num: cj.order.po_num,
+                            orderStatus: cj.order.status,
+                            jobs: [{
+                                id: cj.id,
+                                _timestamp: cj._timestamp,
+                                process: cj.process,
+                                qtyRcvd: cj.qty,
+                                status: cj.status
+                            }]
+                        });
+                        pj = cj;
+                        continue;
+                    }
+
+                    if (cj.orderId != pj.orderId) {
+                        j.push({
+                            orderId: cj.order.id,
+                            po_num: cj.order.po_num,
+                            orderStatus: cj.order.status,
+                            jobs: [{
+                                id: cj.id,
+                                _timestamp: cj._timestamp,
+                                process: cj.process,
+                                qtyRcvd: cj.qty,
+                                status: cj.status
+                            }]
+                        });
+                    }
+
+                    else {
+                        j[j.length - 1].jobs.push({
+                            id: cj.id,
+                            _timestamp: cj._timestamp,
+                            process: cj.process,
+                            qtyRcvd: cj.qty,
+                            status: cj.status
+                        })
+                    }
+
+                    pj = cj;
+                }
+
+                setProcessedJobs(j);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+
+        JobService.getCustomer('received', customer)
+            .then((response) => {
+
+                let d = response.data.sort((a, b) => a.orderId - b.orderId);
+                let cj, pj;
+                let j = [];
+
+                for (let i = 0; i < d.length; i++) {
+
+                    cj = d[i];
+
+                    if (i == 0) {
+                        j.push({
+                            orderId: cj.order.id,
+                            po_num: cj.order.po_num,
+                            orderStatus: cj.order.status,
+                            jobs: [{
+                                id: cj.id,
+                                _timestamp: cj._timestamp,
+                                process: cj.process,
+                                qtyRcvd: cj.qty,
+                                status: cj.status
+                            }]
+                        });
+                        pj = cj;
+                        continue;
+                    }
+
+                    if (cj.orderId != pj.orderId) {
+                        j.push({
+                            orderId: cj.order.id,
+                            po_num: cj.order.po_num,
+                            orderStatus: cj.order.status,
+                            jobs: [{
+                                id: cj.id,
+                                _timestamp: cj._timestamp,
+                                process: cj.process,
+                                qtyRcvd: cj.qty,
+                                status: cj.status
+                            }]
+                        });
+                    }
+
+                    else {
+                        j[j.length - 1].jobs.push({
+                            id: cj.id,
+                            _timestamp: cj._timestamp,
+                            process: cj.process,
+                            qtyRcvd: cj.qty,
+                            status: cj.status
+                        })
+                    }
+                    pj = cj;
+                }
+                setReceivedJobs(j);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+
+        setJobIds([]);
+
+    }, [customer]);
     //setJobs
     useEffect(() => {
         const d = [];
@@ -85,150 +232,17 @@ export default function NewReceipt() {
         }
 
         setJobs(j);
-        //console.log(j)
 
     }, [processedJobs.length, receivedJobs.length]);
 
-    //setJobIds
-    useEffect(() => {
-
-        JobService.getExact('processed', customer)
-            .then((response) => {
-
-                let d = response.data.sort((a, b) => a.orderId - b.orderId);
-                let cj, pj;
-                let j = [];
-
-                for (let i = 0; i < d.length; i++) {
-
-                    cj = d[i];
-
-                    if (i == 0) {
-                        j.push({
-                            orderId: cj.orderId,
-                            po_num: cj.po_num,
-                            orderStatus: cj.orderStatus,
-                            jobs: [{
-                                id: cj.id,
-                                _timestamp: cj._timestamp,
-                                process: cj.process,
-                                num_pcs: cj.num_pcs,
-                                status: cj.status
-                            }]
-                        });
-                        pj = cj;
-                        continue;
-                    }
-
-                    if (cj.orderId != pj.orderId) {
-                        j.push({
-                            orderId: cj.orderId,
-                            po_num: cj.po_num,
-                            orderStatus: cj.orderStatus,
-                            jobs: [{
-                                id: cj.id,
-                                _timestamp: cj._timestamp,
-                                process: cj.process,
-                                num_pcs: cj.num_pcs,
-                                status: cj.status
-                            }]
-                        });
-                    }
-
-                    else {
-                        j[j.length - 1].jobs.push({
-                            id: cj.id,
-                            _timestamp: cj._timestamp,
-                            process: cj.process,
-                            num_pcs: cj.num_pcs,
-                            status: cj.status
-                        })
-                    }
-
-                    pj = cj;
-                }
-
-                setProcessedJobs(j);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-
-        JobService.getExact('received', customer)
-            .then((response) => {
-
-                let d = response.data.sort((a, b) => a.orderId - b.orderId);
-                let cj, pj;
-                let j = [];
-
-                for (let i = 0; i < d.length; i++) {
-
-                    cj = d[i];
-
-                    if (i == 0) {
-                        j.push({
-                            orderId: cj.orderId,
-                            po_num: cj.po_num,
-                            orderStatus: cj.orderStatus,
-                            jobs: [{
-                                id: cj.id,
-                                _timestamp: cj._timestamp,
-                                process: cj.process,
-                                num_pcs: cj.num_pcs,
-                                status: cj.status
-                            }]
-                        });
-                        pj = cj;
-                        continue;
-                    }
-
-                    if (cj.orderId != pj.orderId) {
-                        j.push({
-                            orderId: cj.orderId,
-                            po_num: cj.po_num,
-                            orderStatus: cj.orderStatus,
-                            jobs: [{
-                                id: cj.id,
-                                _timestamp: cj._timestamp,
-                                process: cj.process,
-                                num_pcs: cj.num_pcs,
-                                status: cj.status
-                            }]
-                        });
-                    }
-
-                    else {
-                        j[j.length - 1].jobs.push({
-                            id: cj.id,
-                            _timestamp: cj._timestamp,
-                            process: cj.process,
-                            num_pcs: cj.num_pcs,
-                            status: cj.status
-                        })
-                    }
-
-                    pj = cj;
-                }
-
-                setReceivedJobs(j);
-                //console.log(j);
-
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-
-        setJobIds([]);
-
-    }, [customer]);
 
     //setDeliverables
     useEffect(() => {
-        if (jobIds.length == 0) {
-            setDeliverables([]);
-            return;
-        }
-        JobService.getList(jobIds)
+        if (jobIds.length == 0) { setDeliverables([]); return; }
+        let jIds_str = "";
+        jobIds.forEach(jId => jIds_str += String(jId) + ',');
+        
+        JobService.getList(jIds_str.slice(0, -1))
             .then((response) => {
                 let d = response.data.sort((a, b) => a.orderId - b.orderId);
                 let cj, pj;
@@ -240,15 +254,15 @@ export default function NewReceipt() {
 
                     if (i == 0) {
                         j.push({
-                            orderId: cj.orderId,
-                            po_num: cj.po_num,
-                            orderStatus: cj.orderStatus,
+                            orderId: cj.order.id,
+                            po_num: cj.order.po_num,
+                            orderStatus: cj.order.status,
                             jobs: [{
                                 id: cj.id,
                                 _timestamp: cj._timestamp,
-                                jobStatus: cj.jobStatus,
+                                jobStatus: cj.status,
                                 process: cj.process,
-                                qtyReceived: cj.qtyReceived
+                                qtyRcvd: cj.qty
                             }]
                         });
                         pj = cj;
@@ -257,15 +271,15 @@ export default function NewReceipt() {
 
                     if (cj.orderId != pj.orderId) {
                         j.push({
-                            orderId: cj.orderId,
-                            po_num: cj.po_num,
-                            orderStatus: cj.orderStatus,
+                            orderId: cj.order.id,
+                            po_num: cj.order.po_num,
+                            orderStatus: cj.order.status,
                             jobs: [{
                                 id: cj.id,
                                 _timestamp: cj._timestamp,
-                                jobStatus: cj.jobStatus,
+                                jobStatus: cj.status,
                                 process: cj.process,
-                                qtyReceived: cj.qtyReceived
+                                qtyRcvd: cj.qty
                             }]
                         });
                     }
@@ -274,9 +288,9 @@ export default function NewReceipt() {
                         j[j.length - 1].jobs.push({
                             id: cj.id,
                             _timestamp: cj._timestamp,
-                            jobStatus: cj.jobStatus,
+                            jobStatus: cj.status,
                             process: cj.process,
-                            qtyReceived: cj.qtyReceived
+                            qtyRcvd: cj.qty
                         })
                     }
 
@@ -284,7 +298,6 @@ export default function NewReceipt() {
                 }
 
                 setDeliverables(j);
-                //console.log(j);
 
             })
             .catch((e) => {
@@ -310,26 +323,28 @@ export default function NewReceipt() {
             setInputPartial(
                 inputPartial.filter(a => a.id !== e.target.id)
             );
+            setDelQty(
+                delQty.filter(a => +a.id !== +e.target.id)
+            );
         }
     }
  
     function togglePartial(target) {
-        //console.log(target)
-
         let t = inputPartial;
         if (target.value === "partial") {
             t.forEach((del) => { if (del.id === target.name) del.partial = true; });
-
         }
         else {
             t.forEach((del) => { if (del.id === target.name) del.partial = false; });
-            setDelQty(delQty.filter(a => a.id !== +target.name));
+            setDelQty(delQty.filter(a => +a.id !== +target.name));
         }
-        setInputPartial(t);
         setCurrentDel(target.name + target.value);
+        setInputPartial(t);
     }
-    console.log(delQty);
-    function submitDel(jobId) {
+
+    function submitDel(target) {
+        setCurrentDel(target.name + target.value);
+        let jobId = target.name;
         let t = delQty.filter(a => a.id !== jobId);
         setDelQty([
             ...t,
@@ -337,19 +352,19 @@ export default function NewReceipt() {
         ]);
         setQty("");
     }
+    
     function saveReceipt() {
         if (jobIds.length == 0) return;
 
-        let d = [];
+        let deliverables_data = [];
         let jobId, receiptId, newQty, partial, newDel;
         deliverables.forEach(del => {
+            console.log(del)
             del.jobs.forEach(job => {
-                //console.log(job.id);
 
                 jobId = job.id;
                 if (delQty.find(a => +a.id === +job.id) === undefined) {
-                    //console.log("found a no-match");
-                    newQty = job.qtyReceived;
+                    newQty = job.qtyRcvd;
                     partial = 0;
                 }
                 delQty.forEach(a => {
@@ -360,55 +375,26 @@ export default function NewReceipt() {
                 });
 
                 newDel = { partial, newQty, jobId, receiptId };
-                d.push(newDel);
-                //jobId = job.id;
-
-                //if (delQty.find(a => +a.id === +job.id) === undefined) {
-                //    partial = 0;
-                //    newQty = job.qtyReceived;
-                //}
-                //else {
-                //    partial = 1;
-                //    newQty = delQty.find(a => a.id === +job.id).qty;
-                //}
-                    
-                //newDel = { partial, qty, jobId, receiptId };
-
-                //d.push(newDel);
+                deliverables_data.push(newDel);
             });
         });
 
+        //console.log(deliverables_data);
 
-        console.log(d);
-
-        //let jobs = jobIds;
-        //let d = DeliverableService;
-        //ReceiptService.create()
-        //    .then((response) => {
-        //        const receiptId = response.data.id;
-        //        const partial = false;
-        //        const qty = 0;
-        //        jobs.forEach((jobId) => {
-        //            d.create({ partial, qty, jobId, receiptId })
-        //                .then((response) => {
-        //                    //console.log(response);
-        //                })
-        //                .catch((e) => {
-        //                    console.log(e);
-        //                });
-        //        });
-        //        navigate(`${receiptId}`)
-        //    })
-        //    .catch((e) => {
-        //        console.log(e);
-        //    });
+        ReceiptService.create({ deliverables_data })
+            .then((response) => {
+                navigate(`${response.data.id}`);
+            })
+            .catch((e) => {
+                console.log(e);
+                navigate(`/receipts`)
+            });
     }
 
     const label_classname = "font-bold text-md text-[#544B76] border-b pl-4 pb-1 pt-2";
     const input_classname = "focus:outline-none border-b pl-16 pb-1 pt-2";
 
     const div_classname = "max-w-full mr-4 p-6 rounded shadow border border-slate-500";
-    const test = [{id:2}, {id:1}, {id:3}]
     return (
         <>
             <div className="max-w-full mx-4 py-8 px-8 mb-12 bg-[#eff1fc] rounded shadow border border-slate-500">
@@ -422,7 +408,7 @@ export default function NewReceipt() {
                     <select
                         className="col-span-3 mr-8 border-b border-slate-500"
                         defaultValue="select"
-                        onChange={(e) => setCustomer(e.target.value)}
+                        onChange={clearCustomer}
                     >
                         <option value="select"> {"< select customer >"} </option>
                         {customerList.map((company, index) =>
@@ -453,10 +439,9 @@ export default function NewReceipt() {
                                                             <div className="text-sm pt-1">{`status: ${job.status}`}</div>
 
                                                             <div className="grid grid-cols-1">
-                                                                <div className="pt-4">{`Qty: ${job.num_pcs}`}</div>
+                                                                <div className="pt-4">{`Qty: ${job.qtyRcvd}`}</div>
                                                                 <div className="">{`Process: ${job.process}`}</div>
                                                                 <div className="pt-4">{`${new Date(job._timestamp).toDateString()}`}</div>
-                                                                {/*<div className="py-4">{`Remarks: ${job.remarks}`}</div>*/}
                                                             </div>
 
                                                             <div className="mt-4 pt-4 px-4 flex gap-2 items-center border-t border-slate-500">
@@ -498,7 +483,7 @@ export default function NewReceipt() {
                                                             <div className="border-b border-slate-500">
                                                                 <div className=" text-sm">{`job # WE-${job.id}`}</div>
                                                             </div>
-                                                            <div className="pt-4">{`Qty: ${job.qtyReceived}`}</div>
+                                                            <div className="pt-4">{`Qty: ${job.qtyRcvd}`}</div>
                                                             <div className="">{`Process: ${job.process}`}</div>
                                                             <div className="pt-4">{`${new Date(job._timestamp).toDateString()}`}</div>
                                                         </div>
@@ -534,13 +519,15 @@ export default function NewReceipt() {
                                                                             </div>
                                                                             <input className="focus:outline-none text-center border-b max-w-xs pb-1 pt-2"
                                                                                 type="text"
+                                                                                value={delQty.find((a) => a.id == job.id) === undefined
+                                                                                    ? null : delQty.find((a) => a.id == job.id).qty }
                                                                                 placeholder="input required"
                                                                                 onChange={(e) => setQty(e.target.value)}
                                                                             />
                                                                             <button
                                                                                 className={`outline ${delQty.find((a) => a.id == job.id) === undefined ? "bg-[#544B76]" : "bg-blue-800"} text-white hover:bg-blue-700`}
-                                                                                
-                                                                                onClick={() => submitDel(job.id)}
+                                                                                name={job.id}
+                                                                                onClick={(e) => submitDel(e.target)}
                                                                             > {delQty.find((a) => a.id == job.id) === undefined
                                                                                 ? "Submit" : "Submitted"}
                                                                             </button>

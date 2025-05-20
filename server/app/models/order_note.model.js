@@ -6,7 +6,7 @@ export default (sequelize, Sequelize) => {
         content: { type: Sequelize.TEXT, allowNull: false },
         status: { type: Sequelize.STRING(100), allowNull: false, defaultValue: "new" },
 
-        order_id: { type: Sequelize.INTEGER, allowNull: false, references: { model: 'orders', key: 'id' } },
+        order_id: { type: Sequelize.INTEGER, allowNull: false, references: { model: 'orders', key: 'id' }, onUpdate: 'cascade' },
     });
     return OrderNote;
 }
