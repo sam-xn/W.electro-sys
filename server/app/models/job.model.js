@@ -9,7 +9,7 @@ export default (sequelize, Sequelize) => {
         qty: { type: Sequelize.STRING(100), allowNull: false },
         remarks: { type: Sequelize.TEXT },
 
-        price: { type: Sequelize.DECIMAL(11, 10) }
+        price: { type: Sequelize.STRING(100) }
     });
     return Job;
 }

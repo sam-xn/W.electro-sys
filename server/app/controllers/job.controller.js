@@ -124,19 +124,16 @@ export const search = (req, res) => {
 
 export const update = (req, res) => {
 
-    //const tag = { operator_initial: req.body.initial, rack_type: req.body.rack, diff_level: req.body.diff_level, operator_notes: req.body.notes };
+    console.log(req.body)
 
-    //Tag.update(tag, { where: { jobId: req.params.id } })
-    //    .then(data => {
-    //        Job.update({ status: "finished" }, { where: { id: req.params.id } })
-    //            .then(num => {
-    //                if (num[0] === 1) { res.send({ message: "Job updated." }); }
-    //                else { res.send({ message: `Cannot Job Order with id=${req.params.id}. Possible causes: not found or empty req.body.` }); }
-    //            })
-    //    })
-    //    .catch(err => {
-    //        res.status(500).send({ message: `Error updating Tag with jobId=${req.params.id}.` });
-        //});
+    Job.update(req.body, { where: { id: req.params.id } })
+        .then(num => {
+            if (num[0] === 1) { res.send({ message: "Job updated." }); }
+            else { res.send({ message: `Cannot update Job with id=${req.params.id}. Possible causes: not found or empty req.body.` }); }
+        })
+        .catch(err => {
+            res.status(500).send({ message: `Error updating Job with id=${req.params.id}.` });
+        });
 };
 
 export const updateTag = (req, res) => {

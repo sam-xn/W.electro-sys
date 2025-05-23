@@ -27,6 +27,11 @@ export default function Order() {
 
     const [readyToPrice, setReadyToPrice] = useState(false);
 
+    const [addPrice, setAddPrice] = useState("");
+    const [newPrice, setNewPrice] = useState("");
+
+    const [invoiced, setInvoiced] = useState(false);
+
     // ------------------------------------------------------------------------------------ PO
 
     useEffect(() => {
@@ -67,19 +72,36 @@ export default function Order() {
             .then((response) => {
                 setJobs(response.data); 
 
-                if (po.status === "open") {
+                const po_status = response.data[0].order.status;
+                if (po_status === "open") {
                     let updateStatus = true;
-                    jobs.forEach(job => {
+                    response.data.forEach(job => {
                         if (job.status === "incoming" || job.status === "received" || job.status == "processed")
                             updateStatus = false;
                     });
                     setReadyToPrice(updateStatus);
                 }
+                else if (po_status === "finished") {
+                    let updateStatus = true;
+                    response.data.forEach(job => {
+                        if (!job.price) updateStatus = false;
+                    })
+                    if (updateStatus) {
+                        console.log("ye");
+                        OrderService.update(params.id, { status: "invoiced" })
+                            .then((response) => {
+                                setInvoiced(true);
+                            })
+                            .catch((e) => {
+                                console.log(e);
+                            });
+                    }
+                }
             })
             .catch((e) => {
                 console.log(e);
             });
-    }, [jobs.length]);
+    }, [addPrice]);
 
     // ------------------------------------------------------------------------------------ Modal 
 
@@ -233,8 +255,24 @@ export default function Order() {
                 console.log(e);
             });
     }
-    function statusFinished() {
-        OrderService.update(params.id, { status: "finished" })
+
+    function fnAddPrice(jId) {
+        if (addPrice === "") setAddPrice(jId);
+        else setAddPrice("");
+    } 
+    function savePrice(jId) {
+        JobService.update(jId, { price: newPrice })
+            .then(() => {
+                setAddPrice("");
+                setNewPrice("");
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }
+
+    function statusUpdate(newStatus) {
+        OrderService.update(params.id, { status: newStatus })
             .then((response) => {
                 setReadyToPrice(false);
             })
@@ -339,7 +377,7 @@ export default function Order() {
                                                 <div className="font-semibold">{`${job.process}`}</div>
                                                 <div className="pt-4 text-sm text-red-700">{job.remarks ? `${job.remarks}` : ""}</div>
 
-                                                {job.status === "processed"
+                                                {job.status !== "incoming" && job.status !== "received"
                                                     ? <>
                                                         <div className="pt-4 pb-1 flex gap-4"> Operator: <div className="font-semibold text-blue-700">{job.tag.operator_initial}</div></div>
                                                         <div className="flex gap-4 items-center">
@@ -350,15 +388,54 @@ export default function Order() {
                                                     </>
                                                     : <></>
                                                 }
+                                                {job.price
+                                                    ? <>
+                                                        <div className="pt-8 pb-1 flex gap-4">
+                                                            <p className="text-red-700">Price:</p>
+                                                            {job.price}
+                                                        </div>
+                                                    </>
+                                                    : <></>
+                                                }
                                             </div>
-                                            <div className="mt-4 border-t border-slate-500">
-                                                <div className="mt-4 mx-4">
-                                                    <Link className={button_classname}
-                                                        to={`/jobs/${job.id}`}>
-                                                        <p className="">View Job</p>
-                                                    </Link>
-                                                </div>
-                                            </div>
+                                            {po.status === "open"
+                                                ? <>
+                                                    <div className="mt-4 border-t border-slate-500">
+                                                        <div className="mt-4 mx-4">
+                                                            <Link className={button_classname}
+                                                                to={`/jobs/${job.id}`}>
+                                                                <p className="">View Job</p>
+                                                            </Link>
+                                                        </div>
+                                                    </div>
+                                                </> : <>
+                                                    <div className="mt-4 border-t border-slate-500">
+                                                            <div className={button_classname+ " mt-4 mx-4"} >
+                                                            <button onClick={() => fnAddPrice(job.id)}>
+                                                                {addPrice == job.id ? "Close" : "Add Price"}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    {addPrice == job.id
+                                                        ? <>
+                                                            <div className="flex gap-2 py-4 pr-12">
+                                                                <input
+                                                                    className="w-md px-4 bg-white text-black focus:outline-none max-w-full border border-slate-500"
+                                                                    onChange={(e) => setNewPrice(e.target.value)}
+                                                                    placeholder={"$ / unit"}
+                                                                    value={newPrice}
+                                                                /> 
+                                                                <button
+                                                                    className={button_classname}
+                                                                    onClick={() => savePrice(job.id)}
+                                                                >
+                                                                    <p className="text-sm"> Save </p>
+                                                                </button>
+                                                            </div>
+                                                        </> : <></>
+                                                    }
+                                                </>
+                                            }
                                         </div>
                                     </div>
                                 </>
@@ -368,9 +445,22 @@ export default function Order() {
                             <div className="grid grid-cols-4">
                                 <div></div><div></div><div></div>
                                 <div className={button_classname + " mt-1 bg-blue-800"}>
-                                    <button onClick={() => statusFinished()}>
+                                    <button onClick={() => statusUpdate("finished")}>
                                         <p className="text-sm">
-                                            Update Status: Set <b>Finished</b>
+                                            Update Status: Mark <b>Finished</b>
+                                        </p>
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                        : <></>}
+                        {invoiced ? <>
+                            <div className="grid grid-cols-4">
+                                <div></div><div></div><div></div>
+                                <div className={button_classname + " mt-1 bg-blue-800"}>
+                                    <button onClick={() => statusUpdate("invoiced")}>
+                                        <p className="text-sm">
+                                            Update Status: Mark <b>Invoiced</b>
                                         </p>
                                     </button>
                                 </div>

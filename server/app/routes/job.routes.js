@@ -13,7 +13,7 @@ export default (app) => {
 
     router.get("/:id", jobs.findJob);
 
-    //router.put("/:id", jobs.update);
+    router.put("/:id", jobs.update);
     router.put("/tag/:id", jobs.updateTag);
 
     router.delete("/:id", jobs._delete);
