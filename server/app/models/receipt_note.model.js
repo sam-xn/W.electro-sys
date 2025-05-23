@@ -3,10 +3,10 @@ export default (sequelize, Sequelize) => {
         id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
         _timestamp: { type: Sequelize.DATE, allowNull: false, defaultValue: sequelize.literal("CURRENT_TIMESTAMP") },
 
-        content: { type: Sequelize.TEXT },
-        status: { type: Sequelize.STRING(100), allowNull: false, defaultValue: "new" },
+        content: { type: Sequelize.TEXT, allowNull: false },
+        status: { type: Sequelize.STRING(100), allowNull: false },
 
-        receipt_id: { type: Sequelize.INTEGER, allowNull: false, references: { model: 'receipts', key: 'id' }, onUpdate:'cascade' }
+        order_id: { type: Sequelize.INTEGER, allowNull: false, references: { model: 'orders', key: 'id' }, onUpdate:'cascade' }
     });
     return ReceiptNote;
 }

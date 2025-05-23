@@ -6,7 +6,6 @@ export default (app) => {
 
     router.post("/", jobs.createWithTag);
 
-
     router.get("/order/:poId", jobs.findOrder);
     router.get("/customer/:status/:customer", jobs.findCustomer);
     router.get("/list/:jobIds", jobs.findList);
@@ -14,7 +13,8 @@ export default (app) => {
 
     router.get("/:id", jobs.findJob);
 
-    router.put("/:id", jobs.update);
+    //router.put("/:id", jobs.update);
+    router.put("/tag/:id", jobs.updateTag);
 
     router.delete("/:id", jobs._delete);
 

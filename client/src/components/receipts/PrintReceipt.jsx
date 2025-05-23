@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import ReceiptService from "./receipt.service";
+
+import ReceiptService from '/src/components/http/receipt.service';
 
 export default function Receipt() {
     const { id } = useParams(); console.log("id= " + id);

@@ -6,7 +6,7 @@ export default (app) => {
 
     router.post("/", receipt_notes.create);
 
-    router.get("/receipt/:receiptId", receipt_notes.findReceipt);
+    router.get("/order/:poId", receipt_notes.findOrder);
     router.get("/status/:status", receipt_notes.findStatus);
     router.get("/search", receipt_notes.search);
 

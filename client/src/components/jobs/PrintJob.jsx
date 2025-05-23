@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 
-import OrderService from "../orders/order.service";
+import OrderService from '/src/components/http/order.service';
+
 export default function PrintJob() {
 
     const navigate = useNavigate();

@@ -6,19 +6,22 @@ import { Outlet } from 'react-router-dom'
 import App from './App.tsx'
 import './index.css'
 
-import Orders from './components/services/orders/Orders.jsx'
-import Order from './components/services/orders/Order.jsx'
-import NewOrder from './components/services/orders/NewOrder.jsx'
-import Jobs from './components/services/jobs/Jobs.jsx'
-import Job from './components/services/jobs/Job.jsx'
-import NewJob from './components/services/jobs/NewJob.jsx'
-import FinishJob from './components/services/jobs/FinishJob.jsx'
-import PrintJob from './components/services/jobs/PrintJob.jsx'
-import Receipts from './components/services/receipts/Receipts.jsx'
-import PrintReceipt from './components/services/receipts/PrintReceipt.jsx'
-import NewReceipt from './components/services/receipts/NewReceipt.jsx'
-import Customers from './components/services/customers/Customers.jsx'
-//import Contacts from './components/services/customers/Contacts.jsx'
+import Orders from './components/SidebarLinks/Orders.jsx'
+import Order from './components/orders/Order.jsx'
+import NewOrder from './components/orders/NewOrder.jsx'
+
+import Jobs from './components/SidebarLinks/Jobs.jsx'
+import Job from './components/jobs/Job.jsx'
+import NewJob from './components/jobs/NewJob.jsx'
+import FinishJob from './components/jobs/FinishJob.jsx'
+import PrintJob from './components/jobs/PrintJob.jsx'
+
+import Receipts from './components/SidebarLinks/Receipts.jsx'
+import NewReceipt from './components/receipts/NewReceipt.jsx'
+import PrintReceipt from './components/receipts/PrintReceipt.jsx'
+
+import Customers from './components/SidebarLinks/Customers.jsx'
+
 
 const router = createBrowserRouter([
     {

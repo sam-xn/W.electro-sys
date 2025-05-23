@@ -9,7 +9,7 @@ export const create = (req, res) => {
         return;
     }
 
-    Contact.create({ fname: req.body.newContactName, email: req.body.newContactEmail, company: req.body.newCompany })
+    Contact.create({ name: req.body.newContactName, email: req.body.newContactEmail, company: req.body.newCompany })
         .then(data => { res.send(data); })
         .catch(err => {
             res.status(500).send({ message: err.message || "An error occurred while retrieving Jobs." });
@@ -64,12 +64,11 @@ export const findType = (req, res) => {
 
 export const searchCompany = (req, res) => {
 
-    if (!req.query.company || !req.params.type) {
-        res.status(400).send({ message: "Content cannot be empty." });
-        return;
-    }
+    const conditions = {};
+    if (req.params.type) conditions.type = req.params.type;
+    if (req.query.company) conditions.company = { [Op.like]: `%${req.query.company}%` };
 
-    Contact.findAll({ where: { type: req.params.type, company: { [Op.like]: `%${req.query.company}%` } } })
+    Contact.findAll({ where: conditions })
         .then(data => { res.send(data); })
         .catch(err => {
             res.status(500).send({ message: err.message || "An error occurred while retrieving Contacts." });

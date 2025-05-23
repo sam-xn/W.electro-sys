@@ -5,7 +5,7 @@ const Op = db.Sequelize.Op;
 
 export const create = (req, res) => {
 
-    if (!req.body.receipt_id) {
+    if (!req.body.order_id) {
         res.status(400).send({ message: "Content cannot be empty." });
         return;
     }
@@ -17,8 +17,8 @@ export const create = (req, res) => {
         });
 };
 
-export const findReceipt = (req, res) => {
-    OrderNote.findAll({ where: { receipt_id: req.params.receiptId } })
+export const findOrder = (req, res) => {
+    ReceiptNote.findAll({ where: { order_id: req.params.poId } })
         .then(data => { res.send(data); })
         .catch(err => {
             res.status(500).send({ message: err.message || "An error occurred while retrieving notes." });
@@ -52,7 +52,7 @@ export const search = (req, res) => {
 };
 
 export const update = (req, res) => {
-    ReceiptNote.update(req.body, { where: { email: req.params.email } })
+    ReceiptNote.update(req.body, { where: { id: req.params.id } })
         .then(num => {
             if (num === 1) { res.send({ message: "ReceiptNote updated." }); }
             else { res.send({ message: `Cannot update ReceiptNote with id=${req.body.email}. Possible causes: not found or empty req.body.` }); }

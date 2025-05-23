@@ -56,6 +56,10 @@ const update = (id, data) => {
     return http.put(`/jobs/${id}`, data);
 };
 
+const updateTag = (id, data) => {
+    return http.put(`/jobs/tag/${id}`, data);
+};
+
 const remove = (id) => {
     return http.delete(`/jobs/${id}`);
 };
@@ -67,5 +71,6 @@ export default {
     getCustomer,
     getList,
     update,
+    updateTag,
     remove,
 };

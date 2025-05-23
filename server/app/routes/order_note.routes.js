@@ -6,7 +6,7 @@ export default (app) => {
 
     router.post("/", order_notes.create);
 
-    router.get("/order/:orderId", order_notes.findOrder);
+    router.get("/order/:poId", order_notes.findOrder);
     router.get("/status/:status", order_notes.findStatus);
     router.get("/search", order_notes.search);
 

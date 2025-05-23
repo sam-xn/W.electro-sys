@@ -4,7 +4,7 @@ export default (sequelize, Sequelize) => {
         _timestamp: { type: Sequelize.DATE, allowNull: false, defaultValue: sequelize.literal("CURRENT_TIMESTAMP") },
 
         content: { type: Sequelize.TEXT, allowNull: false },
-        status: { type: Sequelize.STRING(100), allowNull: false, defaultValue: "new" },
+        status: { type: Sequelize.STRING(100), allowNull: false },
 
         order_id: { type: Sequelize.INTEGER, allowNull: false, references: { model: 'orders', key: 'id' }, onUpdate: 'cascade' },
     });

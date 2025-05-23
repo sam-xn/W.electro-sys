@@ -21,6 +21,12 @@ export const createWithDeliverables = (req, res) => {
                     .catch(err => {
                         res.status(500).send({ message: err.message || "An error occurred while creating Deliverable." });
                     });
+
+                const jobStatus = d.partial ? "delivered-partial" : "delivered"; 
+                Job.update({ status: jobStatus }, { where: { id: d.jobId } })
+                    .catch(err => {
+                        res.status(500).send({ message: err.message || "An error occurred while creating Deliverable." });
+                    });
             })
 
             res.send(data);
@@ -91,7 +97,8 @@ export const findList = (req, res) => {
 };
 
 export const search = (req, res) => {
-
+    console.log(req.query)
+    console.log(req.params)
     const receiptConditions = {};
     if (req.query.id) receiptConditions.id = { [Op.like]: `%${req.query.id}%` }
 

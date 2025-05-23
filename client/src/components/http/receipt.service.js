@@ -48,6 +48,18 @@ const update = (id, data) => {
     return http.put(`/receipts/${id}`, data);
 };
 
+const createNote = (data) => {
+    return http.post(`/receipt_notes`, data);
+};
+
+const getNotes = (orderId) => {
+    return http.get(`/receipt_notes/order/${orderId}`);
+};
+
+const updateNote = (id, data) => {
+    return http.put(`/receipt_notes/${id}`, data);
+};
+
 export default {
     create,
     getOrder,
@@ -55,4 +67,7 @@ export default {
     search,
     update,
     remove,
+    createNote,
+    getNotes,
+    updateNote
 };

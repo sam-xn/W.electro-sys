@@ -42,10 +42,25 @@ const remove = (id) => {
     return http.delete(`/orders/${id}`);
 };
 
+const createNote = (data) => {
+    return http.post(`/order_notes`, data);
+};
+
+const getNotes = (orderId) => {
+    return http.get(`/order_notes/order/${orderId}`);
+};
+
+const updateNote = (id, data) => {
+    return http.put(`/order_notes/${id}`, data);
+};
+
 export default {
     create,
     get,
     search,
     update,
-    remove
+    remove,
+    createNote,
+    getNotes,
+    updateNote
 };

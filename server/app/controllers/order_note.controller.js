@@ -51,13 +51,13 @@ export const search = (req, res) => {
 };
 
 export const update = (req, res) => {
-    OrderNote.update( req.body, { where: { email: req.params.email } })
+    OrderNote.update( req.body, { where: { id: req.params.id } })
         .then(num => {
             if (num === 1) { res.send({ message: "OrderNote updated." }); }
-            else { res.send({ message: `Cannot update OrderNote with id=${req.body.email}. Possible causes: not found or empty req.body.` }); }
+            else { res.send({ message: `Cannot update OrderNote with id=${req.params.id}. Possible causes: not found or empty req.body.` }); }
         })
         .catch(err => {
-            res.status(500).send({ message: `Error updating OrderNote with id=${req.body.email}` });
+            res.status(500).send({ message: `Error updating OrderNote with id=${req.params.id}` });
         });
 };
 
