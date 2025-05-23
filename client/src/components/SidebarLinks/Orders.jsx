@@ -10,7 +10,7 @@ import OrderService from '/src/components/http/order.service';
 export default function Orders() {
 
     const [orders, setOrders] = useState([]);
-    const [filter, setFilter] = useState("all");
+    const [filter, setFilter] = useState("open");
 
 
     useEffect(() => {

@@ -6,6 +6,8 @@ import { Outlet } from 'react-router-dom'
 import App from './App.tsx'
 import './index.css'
 
+import Home from './components/Home.jsx'
+
 import Orders from './components/SidebarLinks/Orders.jsx'
 import Order from './components/orders/Order.jsx'
 import NewOrder from './components/orders/NewOrder.jsx'
@@ -28,6 +30,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <App />, 
         children: [
+            {
+                path: "/",
+                element: <Home />,
+            },
             {
                 path: "/orders",
                 element: <Orders />,
