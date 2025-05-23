@@ -437,7 +437,7 @@ export default function Order() {
                                                             </div>
                                                         </> : <></>
                                                     }
-                                                    </> : <></>
+                                                    </> : <><div className="border-t border-slate-500 mt-4"></div></>
                                                 )
                                             }
                                         </div>

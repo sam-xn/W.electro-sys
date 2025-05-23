@@ -98,7 +98,7 @@ export default function NewJob() {
 
                             {/*</div>*/}
 
-                            <div className="bg-white grid grid-cols-4 mx-4 mb-4 pt-4 pb-8 max-w-full border border-slate-500">
+                            <div className="bg-white grid grid-cols-4 mx-4 my-8 py-8 max-w-full border border-slate-500">
                                 <div className={label_classname}>  Date:  </div>
                                 {/*<div className="col-span-3 place-self-stretch justify-content-center border">*/}
                                     <input className={input_classname}

@@ -58,7 +58,6 @@ export default function Job() {
                                             <div className="flex justify-self-end font-semibold">{`PO # ${job.order?.po_num}`}</div>
                                         </div>
 
-
                                     </div>
                                 </div>
 
