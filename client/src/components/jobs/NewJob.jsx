@@ -17,7 +17,7 @@ export default function NewJob() {
     const params = useParams();
 
     const [po, setPo] = useState({});
-    const [status, setStatus] = useState("received");
+    //const [status, setStatus] = useState("received");
     const [qty, setQty] = useState("");
     const [process, setProcess] = useState("");
     const [remarks, setRemarks] = useState("");
@@ -35,13 +35,13 @@ export default function NewJob() {
     }, []);
 
     function saveJob() {
-        if (status==="" || process === "" || qty === "" || initial === "") {
+        if (process === "" || qty === "" || initial === "") {
             setError(true);
             setErrorMessage("Please enter Qty, Process, and Initial to submit a new Job. ");
             return;
         }
 
-        const tag = { status: status, author_initial: initial, po_id: po.id, process: process, qty: qty, remarks: remarks };
+        const tag = { status: "incoming", author_initial: initial, po_id: po.id, process: process, qty: qty, remarks: remarks };
 
         JobService.create(tag)
             .then(() => {
@@ -69,34 +69,34 @@ export default function NewJob() {
                             <div className="p-1 text-[#544B76] font-bold text-xl border-b border-slate-500">
                                 New Job
                             </div>
-                            <div className="mb-4 text-sm text-[#544B76]"> {/*- Edit info -*/} </div>
+                            {/*<div className="mb-4 text-sm text-[#544B76]"> */}{/*- Edit info -*/}{/* </div>*/}
 
-                            <div className="bg-white grid grid-cols-2 m-4 px-8 py-4 max-w-full border border-slate-500">
+                            {/*<div className="bg-white grid grid-cols-2 m-4 px-8 py-4 max-w-full border border-slate-500">*/}
 
-                                <div className="text-[#544B76] font-bold ml-4 mb-2"> Status </div>
-                                <div></div>
+                            {/*    <div className="text-[#544B76] font-bold ml-4 mb-2"> Status </div>*/}
+                            {/*    <div></div>*/}
 
-                                <div className="ml-8">
-                                    <input className=""
-                                        type="radio"
-                                        name="status"
-                                        value="incoming"
-                                        onChange={(e) => setStatus(e.target.value)}
-                                    />
-                                    <label className="text-md px-2"> Incoming </label>
-                                </div>
-                                <div className="">
-                                    <input className=""
-                                        type="radio"
-                                        name="status"
-                                        value="received"
-                                        defaultChecked
-                                        onChange={(e) => setStatus(e.target.value)}
-                                    />
-                                    <label className="text-md px-2"> Received </label>
-                                </div>
+                            {/*    <div className="ml-8">*/}
+                            {/*        <input className=""*/}
+                            {/*            type="radio"*/}
+                            {/*            name="status"*/}
+                            {/*            value="incoming"*/}
+                            {/*            onChange={(e) => setStatus(e.target.value)}*/}
+                            {/*        />*/}
+                            {/*        <label className="text-md px-2"> Incoming </label>*/}
+                            {/*    </div>*/}
+                            {/*    <div className="">*/}
+                            {/*        <input className=""*/}
+                            {/*            type="radio"*/}
+                            {/*            name="status"*/}
+                            {/*            value="received"*/}
+                            {/*            defaultChecked*/}
+                            {/*            onChange={(e) => setStatus(e.target.value)}*/}
+                            {/*        />*/}
+                            {/*        <label className="text-md px-2"> Received </label>*/}
+                            {/*    </div>*/}
 
-                            </div>
+                            {/*</div>*/}
 
                             <div className="bg-white grid grid-cols-4 mx-4 mb-4 pt-4 pb-8 max-w-full border border-slate-500">
                                 <div className={label_classname}>  Date:  </div>

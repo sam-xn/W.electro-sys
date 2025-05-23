@@ -105,7 +105,7 @@ export const search = (req, res) => {
     }
     if (req.query.process) jobConditions.process = { [Op.like]: `%${req.query.process}%` };
 
-    const orderConditions = {};
+    const orderConditions = { status: { [Op.ne]: "invoiced" } };
     if (req.query.customer) orderConditions.customer = { [Op.like]: `%${req.query.customer}%` };
     if (req.query.po_num) orderConditions.po_num = { [Op.like]: `%${req.query.po_num}%` };
 

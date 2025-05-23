@@ -62,25 +62,27 @@ export default function Job() {
                                     </div>
                                 </div>
 
-                                {job.status == "received" ? <>
-                                    <div className="border-l grid">
-                                        <div className="my-4 pr-8">
-                                            <Link className={button_classname} to={`update`}>
-                                                Finish Job
+                                {job.status == "received"
+                                    ? <>
+                                        <div className="border-l grid">
+                                            <div className="my-4 pr-8">
+                                                <Link className={button_classname} to={`update`}>
+                                                    Finish Job
+                                                </Link>
+                                            </div>
+                                        </div>
+                                        <div></div>
+                                     </> : <><div></div><div></div></>
+                                }
+                                {job.status == "incoming"
+                                    ? <>
+                                        <div className="mb-2 pr-8">
+                                            <Link className={button_classname} to={`print`} onClick={setReceived}>
+                                                Print Tag
                                             </Link>
                                         </div>
-                                    </div>
-                                    <div></div>
-                                 </> : <><div></div><div></div></>
-                                }
-                                {job.status == "received" ? <>
-                                    <div className="mb-2 pr-8">
-                                        <Link className={button_classname} to={`print`} onClick={setReceived}>
-                                            Print Tag
-                                        </Link>
-                                    </div>
-                                    <div></div><div></div>
-                                </> : <><div></div><div></div><div></div></>
+                                        <div></div><div></div>
+                                    </> : <><div></div><div></div><div></div></>
                                 }
 
                                 <div className="pr-8">
@@ -88,8 +90,6 @@ export default function Job() {
                                         Go to PO
                                     </Link>
                                 </div>
-
-
                             </div>
                         </>}
                     </div>

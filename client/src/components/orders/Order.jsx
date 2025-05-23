@@ -398,24 +398,27 @@ export default function Order() {
                                                     : <></>
                                                 }
                                             </div>
-                                            {po.status === "open"
+                                            {job.status === "incoming"
                                                 ? <>
                                                     <div className="mt-4 border-t border-slate-500">
                                                         <div className="mt-4 mx-4">
                                                             <Link className={button_classname}
                                                                 to={`/jobs/${job.id}`}>
-                                                                <p className="">View Job</p>
+                                                                <p className="">Print Tag</p>
                                                             </Link>
                                                         </div>
                                                     </div>
-                                                </> : <>
-                                                    <div className="mt-4 border-t border-slate-500">
-                                                            <div className={button_classname+ " mt-4 mx-4"} >
-                                                            <button onClick={() => fnAddPrice(job.id)}>
-                                                                {addPrice == job.id ? "Close" : "Add Price"}
-                                                            </button>
+                                                </> :
+                                                (po.status === "finished" || po.status === "priced"
+                                                    ? <>
+                                                        <div className="mt-4 border-t border-slate-500">
+                                                                <div className={button_classname+ " mt-4 mx-4"} >
+                                                                <button onClick={() => fnAddPrice(job.id)}>
+                                                                    {addPrice == job.id ? "Close" : (job.price ? "Edit Price" : "Add Price")}
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                    </div>
+
                                                     {addPrice == job.id
                                                         ? <>
                                                             <div className="flex gap-2 py-4 pr-12">
@@ -424,7 +427,7 @@ export default function Order() {
                                                                     onChange={(e) => setNewPrice(e.target.value)}
                                                                     placeholder={"$ / unit"}
                                                                     value={newPrice}
-                                                                /> 
+                                                                />
                                                                 <button
                                                                     className={button_classname}
                                                                     onClick={() => savePrice(job.id)}
@@ -434,7 +437,8 @@ export default function Order() {
                                                             </div>
                                                         </> : <></>
                                                     }
-                                                </>
+                                                    </> : <></>
+                                                )
                                             }
                                         </div>
                                     </div>
