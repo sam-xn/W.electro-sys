@@ -11,7 +11,7 @@ export default function Job() {
     const [job, setJob] = useState([]);
     useEffect(() => {
         JobService.getJob(params.id)
-            .then(response => {
+            .then(response => { 
                 setJob(response.data[0]);
             })
             .catch((e) => {
@@ -45,49 +45,70 @@ export default function Job() {
                                 <div className={"bg-[#eff1fc] mr-8 p-8 mb-8 rounded shadow border border-slate-500"}>
                                     <div className={"bg-white max-w-full mr-2 p-8 rounded shadow border border-slate-500"}>
                                         <div className="flex place-content-between border-b border-slate-500 pb-1">
-                                            <div className="text-sm pt-1 font-bold">{`WE-${job.id}`}</div>
-                                            <div className="text-sm pt-1 font-bold">{`${job.status}`}</div>
+                                            <div className="text-sm pt-1 font-semibold">{`WE-${job.id}`}</div>
+                                            <div className="text-sm pt-1 font-semibold">{`${job.status}`}</div>
                                         </div>
 
-                                        <div className="grid grid-cols-1 mt-4">
+                                        <div className="mt-4 mx-4 flex place-content-between font-semibold">
+                                            <div className="flex justify-self-end">{`${job.order?.customer}`}</div>
+                                            <div className="flex justify-self-end">{`PO # ${job.order?.po_num}`}</div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1">
                                             <div className="py-4">{`Date: ${new Date(job._timestamp).toDateString()}`}</div>
-                                            <div className="">{`Qty: ${job.qty}`}</div>
-                                            <div className="">{`Process: ${job.process}`}</div>
+                                            <div className="flex gap-2">Qty: <div className="font-semibold">{job.qty}</div></div>
+                                            <div className="font-semibold">{job.process}</div>
                                             <div className="pt-4 text-sm text-red-700">{job.remarks ? `${job.remarks}` : ""}</div>
-                                            <div className="flex justify-self-end font-semibold">{`${job.order?.customer}`}</div>
-                                            <div className="flex justify-self-end font-semibold">{`PO # ${job.order?.po_num}`}</div>
+
+                                            {job.status !== "incoming" && job.status !== "received"
+                                                ? <>
+                                                    <div className="pt-4 pb-1 flex gap-4 border-t border-slate-500"> Operator: <div className="font-semibold text-blue-700">{job.tag?.operator_initial}</div></div>
+                                                    <div className="flex gap-4 items-center">
+                                                        {job.tag?.rack_type ? <> Rack Type: <div className="font-semibold text-blue-700 pr-6 border-r border-slate-500">{job.tag?.rack_type} </div> </> : <></>}
+                                                        {job.tag?.diff_level ? <> Difficulty: <div className="font-semibold text-blue-700">{job.tag?.diff_level} </div> </> : <></>}
+                                                    </div>
+                                                    {job.tag?.operator_notes ? <div className="pt-1 font-semibold text-blue-700">{`-- ${job.tag?.operator_notes}`}</div> : <></>}
+                                                </>
+                                                : <></>
+                                            }
+                                            {job.price
+                                                ? <>
+                                                    <div className="pt-8 pb-1 flex gap-4">
+                                                        <p className="text-red-700">Price:</p>
+                                                        {job.price}
+                                                    </div>
+                                                </>
+                                                : <></>
+                                            }
                                         </div>
 
                                     </div>
                                 </div>
-
-                                {job.status == "received"
-                                    ? <>
-                                        <div className="border-l grid">
-                                            <div className="my-4 pr-8">
-                                                <Link className={button_classname} to={`update`}>
+                                <div className="place-content-between pr-8">
+                                    {job.status == "received" || job.status == "delivered-partial"
+                                        ? <>
+                                            <div className="my-12 pr-8 border-l grid">
+                                                <Link className={button_classname + " bg-blue-800"} to={`update`}>
                                                     Finish Job
                                                 </Link>
                                             </div>
-                                        </div>
-                                        <div></div>
-                                     </> : <><div></div><div></div></>
-                                }
-                                {job.status == "incoming"
-                                    ? <>
-                                        <div className="mb-2 pr-8">
-                                            <Link className={button_classname} to={`print`} onClick={setReceived}>
-                                                Print Tag
-                                            </Link>
-                                        </div>
-                                        <div></div><div></div>
-                                    </> : <><div></div><div></div><div></div></>
-                                }
-
-                                <div className="pr-8">
-                                    <Link className={button_classname} to={`/orders/${job.po_id}`}>
-                                        Go to PO
-                                    </Link>
+                                            <div></div>
+                                         </> : <></>
+                                    }
+                                    {job.status == "incoming"
+                                        ? <>
+                                            <div className="my-8 pr-8 border-l grid">
+                                                <Link className={button_classname} to={`print`} onClick={setReceived}>
+                                                    Print Tag
+                                                </Link>
+                                            </div>
+                                        </> : <></>
+                                    }
+                                    <div className="my-8 pr-8 border-l grid">
+                                        <Link className={button_classname} to={`/orders/${job.po_id}`}>
+                                            Go to PO
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         </>}

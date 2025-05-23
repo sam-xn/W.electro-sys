@@ -67,8 +67,8 @@ export const findOrder = (req, res) => {
         return;
     }
 
-    Job.belongsTo(Order, { foreignKey: 'po_id' })
-    Order.hasMany(Job, { foreignKey: 'po_id' })
+    Job.belongsTo(Order, { foreignKey: 'po_id' });
+    Order.hasMany(Job, { foreignKey: 'po_id' });
     Job.hasOne(Tag, { foreignKey: 'jobId' });
     Tag.belongsTo(Job, { foreignKey: 'jobId' });
 
@@ -86,10 +86,13 @@ export const findJob = (req, res) => {
         return;
     }
 
-    Job.belongsTo(Order, { foreignKey: 'po_id' })
-    Order.hasMany(Job, { foreignKey: 'po_id' })
+    Job.belongsTo(Order, { foreignKey: 'po_id' });
+    Order.hasMany(Job, { foreignKey: 'po_id' });
+    Job.hasOne(Tag, { foreignKey: 'jobId' });
+    Tag.belongsTo(Job, { foreignKey: 'jobId' });
 
-    Job.findAll({ where: { id: req.params.id }, include: [{ required: true, model: Order , attributes: ['po_num', 'customer']}] })
+
+    Job.findAll({ where: { id: req.params.id }, include: [{ required: true, model: Order, attributes: ['po_num', 'customer'] }, { model: Tag, required: true }] })
         .then(data => { res.send(data); })
         .catch(err => {
             res.status(500).send({ message: err.message || "An error occurred while retrieving Jobs." });
