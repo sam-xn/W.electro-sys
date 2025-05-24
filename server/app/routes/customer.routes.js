@@ -4,7 +4,8 @@ import express from 'express';
 export default (app) => {
     let router = express.Router();
 
-    router.post("/", customers.create);
+    //router.post("/", customers.create);
+    router.post("/", customers.createWithContact);
 
     router.get("/", customers.findAll);
 

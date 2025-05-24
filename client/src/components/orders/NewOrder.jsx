@@ -7,6 +7,7 @@ import CustomerService from '/src/components/http/customer.service';
 import ContactService from '/src/components/http/contact.service';
 
 import Error from '/src/components/Error';
+import NewContact from '../contacts/NewContact';
 
 function NewOrder() {
     // ---------------------------------------------------- ErrorModal 
@@ -27,6 +28,7 @@ function NewOrder() {
     const [newCompany, setNewCompany] = useState("");
     const [newContactName, setNewContactName] = useState("");
     const [newContactEmail, setNewContactEmail] = useState("");
+    const [newContactPhone, setNewContactPhone] = useState("");
 
     useEffect(() => {
         CustomerService.getAll()
@@ -60,14 +62,14 @@ function NewOrder() {
         const newPo_data = { po_num: poNum, customer: customer, status: "open" };
 
         if (customer == "new") {
-            CustomerService.create({ newCompany })
+            CustomerService.create({ company: newCompany, name: newContactName, email: newContactEmail, phone: newContactPhone })
                 .catch((e) => {
                     console.log(e);
                 });
-            ContactService.create({ newContactName, newContactEmail, newCompany })
-                .catch((e) => {
-                    console.log(e);
-                });
+            //ContactService.create({ newContactName, newContactEmail, newCompany })
+            //    .catch((e) => {
+            //        console.log(e);
+            //    });
 
             newPo_data.customer = newCompany;
         }
@@ -101,29 +103,7 @@ function NewOrder() {
 
                             <div className="mb-4 text-sm text-[#544B76]"> - Edit info - </div>
 
-                            {/*<div className="bg-white grid grid-cols-2 m-4 px-8 py-4 max-w-full border border-slate-500">*/}
-                            {/*    <div className="text-[#544B76] font-bold ml-4 mb-2"> Status </div>*/}
-                            {/*    <div></div>*/}
-                            {/*    <div className="ml-8">*/}
-                            {/*        <input className=""*/}
-                            {/*            type="radio"*/}
-                            {/*            name="status"*/}
-                            {/*            value="incoming"*/}
-                            {/*            onChange={(e) => setStatus(e.target.value)}*/}
-                            {/*        />*/}
-                            {/*        <label className="text-md px-2"> Incoming </label>*/}
-                            {/*    </div>*/}
-                            {/*    <div className="">*/}
-                            {/*        <input className=""*/}
-                            {/*            type="radio"*/}
-                            {/*            name="status"*/}
-                            {/*            value="open"*/}
-                            {/*            defaultChecked*/}
-                            {/*            onChange={(e) => setStatus(e.target.value)}*/}
-                            {/*        />*/}
-                            {/*        <label className="text-md px-2"> Open </label>*/}
-                            {/*    </div>*/}
-                            {/*</div>*/}
+                            
 
                             <div className="bg-white grid grid-cols-4 m-4 pl-8 py-4 max-w-full border border-slate-500">
                                 <div className={label_classname}> Customer: </div>
@@ -148,7 +128,6 @@ function NewOrder() {
                                                 <input className={input_classname}
                                                     type="text"
                                                     value={newCompany}
-                                        
                                                     onChange={(e) => setNewCompany(e.target.value)}
                                                 />
 
@@ -156,7 +135,6 @@ function NewOrder() {
                                                 <input className={input_classname}
                                                     type="text"
                                                     value={newContactName}
-                                        
                                                     onChange={(e) => setNewContactName(e.target.value)}
                                                 />
 
@@ -164,8 +142,13 @@ function NewOrder() {
                                                 <input className={input_classname}
                                                     type="text"
                                                     value={newContactEmail}
-                                        
                                                     onChange={(e) => setNewContactEmail(e.target.value)}
+                                                />
+                                                <div className={label_classname}> Contact Phone: </div>
+                                                <input className={input_classname}
+                                                    type="text"
+                                                    value={newContactPhone}
+                                                    onChange={(e) => setNewContactPhone(e.target.value)}
                                                 />
                                             </div>
 
@@ -203,21 +186,6 @@ function NewOrder() {
                                     Submit
                                 </button>
                             </div>
-
-                            {/*<div className="flex place-items-center gap-4 pt-4 mx-8">*/}
-                            {/*    <button*/}
-                            {/*        className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline  hover:bg-red-800"*/}
-                            {/*        onClick={saveOrder}*/}
-                            {/*    >*/}
-                            {/*        Discard*/}
-                            {/*    </button>*/}
-                            {/*    <button*/}
-                            {/*        className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline  hover:bg-blue-800"*/}
-                            {/*        onClick={saveOrder}*/}
-                            {/*    >*/}
-                            {/*        Submit*/}
-                            {/*    </button>*/}
-                            {/*</div>*/}
                         </div>
                     </div>
                 </div>

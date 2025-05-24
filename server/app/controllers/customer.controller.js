@@ -1,16 +1,34 @@
 import db from '../models/index.js'
 
 const Customer = db.customers;
+const Contact = db.contacts;
 
-export const create = (req, res) => {
+//export const create = (req, res) => {
 
-    if (!req.body.newCompany) {
+//    if (!req.body.newCompany) {
+//        res.status(400).send({ message: "Content cannot be empty." });
+//        return;
+//    }
+
+//    Customer.create({ company: req.body.newCompany })
+//        .then(data => { res.send(data); })
+//        .catch(err => {
+//            res.status(500).send({ message: err.message || "An error occurred while creating Customer." });
+//        });
+//};
+
+export const createWithContact = (req, res) => {
+
+    if (!req.body.company || !req.body.name|| !req.body.email) {
         res.status(400).send({ message: "Content cannot be empty." });
         return;
     }
 
-    Customer.create({ company: req.body.newCompany })
-        .then(data => { res.send(data); })
+    Customer.create({ company: req.body.company })
+        .then(data => {
+            Contact.create(req.body)
+                .then(() => { res.send(data); });
+        })
         .catch(err => {
             res.status(500).send({ message: err.message || "An error occurred while creating Customer." });
         });
