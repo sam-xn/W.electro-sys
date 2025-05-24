@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '/src/components/Sidebar';
 
-import OrderService from '/src/components/http/order.service';
 import CustomerService from '/src/components/http/customer.service';
 
 import Error from '/src/components/Error';
 
-
-function NewOrder() {
+function NewContact() {
     // ---------------------------------------------------- ErrorModal 
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -16,14 +14,11 @@ function NewOrder() {
     // --------------------------------------------------- /ErrorModal 
 
     const navigate = useNavigate();
-    //const params = useParams();
-
-    //const [status, setStatus] = useState("open");
-    const [poNum, setPoNum] = useState("");
 
     const [customer, setCustomer] = useState("select");
     const [customerList, setCustomerList] = useState([]);
 
+    const [type, setType] = useState("");
     const [newCompany, setNewCompany] = useState("");
     const [newContactName, setNewContactName] = useState("");
     const [newContactEmail, setNewContactEmail] = useState("");
@@ -40,7 +35,7 @@ function NewOrder() {
     }, [customerList.length]);
 
 
-    function saveOrder() {
+    function saveContact() {
 
         if (customer === "select") {
             setErrorMessage("Please select an existing customer or select New Customer to create a new contact.");
@@ -52,57 +47,39 @@ function NewOrder() {
             setError(true);
             return;
         }
-        else if (poNum === "") {
-            setErrorMessage("Please enter a PO number to continue.");
-            setError(true);
-            return;
-        }
-
-        const newPo_data = { po_num: poNum, customer: customer, status: "open" };
 
         if (customer == "new") {
             CustomerService.create({ company: newCompany, name: newContactName, email: newContactEmail, phone: newContactPhone })
+                .then(() => {
+                    navigate(`/customers`);
+                })
                 .catch((e) => {
                     console.log(e);
                 });
-            //ContactService.create({ newContactName, newContactEmail, newCompany })
-            //    .catch((e) => {
-            //        console.log(e);
-            //    });
-
-            newPo_data.customer = newCompany;
         }
-
-        OrderService.create(newPo_data)
-            .then((response) => {
-                navigate(`/orders/${response.data.id}`);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
     }
 
 
     const label_classname = "font-bold text-md text-[#544B76] border-b pl-4 pb-1 pt-2";
-    const input_classname = "focus:outline-none text-center border-b pb-1 pt-2 col-span-3 pr-16";
+    const input_classname = "focus:outline-none border-b pb-1 pt-2 col-span-3 pr-16";
 
     return (
         <>
             <div className="grid grid-cols-6">
                 <div className=""><Sidebar /></div>
-                <div className="col-span-5"> 
+                <div className="col-span-5">
                     <div className="grid place-items-center">
                         {error ? <Error isOpen={error} onClose={handleClose}> {errorMessage} </Error> : <></>}
 
                         <div className="max-w-3/4 mx-4 py-8 px-8 mb-12 bg-[#eff1fc] rounded shadow border border-slate-500">
 
                             <div className="p-1 text-[#544B76] font-bold text-xl border-b border-slate-500">
-                                New Order
+                                New Contact
                             </div>
 
                             <div className="mb-4 text-sm text-[#544B76]"> - Edit info - </div>
 
-                            
+
 
                             <div className="bg-white grid grid-cols-4 m-4 pl-8 py-4 max-w-full border border-slate-500">
                                 <div className={label_classname}> Customer: </div>
@@ -121,6 +98,32 @@ function NewOrder() {
                                 {customer == "new"
                                     ? (
                                         <div className="mt-6 mr-8 col-span-4">
+
+                                            <div className="grid grid-cols-3 pb-4 border-b border-slate-500">
+                                                <div className="text-[#544B76] font-bold ml-4 mb-2"> Type: </div>
+                                                <div></div>
+                                                <div></div>
+                                                <div className="ml-24">
+                                                    <input className=""
+                                                        type="radio"
+                                                        name="type"
+                                                        value="primary"
+                                                        defaultChecked
+                                                        onChange={(e) => setType(e.target.value)}
+                                                    />
+                                                    <label className="text-md px-2"> Primary </label>
+                                                </div>
+                                                <div className="">
+                                                    <input className=""
+                                                        type="radio"
+                                                        name="type"
+                                                        value="accounting"
+                                                        onChange={(e) => setType(e.target.value)}
+                                                    />
+                                                    <label className="text-md px-2"> Accounting </label>
+                                                </div>
+                                            </div>
+
                                             <div className="grid grid-cols-4">
 
                                                 <div className={label_classname}> Company: </div>
@@ -160,27 +163,16 @@ function NewOrder() {
                                 }
                             </div>
 
-                            <div className="bg-white grid grid-cols-4 m-4 px-8 pt-4 pb-8 max-w-full border border-slate-500">
-                                <div className={label_classname}> PO #:</div>
-                                <input className={input_classname}
-                                    type="text"
-                                    placeholder="input required"
-                                    value={poNum}
-                        
-                                    onChange={(e) => setPoNum(e.target.value)}
-                                />
-                            </div>
-
                             <div className="pt-8 mx-8 grid grid-cols-2 gap-4 place-items-center">
                                 <button
                                     className="text-white mb-4 mx-4 py-1 rounded w-sm bg-[#544B76] outline hover:bg-red-800"
-                                    onClick={() => navigate(`/orders`)}
+                                    onClick={() => navigate(`/customers`)}
                                 >
                                     Discard
                                 </button>
                                 <button
                                     className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline hover:bg-blue-800"
-                                    onClick={saveOrder}
+                                    onClick={saveContact}
                                 >
                                     Submit
                                 </button>
@@ -193,4 +185,4 @@ function NewOrder() {
     );
 }
 
-export default NewOrder;
+export default NewContact;
