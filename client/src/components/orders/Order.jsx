@@ -25,12 +25,13 @@ export default function Order() {
     const [addReceiptNote, setAddReceiptNote] = useState(false);
     const [newReceiptNote, setNewReceiptNote] = useState("");
 
-    const [readyToPrice, setReadyToPrice] = useState(false);
+    const [markFinished, setMarkFinished] = useState(false);
+    const [markInvoiced, setMarkInvoiced] = useState(false);
+    const [autoFinish, setAutoFinish] = useState(false);
 
     const [addPrice, setAddPrice] = useState("");
     const [newPrice, setNewPrice] = useState("");
 
-    const [invoiced, setInvoiced] = useState(false);
 
     // ------------------------------------------------------------------------------------ PO
 
@@ -42,7 +43,7 @@ export default function Order() {
             .catch((e) => {
                 console.log(e);
             });
-    }, [readyToPrice]);
+    }, [markFinished, autoFinish]);
 
     useEffect(() => {
         OrderService.getNotes(params.id)
@@ -53,6 +54,17 @@ export default function Order() {
                 console.log(e);
             });
     }, [addNote]);
+
+    function statusUpdate(newStatus) {
+        OrderService.update(params.id, { status: newStatus })
+            .then((response) => {
+                setMarkFinished(false);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }
+
     function saveNote() {
         OrderService.createNote({ order_id: params.id, content: newNote, status: "new" })
             .then((response) => {
@@ -74,12 +86,20 @@ export default function Order() {
 
                 const po_status = response.data[0].order.status;
                 if (po_status === "open") {
-                    let updateStatus = true;
+                    let updateStatusFinished = true;
+                    let autoUpdateFinished = true;
                     response.data.forEach(job => {
                         if (job.status === "incoming" || job.status === "received" || job.status == "processed")
-                            updateStatus = false;
+                            if (job.status === "delivered-partial") autoUpdateFinished = false;
+
+                            updateStatusFinished = false;
                     });
-                    setReadyToPrice(updateStatus);
+                    if (autoUpdateFinished) {
+                        OrderService.update(params.id, { status: "finished" })
+                            .then(() => { setAutoFinish(true); })
+                            .catch((e) => { console.log(e); });
+                    }
+                    else setMarkFinished(updateStatusFinished);
                 }
                 else if (po_status === "finished") {
                     let updateStatus = true;
@@ -87,10 +107,9 @@ export default function Order() {
                         if (!job.price) updateStatus = false;
                     })
                     if (updateStatus) {
-                        console.log("ye");
                         OrderService.update(params.id, { status: "invoiced" })
                             .then((response) => {
-                                setInvoiced(true);
+                                setMarkInvoiced(true);
                             })
                             .catch((e) => {
                                 console.log(e);
@@ -102,6 +121,28 @@ export default function Order() {
                 console.log(e);
             });
     }, [addPrice]);
+
+    function fnAddPrice(jId) {
+        if (addPrice === "") setAddPrice(jId);
+        else setAddPrice("");
+    }
+    function savePrice(jId) {
+        JobService.update(jId, { price: newPrice })
+            .then(() => {
+                setAddPrice("");
+                setNewPrice("");
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }
+
+    function jobStatusUpdate(jId, status) {
+        JobService.update(jId, { status: status })
+            .catch((e) => {
+                console.log(e);
+            });
+    }
 
     // ------------------------------------------------------------------------------------ Modal 
 
@@ -242,39 +283,11 @@ export default function Order() {
             });
     }, [addReceiptNote]);
 
-
-    //function fnAddNote() { setAddNote(!addNote); }
-    //function fnAddReceiptNote() { setAddReceiptNote(!addReceiptNote); }
     function saveReceiptNote() {
         ReceiptService.createNote({ order_id: params.id, content: newReceiptNote, status: "new" })
             .then((response) => {
                 setAddReceiptNote(false);
                 setNewReceiptNote("");
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    }
-
-    function fnAddPrice(jId) {
-        if (addPrice === "") setAddPrice(jId);
-        else setAddPrice("");
-    } 
-    function savePrice(jId) {
-        JobService.update(jId, { price: newPrice })
-            .then(() => {
-                setAddPrice("");
-                setNewPrice("");
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    }
-
-    function statusUpdate(newStatus) {
-        OrderService.update(params.id, { status: newStatus })
-            .then((response) => {
-                setReadyToPrice(false);
             })
             .catch((e) => {
                 console.log(e);
@@ -402,8 +415,8 @@ export default function Order() {
                                                 ? <>
                                                     <div className="mt-4 border-t border-slate-500">
                                                         <div className="mt-4 mx-4">
-                                                            <Link className={button_classname}
-                                                                to={`/jobs/${job.id}`}>
+                                                            <Link className={button_classname} to={`/jobs/${job.id}/print`}
+                                                                onClick={() => jobStatusUpdate(job.id, "received")} >
                                                                 <p className="">Print Tag</p>
                                                             </Link>
                                                         </div>
@@ -445,7 +458,7 @@ export default function Order() {
                                 </>
                             )}
                         </div>
-                        {readyToPrice ? <>
+                        {markFinished ? <>
                             <div className="grid grid-cols-4">
                                 <div></div><div></div><div></div>
                                 <div className={button_classname + " mt-1 bg-blue-800"}>
@@ -458,7 +471,7 @@ export default function Order() {
                             </div>
                         </>
                         : <></>}
-                        {invoiced ? <>
+                        {markInvoiced ? <>
                             <div className="grid grid-cols-4">
                                 <div></div><div></div><div></div>
                                 <div className={button_classname + " mt-1 bg-blue-800"}>

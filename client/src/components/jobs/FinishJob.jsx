@@ -33,19 +33,12 @@ export default function FinishJob() {
 
         JobService.updateTag(params.id, updatedInfo)
             .then((response) => {
-                //navigate(`/orders/${response.data.po_id}`) 
-                //console.log(response.data)
                 setSubmitted(true);
             })
             .catch((e) => {
                 console.log(e);
             });
     };
-
-    function previousPage() {
-        if (params.poId) navigate(`/order/${params.poId}`);
-        else navigate(`/jobs`);
-    }
 
     const label_classname = "font-bold text-md text-[#544B76] border-b border-slate-500 pl-4 pb-1 pt-2 ml-8 my-2";
     const input_classname = "col-span-2 focus:outline-none border-b border-slate-500 pl-16 pb-1 pt-2 mr-8 my-2";
@@ -67,9 +60,9 @@ export default function FinishJob() {
                                 <div className="my-8 py-8 text--[#544B76]"> Submitted. Thanks! </div>
                                 <Link
                                     className={button_classname}
-                                    to={`/jobs/${params.id}`}
+                                    to={`/jobs`}
                                 >
-                                    <p> {" <- Return to Job " } </p>
+                                    <p> {" <- Return to Jobs " } </p>
                                 </Link>
                             </div>
                         </>
@@ -171,7 +164,7 @@ export default function FinishJob() {
                                 <div></div>
                                 <Link
                                     className="text-center text-white py-2 my-2 rounded w-sm bg-[#544B76] outline  hover:bg-red-800"
-                                    onClick={previousPage}
+                                    to={`/jobs`}
                                 >
                                     Discard Updates
                                 </Link>

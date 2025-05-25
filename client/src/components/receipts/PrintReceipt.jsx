@@ -4,30 +4,17 @@ import { useParams, useNavigate } from "react-router-dom";
 import ReceiptService from '/src/components/http/receipt.service';
 
 export default function Receipt() {
-    const { id } = useParams(); console.log("id= " + id);
+
     const navigate = useNavigate();
 
-    const [currentReceipt, setCurrentReceipt] = useState({
-        id: null,
-        _timestamp: null,
-        notes: null,
-    });
-    const [message, setMessage] = useState("");
-
-    const getReceipt = (id) => {
-        ReceiptService.get(id)
-            .then((response) => {
-                setCurrentReceipt(response.data);
-                console.log(response.data);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    };
+    const [currentReceipt, setCurrentReceipt] = useState([]);
 
     useEffect(() => {
-        if (id) getReceipt(id);
-    }, [id]);
+        if (!currentReceipt.id) return;
+        getReceipt(id)
+            .then(response => { })
+            .catch((e) => { console.log(e)})
+    }, []);
 
     return (
         <>
