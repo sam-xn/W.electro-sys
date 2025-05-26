@@ -1,166 +1,135 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-import OrderService from '/src/components/http/order.service';
+import JobService from '/src/components/http/job.service';
+import ContactService from '/src/components/http/contact.service';
 
 export default function PrintJob() {
 
-    const navigate = useNavigate();
     const params = useParams();
 
-    console.log("params:" + params.id)
-
-    const [po, setPo] = useState({});
-    const [submitted, setSubmitted] = useState();
+    const [job, setJob] = useState([]);
+    const [psLine2, setPsLine2] = useState(false);
+    const [contact, setContact] = useState([]);
 
     useEffect(() => {
-            OrderService.get(params.id)
-                .then((response) => {
-                    setPo(response.data);
-                    console.log(response.data)
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
+        JobService.getJob(params.id)
+            .then(response => {
+
+                const r = response.data[0];
+
+                let dateStr = new Date(r._timestamp).toDateString().split(' '); 
+                const day = dateStr.splice(2,1); 
+                dateStr[0] = day;
+                dateStr.splice(1, 0, " - ");
+                dateStr.splice(3, 0, " - ");
+
+                r._timestamp = dateStr;
+
+                let processStr = r.process;
+                if (processStr.length > 28) {
+                    let index = -1;
+                    for (let i = 15; i < processStr.length; i++) {
+                        if (processStr[i] !== " ") continue;
+                        else { index = i + 1; break; }
+                    }
+                    let str_1 = processStr.substring(0,index);
+                    let str_2 = processStr.substring(index, processStr.length);
+                    r.process = [str_1, str_2];
+                    setPsLine2(true);
+                }
+                console.log(r);
+                setJob(r);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
     }, []);
-    //console.log(po)
 
-    function setValues() {
-
-    }
-    function saveJob() {
-
-        // params.id ? update : create
-
-        //JobService.create(tag)
-        //    .then((response) => {
-        //        console.log(response.data);
-        //        setSubmitted(true);
-        //        navigate(`/orders/${response.data[0]}`);
-        //    })
-        //    .catch((e) => {
-        //        console.log(e);
-        //    });
-        navigate(`/orders/${params.id}`);
-    };
-
-
-
-    const label_classname = "font-bold text-md text-[#544B76] border-b pl-4 pb-1 pt-2";
-    const input_classname = "focus:outline-none border-b pl-16 pb-1 pt-2";
+    useEffect(() => {
+        ContactService.searchCompany(job.order?.customer, "primary")
+            .then(response => {
+                setContact(response.data[0]);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }, [job]);
 
     return (
-        <>
-        print tag
-            {/*<div className="max-w-lg mx-4 py-8 px-8 bg-[#eff1fc] rounded shadow border border-slate-500">*/}
+        <>  
+            <div className="aspect-[calc(8.5/11)] max-w-1/2 max-h-1/2 text-sm pr-2 border flex-col"> 
+                <div className="font-bold text-center my-2"> WORK TAG </div>
 
-            {/*    <div className="p-1 text-[#544B76] font-bold text-xl border-b border-slate-500">*/}
-            {/*        New Job*/}
-            {/*    </div>*/}
-            {/*    <div className="mb-4 text-sm text-[#544B76]"> - Edit info - </div>*/}
+                <div className="m-1 flex gap-2"> <p>Company:</p> <div className="grow border-b border-slate-500 text-center text-xl"> {job.order ? job.order.customer : ""} </div> </div>
 
-            {/*    <div className="bg-white grid grid-cols-2 m-4 pt-4 px-8 pb-8 max-w-full border border-slate-500">*/}
+                <div className="flex">
+                    <div className="grow m-1 flex gap-2"> <p>Date:</p> <div className="grow border-b border-slate-500 text-center text-lg"> {job._timestamp} </div> </div>
+                    <div className="grow m-1 flex gap-2"> <p>P.O.#:</p> <div className="grow border-b border-slate-500 text-center text-lg"> {job.order ? job.order.po_num : ""} </div> </div>
+                </div>
 
-            {/*        <div className="text-[#544B76] font-bold ml-4 mb-2"> Status </div>*/}
-            {/*        <div></div>*/}
-            {/*        <div className="ml-8">*/}
-            {/*            <input className=""*/}
-            {/*                type="radio"*/}
-            {/*                name="status"*/}
-            {/*                onChange={(e) => setValues(e.target.value)}*/}
-            {/*            />*/}
-            {/*            <label className="text-md px-2"> Incoming </label>*/}
-            {/*        </div>*/}
-            {/*        <div className="">*/}
-            {/*            <input className=""*/}
-            {/*                type="radio"*/}
-            {/*                name="status"*/}
-            {/*                onChange={(e) => setValues(e.target.value)}*/}
-            {/*            />*/}
-            {/*            <label className="text-md px-2"> Received </label>*/}
-            {/*        </div>*/}
+                <div className="flex">
+                    <div className="grow m-1 flex gap-2"> <p># of Pcs.:</p> <div className="grow border-b border-slate-500 text-center text-xl"> {job.qty} </div> </div>
+                    <div className="grow m-1 flex gap-2"> <p>Initial:</p> <div className="grow border-b border-slate-500 text-center text-lg"> {job.tag ? job.tag.author_initial : ""} </div> </div>
+                </div>
 
-            {/*    </div>*/}
+                <div className="flex">
+                    <div className="grow m-1 flex gap-2"> <p className="min-w-1/5">Process & Instructions:</p> <div className="grow border-b border-slate-500 text-center text-xl"> {psLine2 ? job.process[0] : job.process} </div> </div>
+                </div>
+                {psLine2
+                    ? <>
+                        <div className="m-1 flex gap-2"> <div className="grow border-b border-slate-500 text-center text-xl"> {job.process[1]} </div> </div>
+                    </> : <></>
+                }
+                <div className="mt-2 m-1 flex gap-2"> <p>Remarks:</p> <div className="grow border-b border-slate-500 text-center text-xl"> {job.remarks} </div> </div>
 
-            {/*    <div className="bg-white grid grid-cols-4 place-content-center mx-4 mb-4 pt-4 pb-8 max-w-full border border-slate-500">*/}
-            {/*        <div className="ml-8">*/}
-            {/*            <div className={label_classname}>*/}
-            {/*                Date:*/}
-            {/*            </div>*/}
-            {/*            <div className={label_classname}>*/}
-            {/*                Customer:*/}
-            {/*            </div>*/}
-            {/*            <div className={label_classname}>*/}
-            {/*                PO#:*/}
-            {/*            </div>*/}
-            {/*            <div className={label_classname + " mt-12"}>*/}
-            {/*                Qty:*/}
-            {/*            </div>*/}
-            {/*            <div className={label_classname}>*/}
-            {/*                Process:*/}
-            {/*            </div>*/}
-            {/*            <div className={label_classname+" mt-12"}>*/}
-            {/*                Remarks:*/}
-            {/*            </div>*/}
-            {/*            <div className={label_classname}>*/}
-            {/*                Initial:*/}
-            {/*            </div>*/}
-            {/*        </div>*/}
-            {/*        <div className="col-span-3">*/}
-            {/*            <input className={input_classname}*/}
-            {/*                disabled*/}
-            {/*                type="text" */}
-            {/*                value={new Date().toDateString()}*/}
-            {/*                onChange={(e) => setValues(e.target.value)}*/}
-            {/*            />*/}
-            {/*            <input className={input_classname}*/}
-            {/*                disabled*/}
-            {/*                type="text"*/}
-            {/*                value={po.customer}*/}
-            {/*                onChange={(e) => setValues(e.target.value)}*/}
-            {/*            />*/}
-            {/*            <input className={input_classname}*/}
-            {/*                disabled*/}
-            {/*                type="text"*/}
-            {/*                value={po.po_num}*/}
-            {/*                onChange={(e) => setValues(e.target.value)}*/}
-            {/*            />*/}
-            {/*            <input className={input_classname + " mt-12"}*/}
-            {/*                type="text"*/}
-            {/*                placeholder="input required"*/}
-            {/*                onChange={(e) => setValues(e.target.value)}*/}
-            {/*            />*/}
-            {/*            <input className={input_classname}*/}
-            {/*                type="text"*/}
-            {/*                placeholder="input required"*/}
-            {/*                onChange={(e) => setValues(e.target.value)}*/}
-            {/*            />*/}
-            {/*            <input className={input_classname+" mt-12"}*/}
-            {/*                type="text"*/}
-            {/*                placeholder=""*/}
-            {/*                onChange={(e) => setValues(e.target.value)}*/}
-            {/*            />*/}
-            {/*            <input className={input_classname}*/}
-            {/*                type="text"*/}
-            {/*                placeholder="input required"*/}
-            {/*                onChange={(e) => setValues(e.target.value)}*/}
-            {/*            />*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
+                <div className="flex">
+                    <div className="grow m-1 flex gap-2"> <p>Contact:</p> <div className="grow border-b border-slate-500 text-center text-lg"> {contact?.name} </div> </div>
+                    <div className="grow m-1 flex gap-2"> <p>Ph #:</p> <div className="grow border-b border-slate-500 text-center text-lg"> {contact?.phone} </div> </div>
+                </div>
 
-            {/*    <button*/}
-            {/*        className="text-white my-4 mx-8 py-1 rounded w-sm bg-[#544B76] outline"*/}
-            {/*        onClick={saveJob}*/}
-            {/*    >*/}
-            {/*        Submit*/}
-            {/*    </button>*/}
-            {/*    <button*/}
-            {/*        className="text-white mb-4 mx-8 py-1 rounded w-sm bg-[#544B76] outline"*/}
-            {/*        onClick={saveJob}*/}
-            {/*    >*/}
-            {/*        Discard*/}
-            {/*    </button>*/}
-            {/*</div>*/}
+
+                <div className="mt-4 mx-1 border-b border-slate-500 text-center text-xl max-w-full"></div>
+
+                <div className="text-center my-2"> For Operator's Use </div>
+
+                <div className="m-2 flex">
+                    <p className="w-full">QP</p>
+                    <p className="w-full">Box</p>
+                    <p className="w-full">Rcl</p>
+                    <p className="w-full">Fcl</p>
+                    <p className="w-full">Scl</p>
+                    <p className="w-full">Blk</p>
+                    <p className="w-full">Dk</p>
+                    <p className="w-full">Dd</p>
+                    <p className="w-full">Other</p>
+                </div>
+
+                <div className="flex">
+                    <div className="m-1 flex gap-3 min-w-2/5">
+                        <p>Difficulty Level:</p>
+                        <p className="grow">1</p>
+                        <p className="grow">2</p>
+                        <p className="grow">3</p>
+                        <p className="grow">4</p>
+                        <p className="grow">5</p>
+                    </div>
+                    <div className="grow m-1 flex gap-2">
+                        <p># of Pcs/Rack:</p>
+                        <div className="grow border-b border-slate-500 text-center text-xl"> </div>
+                    </div>
+                </div>
+
+                <div className="m-1 flex gap-2"> <p>Space in Tank & Remarks:</p> <div className="grow border-b border-slate-500 text-center text-xl"> </div> </div>
+                <br></br>
+                <div className="m-1 flex gap-2"> <div className="grow border-b border-slate-500 text-center text-xl"> </div> </div>
+
+                <div className="flex">
+                    <div className="grow m-1 flex gap-2"> <p>Quality:</p> <div className="grow border-b border-slate-500 text-center text-xl"> </div> </div>
+                    <div className="grow m-1 flex gap-2"> <p>Initial:</p> <div className="grow border-b border-slate-500 text-center text-xl"> </div> </div>
+                </div>
+
+            </div>
         </>
     );
 }

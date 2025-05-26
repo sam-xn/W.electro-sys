@@ -17,14 +17,18 @@ export default function Receipt() {
     }, []);
 
     return (
+    //    print receipt
+    //        < br ></br >
+    //            <br></br>
+    //            receipt component: <br></br>
+    //{ currentReceipt.id } <br></br>
+    //{ currentReceipt._timestamp } <br></br>
+    //{ currentReceipt.notes }<br></br>
         <>
-            print receipt
-            <br></br>
-            <br></br>
-            receipt component:<br></br>
-            {currentReceipt.id}<br></br>
-            {currentReceipt._timestamp}<br></br>
-            {currentReceipt.notes}<br></br>
+            <div className="h-[1056px] w-[408px] border"></div>
+
+
+            
         </>
     )
 }

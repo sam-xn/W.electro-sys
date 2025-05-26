@@ -89,10 +89,8 @@ export default function Order() {
                     let updateStatusFinished = true;
                     let autoUpdateFinished = true;
                     response.data.forEach(job => {
-                        if (job.status === "incoming" || job.status === "received" || job.status == "processed")
-                            if (job.status === "delivered-partial") autoUpdateFinished = false;
-
-                            updateStatusFinished = false;
+                        if (job.status === "delivered-partial") autoUpdateFinished = false;
+                        if (job.status === "incoming" || job.status === "received" || job.status == "processed") updateStatusFinished = false;
                     });
                     if (autoUpdateFinished) {
                         OrderService.update(params.id, { status: "finished" })
