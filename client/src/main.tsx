@@ -16,7 +16,7 @@ import Jobs from './components/SidebarLinks/Jobs.jsx'
 import Job from './components/jobs/Job.jsx'
 import NewJob from './components/jobs/NewJob.jsx'
 import FinishJob from './components/jobs/FinishJob.jsx'
-import PrintJob from './components/jobs/PrintJob.jsx'
+import PrintTag from './components/jobs/PrintTag.jsx'
 
 import Receipts from './components/SidebarLinks/Receipts.jsx'
 import NewReceipt from './components/receipts/NewReceipt.jsx'
@@ -81,7 +81,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "/jobs/:id/print",
-                element: <PrintJob />
+                element: <PrintTag />
             },
             {
                 path: "/receipts",
