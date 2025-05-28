@@ -9,6 +9,7 @@ export default (app) => {
     router.get("/order/:poId", receipts.findOrder);
     router.get("/list/:receiptIds", receipts.findList);
     router.get("/search", receipts.search);
+    router.get("/print/:id", receipts.findPrint);
 
     router.delete("/:id", receipts._delete);
 

@@ -36,7 +36,7 @@ export default function Job() {
     return (
         <>
             <div className="grid grid-cols-6">
-                <div className=""><Sidebar /></div>
+                <div className="mb-8"><Sidebar /></div>
                 <div className="col-span-5"> 
                     <div className="grid items-center ml-8 mt-8">
                         {!job ? <></> : <>

@@ -16,7 +16,6 @@ export const createWithDeliverables = (req, res) => {
     Receipt.create({})
         .then(data => {
             req.body.deliverables_data.forEach(d => {
-                //console.log(data.dataValues.id)
                 Deliverable.create({ receipt_id: data.id, partial: d.partial, qty: d.newQty, job_id: d.jobId })
                     .catch(err => {
                         res.status(500).send({ message: err.message || "An error occurred while creating Deliverable." });
@@ -81,6 +80,9 @@ export const findList = (req, res) => {
     Deliverable.belongsTo(Job, { foreignKey: 'job_id' });
     Job.hasMany(Deliverable, { foreignKey: 'job_id' });
 
+    Job.belongsTo(Order, { foreignKey: 'po_id' });
+    Order.hasMany(Job, { foreignKey: 'po_id' });
+
     Receipt.findAll({
         where: { id: { [Op.in]: rIds } },
         include: [{
@@ -96,9 +98,41 @@ export const findList = (req, res) => {
         });
 };
 
+export const findPrint = (req, res) => {
+
+    if (!req.params.id) {
+        res.status(400).send({ message: "Content cannot be empty." });
+        return;
+    }
+
+    Receipt.hasMany(Deliverable, { foreignKey: 'receipt_id' });
+    Deliverable.belongsTo(Receipt, { foreignKey: 'receipt_id' });
+
+    Deliverable.belongsTo(Job, { foreignKey: 'job_id' });
+    Job.hasMany(Deliverable, { foreignKey: 'job_id' });
+
+    Job.belongsTo(Order, { foreignKey: 'po_id' });
+    Order.hasMany(Job, { foreignKey: 'po_id' });
+
+    Receipt.findAll({
+        where: { id: req.params.id },
+        include: [{
+            model: Deliverable, required: true, attributes: ['id', 'qty', 'partial'],
+            include: [{
+                model: Job, required: true, attributes: ['id', 'process', ['qty', 'qtyRcvd']],
+                include: [{
+                    model: Order, required: true, attributes: ['id', 'po_num', 'customer']
+                }]
+            }]
+        }]
+    })
+        .then(data => { res.send(data); })
+        .catch(err => {
+            res.status(500).send({ message: err.message || "An error occurred while retrieving Jobs." });
+        });
+};
+
 export const search = (req, res) => {
-    console.log(req.query)
-    console.log(req.params)
     const receiptConditions = {};
     if (req.query.id) receiptConditions.id = { [Op.like]: `%${req.query.id}%` }
 

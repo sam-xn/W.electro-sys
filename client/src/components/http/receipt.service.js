@@ -19,6 +19,10 @@ const getList = (receiptIds) => {
     return http.get(`/receipts/list/${receiptIds}`);
 };
 
+const getPrint = (id) => {
+    return http.get(`/receipts/print/${id}`);
+};
+
 const search = (id, customer, po_num) => {
     const queries = [];
 
@@ -64,6 +68,7 @@ export default {
     create,
     getOrder,
     getList,
+    getPrint,
     search,
     update,
     remove,

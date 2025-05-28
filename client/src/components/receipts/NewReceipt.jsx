@@ -461,7 +461,7 @@ export default function NewReceipt() {
     return (
         <>
             <div className="grid grid-cols-6">
-                <div className=""><Sidebar /></div>
+                <div className="mb-8"><Sidebar /></div>
                 <div className="col-span-5"> 
                         <div className="grid place-items-center">
                             <div className="max-w-full mx-4 py-8 px-8 mb-12 bg-[#eff1fc] rounded shadow border border-slate-500">

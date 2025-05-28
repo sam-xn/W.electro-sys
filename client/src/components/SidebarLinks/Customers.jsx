@@ -95,7 +95,7 @@ export default function Customers() {
                 <Modal isOpen={open} onClose={handleClose}>
                     <Contacts company={modalCompany} contacts={contacts} />
                 </Modal>
-                <div className=""><Sidebar /></div>
+                <div className="mb-8"><Sidebar /></div>
                 <div className="col-span-5"> <CustomersNavbar status={filter} setter={setFilter} />
                     <div className="grid grid-cols-4">
                         <div className="text-md p-4 pt-6 border-b border-slate-500 text-[#544B76]">
@@ -134,7 +134,7 @@ export default function Customers() {
                             </form>
                         </div>
                         { /*-------------------------------------------------------- Customers Table />*/}
-                        <div className="border border-slate-500 rounded-md overflow-hidden mb-4">
+                        <div className="border border-slate-500 rounded-md overflow-hidden mb-8">
                             <table className="w-full caption-bottom text-sm">
                                 <thead>
                                     <tr className="text-[#544B76]">

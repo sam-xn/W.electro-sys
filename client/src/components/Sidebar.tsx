@@ -69,7 +69,7 @@ const SidebarItem: React.FC<PropsType> = ({ title, iconName, href }) => {
 export default function Sidebar() { 
     return (
         <>
-            <aside className="h-full border border-slate-500 rounded-sm mr-6 mb-16 bg-[#eff1fc]">
+            <aside className="h-full border border-slate-500 rounded-sm mr-6 bg-[#eff1fc]">
                 <div className="flex gap-2 justify-center mr-6 mt-2">
                     <div className="pt-8">
                         <HardDrive color="#544B76" size="18" />

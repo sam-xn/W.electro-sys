@@ -141,7 +141,7 @@ export default function Receipts() {
     return (
         <>
             <div className="grid grid-cols-6">
-                <div className=""><Sidebar /></div>
+                <div className="mb-8"><Sidebar /></div>
                 <div className="col-span-5"> <ReceiptsNavbar />
 
                     <div className="grid grid-cols-4">
@@ -222,7 +222,7 @@ export default function Receipts() {
                         </div>
 
                         { /*-------------------------------------------------------- Receipts Table />*/}
-                        <div className="border border-slate-500 rounded-md overflow-hidden mb-4">
+                        <div className="border border-slate-500 rounded-md overflow-hidden mb-8">
                             <table className="w-full caption-bottom text-sm">
                                 <thead>
                                     <tr className="text-[#544B76]">

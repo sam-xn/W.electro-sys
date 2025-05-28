@@ -59,7 +59,7 @@ export default function NewJob() {
     return (
         <>
             <div className="grid grid-cols-6">
-                <div className=""><Sidebar /></div>
+                <div className="mb-8"><Sidebar /></div>
                 <div className="col-span-5"> 
                     <div className="grid place-items-center">
                         {error ? <Error isOpen={error} onClose={handleClose}> {errorMessage} </Error> : <></> }

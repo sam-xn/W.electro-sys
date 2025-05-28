@@ -27,6 +27,7 @@ export default function Order() {
 
     const [markFinished, setMarkFinished] = useState(false);
     const [markInvoiced, setMarkInvoiced] = useState(false);
+    const [markPriced, setMarkPriced] = useState(false);
     const [autoFinish, setAutoFinish] = useState(false);
 
     const [addPrice, setAddPrice] = useState("");
@@ -43,7 +44,7 @@ export default function Order() {
             .catch((e) => {
                 console.log(e);
             });
-    }, [markFinished, autoFinish]);
+    }, [markFinished, autoFinish, markInvoiced, markPriced]);
 
     useEffect(() => {
         OrderService.getNotes(params.id)
@@ -58,7 +59,13 @@ export default function Order() {
     function statusUpdate(newStatus) {
         OrderService.update(params.id, { status: newStatus })
             .then((response) => {
-                setMarkFinished(false);
+                console.log("found statusUpdate");
+                switch (newStatus) {
+                    case "finished": { setMarkFinished(false); break }
+                    case "invoiced": { setMarkInvoiced(false); break }
+                    case "priced": { setMarkPriced(false); break }
+                }
+                setMarkFinished(false); 
             })
             .catch((e) => {
                 console.log(e);
@@ -90,7 +97,10 @@ export default function Order() {
                     let autoUpdateFinished = true;
                     response.data.forEach(job => {
                         if (job.status === "delivered-partial") autoUpdateFinished = false;
-                        if (job.status === "incoming" || job.status === "received" || job.status == "processed") updateStatusFinished = false;
+                        if (job.status === "incoming" || job.status === "received" || job.status == "processed") {
+                            autoUpdateFinished = false;
+                            updateStatusFinished = false;
+                        }
                     });
                     if (autoUpdateFinished) {
                         OrderService.update(params.id, { status: "finished" })
@@ -105,20 +115,24 @@ export default function Order() {
                         if (!job.price) updateStatus = false;
                     })
                     if (updateStatus) {
-                        OrderService.update(params.id, { status: "invoiced" })
-                            .then((response) => {
-                                setMarkInvoiced(true);
-                            })
-                            .catch((e) => {
-                                console.log(e);
-                            });
+                        setMarkPriced(true);
+                        //OrderService.update(params.id, { status: "priced" })
+                        //    .then((response) => {
+                        //        setMarkInvoiced(true);
+                        //    })
+                        //    .catch((e) => {
+                        //        console.log(e);
+                        //    });
                     }
+                }
+                else if (po_status === "priced") {
+                    setMarkInvoiced(true);
                 }
             })
             .catch((e) => {
                 console.log(e);
             });
-    }, [addPrice]);
+    }, []);
 
     function fnAddPrice(jId) {
         if (addPrice === "") setAddPrice(jId);
@@ -192,7 +206,7 @@ export default function Order() {
 
                 ReceiptService.getList(rIds_str.slice(0,-1))
                     .then((response) => {
-                        let d = response.data; 
+                        let d = response.data;
 
                         const r = [];
                         let cd;
@@ -298,7 +312,7 @@ export default function Order() {
     return (
         <>
             <div className="grid grid-cols-6">
-                <div className=""><Sidebar /></div>
+                <div className="mb-8"><Sidebar /></div>
                 <div className="col-span-5"> 
                     <div className={"bg-[#eff1fc] " + div_classname}>
                         <div className="text-[#544B76]">
@@ -324,9 +338,13 @@ export default function Order() {
                                 : <> <div></div><div></div><div></div> </>
                                 }
                                 <div>
-                                     <Link className={button_classname+ " mt-1"} to={`new`}>
-                                        <p className="">Add Jobs</p>
-                                    </Link>
+                                    {po.status === "open"
+                                        ? 
+                                            <Link className={button_classname + " mt-1"} to={`new`}>
+                                                <p className="">Add Jobs</p>
+                                            </Link>
+                                        : <></>
+                                    }
 
                                     <div className={button_classname + " mt-2"}>
                                         <button onClick={() => setOpen(true)}>
@@ -482,6 +500,19 @@ export default function Order() {
                             </div>
                         </>
                         : <></>}
+                        {markPriced ? <>
+                            <div className="grid grid-cols-4">
+                                <div></div><div></div><div></div>
+                                <div className={button_classname + " mt-1 bg-blue-800"}>
+                                    <button onClick={() => statusUpdate("priced")}>
+                                        <p className="text-sm">
+                                            Update Status: Mark <b>Priced</b>
+                                        </p>
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                            : <></>}
                     </div>
 
                     <div className={"bg-[#eff1fc] my-8 " + div_classname}>
