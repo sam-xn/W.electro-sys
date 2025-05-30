@@ -603,7 +603,7 @@ export default function Order() {
 
                                         <div className="border-t border-slate-500 mt-4">
                                             <div className="mt-4 mx-4">
-                                                <Link className={button_classname} to={`/receipts/${receipt.id}`}>
+                                                <Link className={button_classname} onClick={() => window.open(`/receipts/${receipt.id}`)}>
                                                     <p className="">Print Receipt</p>
                                                 </Link>
                                             </div>

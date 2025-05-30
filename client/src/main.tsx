@@ -21,6 +21,7 @@ import PrintTag from './components/jobs/PrintTag.jsx'
 import Receipts from './components/SidebarLinks/Receipts.jsx'
 import NewReceipt from './components/receipts/NewReceipt.jsx'
 import PrintReceipt from './components/receipts/PrintReceipt.jsx'
+import PrintReceiptPgN from './components/receipts/PrintReceiptPgN.jsx'
 
 import Customers from './components/SidebarLinks/Customers.jsx'
 import NewContact from './components/contacts/NewContact.jsx'
@@ -90,6 +91,10 @@ const router = createBrowserRouter([
             {
                 path: "/receipts/:id",
                 element: <PrintReceipt />
+            },
+            {
+                path: "/receipts/:id/pg/:pg",
+                element: <PrintReceiptPgN />
             },
             {
                 path: "/receipts/new",

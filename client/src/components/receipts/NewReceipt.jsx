@@ -415,7 +415,7 @@ export default function NewReceipt() {
         ]);
         setQty("");
     }
-    
+
     function saveReceipt() {
         if (jobIds.length == 0) return;
 
@@ -445,13 +445,15 @@ export default function NewReceipt() {
 
         ReceiptService.create({ deliverables_data })
             .then((response) => {
-                navigate(`/receipts/${response.data.id}`);
+                window.open(`/receipts/${response.data.id}`);
+                navigate(`/receipts`);
             })
             .catch((e) => {
                 console.log(e);
-                navigate(`/receipts`)
+                navigate(`/receipts`);
             });
     }
+
 
     const label_classname = "font-bold text-md text-[#544B76] border-b pl-4 pb-1 pt-2";
     const input_classname = "focus:outline-none border-b pl-16 pb-1 pt-2";

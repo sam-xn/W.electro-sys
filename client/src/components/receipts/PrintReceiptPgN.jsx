@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import ReceiptService from '/src/components/http/receipt.service';
 
-export default function PrintReceipt() {
+export default function PrintReceiptPgN() {
 
     const params = useParams();
 
@@ -102,38 +102,31 @@ export default function PrintReceipt() {
                         });
                     }
                 });
-                rRows.pop(); // remove last blank line
+                rRows.pop(); 
+                rRows.splice(11, 0, {/*receipt_not_rendered_here*/ });
 
-                if (rRows.length < 12) {
-                    for (let i = rRows.length; i < 12; i++)
-                        rRows.push({ packages: "", received: "" });
-                }
+                const rRowsPgN = [];
+                let pgNRows = rRows.splice(12, rRows.length - 12);
 
-                if (rRows.length > 12) {
-                    rRows.splice(11, 0, { packages: "", received: "-- continued on next page --", next_pg: true });
+                let nextReceipts = [];
+                while (pgNRows.length > 12) {
+                    console.log(pgNRows.length)
+                    pgNRows.splice(11, 0, { packages: "", received: "-- continued on next page --", next_pg: true });
 
-                    const rRowsPgN = [];
-                    let pgNRows = rRows.splice(12, rRows.length - 12);
-
-                    let nextReceipts = [];
-                    while (pgNRows.length > 12) {
-                        pgNRows.splice(11, 0, {/*receipt_not_rendered_here*/});
-
-                        nextReceipts = pgNRows.splice(12, pgNRows.length - 12); 
-                        rRowsPgN.push(pgNRows);
-
-                        pgNRows = nextReceipts;
-                    }
-
+                    nextReceipts = pgNRows.splice(12, pgNRows.length - 12);
                     rRowsPgN.push(pgNRows);
 
-                    for (let i = 0; i < rRowsPgN.length; i++) {
-                        window.open(`/receipts/${params.id}/pg/${i+2}`);
-                    }
-                } 
+                    pgNRows = nextReceipts;
+                }
+
+                rRowsPgN.push(pgNRows);
+
+                for (let i = rRowsPgN[rRowsPgN.length - 1].length; i < 12; i++) {
+                    rRowsPgN[rRowsPgN.length - 1].push({ packages: "", received: "" });
+                }
+                setReceiptRows(rRowsPgN[(params?.pg)-2]);
 
                 setReceipt(r);
-                setReceiptRows(rRows);
             })
             .catch((e) => {
                 console.log(e);
@@ -155,7 +148,7 @@ export default function PrintReceipt() {
 
 
                 </div>
-                <div className="pr-4 translate-x-10 -translate-y-5 w-[780px]"> 
+                <div className="pr-4 translate-x-10 -translate-y-5 w-[780px]">
                     <div className="flex justify-between pb-1 px-1">
                         <div className="flex gap-2"> <p className="font-bold">DATE</p> <p className="underline">{new Date(receipt._timestamp).toDateString()}</p></div>
                         <p className="font-bold">DS # {receipt.id}</p>
@@ -182,7 +175,7 @@ export default function PrintReceipt() {
 
 
                         <div className="grid grid-cols-6 text-sm">
-                            {receiptRows.map(order =>
+                            {receiptRows?.map(order =>
                                 <>
                                     <p className="px-1 border-b text-center"> {order?.packages ? order.packages : <br />} </p>
                                     <p className={"px-1 border-x-2 border-b col-span-4" + (order?.bold ? " font-semibold" : " px-4") + (order?.next_pg ? " text-center italic" : "")}> {order?.received ? order?.received : <br />} </p >
