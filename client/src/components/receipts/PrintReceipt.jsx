@@ -24,6 +24,8 @@ export default function PrintReceipt() {
 
                 r.id = receipt.id;
                 r._timestamp = receipt._timestamp;
+                r.rcvd_by = receipt.rcvd_by,
+                r.ship_to = receipt.ship_to,
                 r.customer = receipt.deliverables[0].job.order.customer;
 
                 for (let i = 0; i < receipt.deliverables.length; i++) {
@@ -161,7 +163,7 @@ export default function PrintReceipt() {
                         <p className="font-bold">DS # {receipt.id}</p>
                     </div>
 
-                    <div className="border-double border-4 pb-1 mb-1 p-1 flex"> <p>FROM</p>
+                    <div className="border-double border-4 pb-1 mb-1 p-1 flex"> <p>FROM:</p>
                         <div className="grow text-center">
                             <p className="text-center font-semibold"> WATERLOO ELECTROPLATING & METAL FINISHING INC.</p>
                             <p className="text-center"> 105 RANDALL DR. WATERLOO, ON</p>
@@ -169,11 +171,11 @@ export default function PrintReceipt() {
                             <p className="text-center"> GST # ...</p>
                         </div>
                     </div>
-                    <div className="border-double border-4 pb-1 p-1 flex"> <p>TO</p>
+                    <div className="border-double border-4 pb-1 p-1 flex"> <p>TO:</p>
                         {receipt ? <p className="grow text-center font-semibold"> {String(receipt.customer).toUpperCase()} </p> : <></>}
                     </div>
 
-                    <div className="border border-2 h-[306px] mt-2">
+                    <div className="border border-2 h-[302px] mt-2">
                         <div className="grid grid-cols-6 bg-slate-500 text-white text-sm text-center">
                             <p className="px-1">PACKAGES</p>
                             <p className="px-1 border-x-2 border-white col-span-4">RECEIVED IN GOOD ORDER</p>
@@ -189,8 +191,16 @@ export default function PrintReceipt() {
                                     <p className="px-1 border-b"></p>
                                 </>
                             )}
-                            <p className="px-1 border-t border-b-4 border-r-2 pb-2 col-span-3">RECEIVED BY</p>
-                            <p className="px-1 border-t border-b-4 pb-3 col-span-3">REMARKS</p>
+                        </div>
+                        <div className="grid grid-cols-5 text-sm">
+                            <div className="flex gap-6 px-1 border-t border-b-4 border-r-2 col-span-2">
+                                <p className="pb-3">RECEIVED BY:</p>
+                                <p className="grow pt-1 font-semibold">{receipt.rcvd_by}</p>
+                            </div>
+                            <div className="flex gap-6 px-1 border-t border-b-4 col-span-3">
+                                <p className="pb-3">SHIP TO:</p>
+                                <p className="grow pt-1 font-semibold">{receipt.ship_to ? receipt.ship_to : "Purchaser"}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

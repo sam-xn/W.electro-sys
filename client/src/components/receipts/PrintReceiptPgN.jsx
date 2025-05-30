@@ -24,6 +24,8 @@ export default function PrintReceiptPgN() {
 
                 r.id = receipt.id;
                 r._timestamp = receipt._timestamp;
+                r.rcvd_by = receipt.rcvd_by,
+                r.ship_to = receipt.ship_to,
                 r.customer = receipt.deliverables[0].job.order.customer;
 
                 for (let i = 0; i < receipt.deliverables.length; i++) {
@@ -182,8 +184,16 @@ export default function PrintReceiptPgN() {
                                     <p className="px-1 border-b"></p>
                                 </>
                             )}
-                            <p className="px-1 border-t border-b-4 border-r-2 pb-2 col-span-3">RECEIVED BY</p>
-                            <p className="px-1 border-t border-b-4 pb-3 col-span-3">REMARKS</p>
+                        </div>
+                        <div className="grid grid-cols-5 text-sm">
+                            <div className="flex gap-6 px-1 border-t border-b-4 border-r-2 col-span-2">
+                                <p className="pb-3">RECEIVED BY:</p>
+                                <p className="grow pt-1 font-semibold">{receipt.rcvd_by}</p>
+                            </div>
+                            <div className="flex gap-6 px-1 border-t border-b-4 col-span-3">
+                                <p className="pb-3">SHIP TO:</p>
+                                <p className="grow pt-1 font-semibold">{receipt.ship_to ? receipt.ship_to : "Purchaser"}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

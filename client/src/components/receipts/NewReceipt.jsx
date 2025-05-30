@@ -6,7 +6,14 @@ import CustomerService from '/src/components/http/customer.service';
 import JobService from '/src/components/http/job.service';
 import ReceiptService from '/src/components/http/receipt.service';
 
+import Error from '/src/components/Error';
+
 export default function NewReceipt() {
+    // ---------------------------------------------------- ErrorModal 
+    const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    function handleClose() { setError(false); }
+    // --------------------------------------------------- /ErrorModal 
 
     const navigate = useNavigate();
 
@@ -37,6 +44,8 @@ export default function NewReceipt() {
     const [qty, setQty] = useState(""); 
     const [delQty, setDelQty] = useState([]); 
 
+    const [receiver, setReceiver] = useState("");
+    const [shipTo, setShipTo] = useState("");
     // setCustomerList
     useEffect(() => {
         CustomerService.getAll()
@@ -56,7 +65,7 @@ export default function NewReceipt() {
         setDelQty([]);
     }
 
-    //setProcessedJobs, setReceivedJobs
+    //setProcessedJobs, setReceivedJobs, setDpJobs
     useEffect(() => {
         if (customer === "select") {
             setJobIds([]);
@@ -246,6 +255,7 @@ export default function NewReceipt() {
         setJobIds([]);
 
     }, [customer]);
+
     //setJobs
     useEffect(() => {
         const d = [];
@@ -297,7 +307,6 @@ export default function NewReceipt() {
         setJobs(j);
 
     }, [processedJobs.length, receivedJobs.length, dpJobs.length, customer]);
-
 
     //setDeliverables
     useEffect(() => {
@@ -419,6 +428,12 @@ export default function NewReceipt() {
     function saveReceipt() {
         if (jobIds.length == 0) return;
 
+        if (receiver === "") {
+            setError(true);
+            setErrorMessage("Please enter Receiver's Name to create a new Delivery Slip. ");
+            return;
+        }
+
         let deliverables_data = [];
         let jobId, receiptId, newQty, partial, newDel;
         deliverables.forEach(del => {
@@ -443,7 +458,7 @@ export default function NewReceipt() {
 
         //console.log(deliverables_data);
 
-        ReceiptService.create({ deliverables_data })
+        ReceiptService.create({ deliverables_data, rcvd_by: receiver, ship_to: shipTo })
             .then((response) => {
                 window.open(`/receipts/${response.data.id}`);
                 navigate(`/receipts`);
@@ -465,6 +480,7 @@ export default function NewReceipt() {
             <div className="grid grid-cols-6">
                 <div className="mb-8"><Sidebar /></div>
                 <div className="col-span-5"> 
+                    {error ? <Error isOpen={error} onClose={handleClose}> {errorMessage} </Error> : <></>}
                         <div className="grid place-items-center">
                             <div className="max-w-full mx-4 py-8 px-8 mb-12 bg-[#eff1fc] rounded shadow border border-slate-500">
 
@@ -613,7 +629,29 @@ export default function NewReceipt() {
                                                     </div>
                                                 </>
                                             )}
-                                            <div className="pt-8 mx-8 grid grid-cols-2 place-items-center border-t border-slate-500">
+
+                                            <div className="p-1 mx-4 mt-8 mb-4 text-[#544B76] font-bold text-lg border-b border-slate-500"> Shipment Details: </div>
+
+                                            <div className="grid grid-cols-5 gap-2 px-1 mx-4 py-4 border-b border-slate-500">
+                                                <div className="col-span-2 flex gap-2"> 
+                                                <p className="font-bold text-[#544B76] text-md pt-1">Receiver Name:</p>
+                                                <input className="grow bg-white border border-slate-500 shadow-xs focus:outline-none px-4 py-2 mr-1 mb-2"
+                                                    type="text"
+                                                    value={receiver}
+                                                    placeholder="input required"
+                                                    onChange={(e) => setReceiver(e.target.value)}
+                                                /> </div>
+                                                <div className="col-span-3 flex gap-2"> 
+                                                <p className="font-bold text-[#544B76] text-md pt-1">Ship To:</p>
+                                                <input className="grow bg-white border border-slate-500 shadow-xs focus:outline-none px-4 py-2 ml-1 mb-2"
+                                                    type="text"
+                                                    value={shipTo}
+                                                    placeholder="please leave blank for original purchaser --"
+                                                    onChange={(e) => setShipTo(e.target.value)}
+                                                /> </div>
+                                            </div>
+
+                                            <div className="pt-8 mx-8 grid grid-cols-2 place-items-center">
                                                 <button
                                                     className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline hover:bg-red-800"
                                                     onClick={() => navigate(`/receipts`)}

@@ -7,13 +7,13 @@ const Order = db.orders;
 const Op = db.Sequelize.Op;
 
 export const createWithDeliverables = (req, res) => {
-
-    if (!req.body.deliverables_data) {
+    console.log(req.body)
+    if (!req.body.deliverables_data || !req.body.rcvd_by) {
         res.status(400).send({ message: "Content cannot be empty." });
         return;
     }
 
-    Receipt.create({})
+    Receipt.create({ rcvd_by: req.body.rcvd_by, ship_to: (req.body.ship_to ? req.body.ship_to : null) })
         .then(data => {
             req.body.deliverables_data.forEach(d => {
                 Deliverable.create({ receipt_id: data.id, partial: d.partial, qty: d.newQty, job_id: d.jobId })
