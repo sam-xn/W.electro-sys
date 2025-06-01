@@ -27,15 +27,15 @@ export default function Contacts({ company, contacts }) {
                     : <></>
                 }
                 {contacts.other ? <>
-                    {contacts.other[0] 
+                    {contacts.other[0]
                         ? <>
                             <div className="flex gap-2 my-4 text-[#544B76] text-lg">
                                 <div className="mx-4 text-lg"> Other Contacts: </div>
                                 {contacts.other?.map((other, i) => {
                                     <>
-                                        <div>{other.name}</div>
+                                        <div>{other[i]?.name}</div>
                                         <div> | </div>
-                                        <div>{other.email}</div>
+                                        <div>{other[i]?.email}</div>
                                     </>
                                 })}
                             </div>

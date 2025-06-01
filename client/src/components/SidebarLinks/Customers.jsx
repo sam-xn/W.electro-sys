@@ -76,7 +76,7 @@ export default function Customers() {
                     }
                 });
 
-                setContacts(c);
+                setContacts(c); console.log(c)
             })
             .catch((e) => {
                 console.log(e);
