@@ -181,7 +181,7 @@ export default function Jobs() {
                                                             Print Tag
                                                         </Link>
                                                     </> :
-                                                        job.status === "received" ? <>
+                                                        job.status === "received" || job.status === "delivered-partial" ? <>
                                                             <Link
                                                                 className={button_classname+ " mb-2"}
                                                                 to={`/jobs/${job.id}/update`}

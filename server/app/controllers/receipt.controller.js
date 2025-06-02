@@ -7,7 +7,6 @@ const Order = db.orders;
 const Op = db.Sequelize.Op;
 
 export const createWithDeliverables = (req, res) => {
-    console.log(req.body)
     if (!req.body.deliverables_data || !req.body.rcvd_by) {
         res.status(400).send({ message: "Content cannot be empty." });
         return;
