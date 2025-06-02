@@ -149,12 +149,13 @@ export default function Order() {
             });
     }
 
-    function jobStatusUpdate(jId, status) {
-        JobService.update(jId, { status: status })
-            .catch((e) => {
-                console.log(e);
-            });
-    }
+    // moved to printTag
+    //function jobStatusUpdate(jId, status) {
+    //    JobService.update(jId, { status: status })
+    //        .catch((e) => {
+    //            console.log(e);
+    //        });
+    //}
 
     // ------------------------------------------------------------------------------------ Modal 
 
@@ -431,8 +432,7 @@ export default function Order() {
                                                 ? <>
                                                     <div className="mt-4 border-t border-slate-500">
                                                         <div className="mt-4 mx-4">
-                                                            <Link className={button_classname} to={`/jobs/${job.id}/print`}
-                                                                onClick={() => jobStatusUpdate(job.id, "received")} >
+                                                            <Link className={button_classname} to={`/jobs/${job.id}/print`} >
                                                                 <p className="">Print Tag</p>
                                                             </Link>
                                                         </div>

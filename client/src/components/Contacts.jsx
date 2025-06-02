@@ -1,7 +1,7 @@
 export default function Contacts({ company, contacts }) {
 
     const button_classname = "grid text-center text-sm font-medium shadow-xs ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-background hover:bg-[#DEE1F4] rounded-md py-2";
-    //console.log(contacts)
+    console.log(contacts)
     return (
         <>
             <div className="max-w-full m-4 p-8 bg-[#eff1fc] rounded shadow border border-slate-500">

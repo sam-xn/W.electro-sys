@@ -68,10 +68,10 @@ const router = createBrowserRouter([
                 path: "/jobs",
                 element: <Jobs />
             },
-            {
-                path: "/jobs/:id",
-                element: <Job />
-            },
+            //{
+            //    path: "/jobs/:id",
+            //    element: <Job />
+            //},
             {
                 path: "/jobs/:id/update",
                 element: <FinishJob />

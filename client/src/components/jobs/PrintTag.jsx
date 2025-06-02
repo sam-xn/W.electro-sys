@@ -56,6 +56,11 @@ export default function PrintJob() {
             });
     }, [job]);
 
+    useEffect(() => {
+        JobService.update(params.id, { status: "received" })
+            .catch((e) => { console.log(e); });
+    }, []);
+
     return (
         <>  
             <div className="rotate-270 translate-x-6 translate-y-76 h-[528px] aspect-[calc(8.5/11)] text-sm pr-2"> 

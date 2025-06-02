@@ -105,18 +105,18 @@ export default function PrintReceiptPgN() {
                     }
                 });
                 rRows.pop(); // remove last blank line
+                //rRows.splice(19, 0, {/*receipt_not_rendered_here*/});
                 rRows.splice(20, 0, {/*receipt_not_rendered_here*/});
-                rRows.splice(21, 0, {/*receipt_not_rendered_here*/});
 
                 const rRowsPgN = [];
-                let pgNRows = rRows.splice(22, rRows.length - 22);
+                let pgNRows = rRows.splice(21, rRows.length - 21);
 
                 let nextReceipts = [];
-                while (pgNRows.length > 22) {
-                    pgNRows.splice(20, 0, { packages: "", received: "" });
-                    pgNRows.splice(21, 0, { packages: "", received: "-- continued on next page --", next_pg: true });
+                while (pgNRows.length > 21) {
+                    //pgNRows.splice(19, 0, { packages: "", received: "" });
+                    pgNRows.splice(20, 0, { packages: "", received: "-- continued on next page --", next_pg: true });
 
-                    nextReceipts = pgNRows.splice(22, pgNRows.length - 22);
+                    nextReceipts = pgNRows.splice(21, pgNRows.length - 21);
                     rRowsPgN.push(pgNRows);
 
                     pgNRows = nextReceipts;
@@ -124,7 +124,7 @@ export default function PrintReceiptPgN() {
 
                 rRowsPgN.push(pgNRows);
 
-                for (let i = rRowsPgN[rRowsPgN.length - 1].length; i < 22; i++) {
+                for (let i = rRowsPgN[rRowsPgN.length - 1].length; i < 21; i++) {
                     rRowsPgN[rRowsPgN.length - 1].push({ packages: "", received: "" });
                 }
                 setReceiptRows(rRowsPgN[(params?.pg)-2]);
@@ -139,7 +139,7 @@ export default function PrintReceiptPgN() {
     return (
         <>
             {/*<div className="rotate-270 -translate-x-45 translate-y-30 h-[528px] aspect-[calc(8.5/5.5)] text-md text-slate-500 items-start">*/}
-            <div className="-translate-y-8 w-[528px] aspect-[calc(5.5/8.5)] text-md text-slate-500">
+            <div className="translate-x-52 -translate-y-8 w-[528px] aspect-[calc(5.5/8.5)] text-md text-slate-500">
 
                 <div className="flex gap-4 align-content-center mx-3 mb-2">
                     <div className="grow self-center border-t-3 border-slate-500 mt-2"> <hr className="mt-0.25 border-slate-500" /> </div>
@@ -159,7 +159,7 @@ export default function PrintReceiptPgN() {
                             </p>
                         </div>
                     </div>
-                    <div className="mx-1 border-double border-4 pb-1 p-1 flex"> TO:
+                    <div className="mx-1 border-double border-4 mt-1 p-1 flex"> TO:
                         {receipt ? <p className="grow text-center font-semibold"> {String(receipt.customer).toUpperCase()} </p> : <></>}
                     </div>
 
@@ -184,14 +184,14 @@ export default function PrintReceiptPgN() {
                                 </>
                             )}
                         </div>
-                        <div className="grid grid-cols-5 text-sm">
-                            <div className="flex gap-6 px-1 border-t border-b-4 border-r-2 col-span-2">
-                                <p className="pb-3">RECEIVED BY:</p>
-                                <p className="grow pt-1 font-semibold">{receipt.rcvd_by}</p>
+                        <div className="flex text-sm leading-8">
+                            <div className="w-full flex gap-6 px-1 border-t border-b-4 border-r-2">
+                                <p>RECEIVED BY:</p>
+                                <p className="grow text-center font-semibold">{receipt.rcvd_by}</p>
                             </div>
-                            <div className="flex gap-6 px-1 border-t border-b-4 col-span-3">
-                                <p className="pb-3">SHIP TO:</p>
-                                <p className="grow pt-1 font-semibold">{receipt.ship_to ? receipt.ship_to : "Purchaser"}</p>
+                            <div className="w-full flex gap-6 px-1 border-t border-b-4">
+                                <p>SHIP TO:</p>
+                                <p className="grow text-center font-semibold">{receipt.ship_to ? receipt.ship_to : "Purchaser"}</p>
                             </div>
                         </div>
                     </div>

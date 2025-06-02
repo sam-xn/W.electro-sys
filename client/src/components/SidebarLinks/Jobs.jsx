@@ -47,7 +47,7 @@ export default function Jobs() {
 
     const input_classname = "block flex-1 border-0 bg-transparent py-1.5 px-3 text-slate-900 placeholder:text-slate-400 focus:ring-0 sm:text-sm sm:leading-6";
     const th_classname = "h-12 px-4 align-middle font-medium border-b border-slate-500";
-    const td_classname = "p-2 align-middle border border-slate-300";
+    const td_classname = "w-1/6 p-2 align-middle border border-slate-300";
     const button_classname = "grid text-center text-sm font-medium shadow-xs ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-background hover:bg-[#DEE1F4] rounded-md py-2";
 
     return (
@@ -136,10 +136,13 @@ export default function Jobs() {
                                             Customer
                                         </th>
                                         <th className={th_classname}>
+                                            PO #
+                                        </th>
+                                        <th className={th_classname}>
                                             Process
                                         </th>
                                         <th className={th_classname}>
-                                            PO #
+                                            Qty
                                         </th>
                                         <th className={th_classname}></th>
                                     </tr>
@@ -158,19 +161,40 @@ export default function Jobs() {
                                                 </td>
                                                 <td className={td_classname}
                                                 >
-                                                    {job.process}
-                                                </td>
-                                                <td className={td_classname}
-                                                >
                                                     {job.order.po_num}
                                                 </td>
                                                 <td className={td_classname}
                                                 >
+                                                    {job.process}
+                                                </td>
+                                                <td className={td_classname+" text-center"}
+                                                >
+                                                    {job.qty}
+                                                </td>
+                                                <td className={td_classname}
+                                                >
+                                                    {job.status === "incoming" ? <>
+                                                        <Link
+                                                            className={button_classname+" mb-2"}
+                                                            to={`/jobs/${job.id}/print`}
+                                                        >
+                                                            Print Tag
+                                                        </Link>
+                                                    </> :
+                                                        job.status === "received" ? <>
+                                                            <Link
+                                                                className={button_classname+ " mb-2"}
+                                                                to={`/jobs/${job.id}/update`}
+                                                            >
+                                                                Finish Job
+                                                            </Link>
+                                                        </> : <></>
+                                                    }
                                                     <Link
                                                         className={button_classname}
-                                                        to={`/jobs/${job.id}`}
+                                                        to={`/orders/${job.po_id}`}
                                                     >
-                                                        View Job
+                                                        View Order
                                                     </Link>
                                                 </td>
                                             </tr>
