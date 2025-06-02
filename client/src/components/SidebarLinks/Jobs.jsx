@@ -49,6 +49,7 @@ export default function Jobs() {
     const th_classname = "h-12 px-4 align-middle font-medium border-b border-slate-500";
     const td_classname = "w-1/6 p-2 align-middle border border-slate-300";
     const button_classname = "grid text-center text-sm font-medium shadow-xs ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-background hover:bg-[#DEE1F4] rounded-md py-2";
+    const button_classname_2 = "grid text-center text-white text-sm font-medium shadow-xs ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-blue-800 hover:bg-[#DEE1F4] hover:text-black rounded-md py-2 mb-2";
 
     return (
         <>
@@ -175,7 +176,7 @@ export default function Jobs() {
                                                 >
                                                     {job.status === "incoming" ? <>
                                                         <Link
-                                                            className={button_classname+" mb-2"}
+                                                            className={button_classname_2}
                                                             to={`/jobs/${job.id}/print`}
                                                         >
                                                             Print Tag
@@ -183,7 +184,7 @@ export default function Jobs() {
                                                     </> :
                                                         job.status === "received" || job.status === "delivered-partial" ? <>
                                                             <Link
-                                                                className={button_classname+ " mb-2"}
+                                                                className={button_classname_2}
                                                                 to={`/jobs/${job.id}/update`}
                                                             >
                                                                 Finish Job
