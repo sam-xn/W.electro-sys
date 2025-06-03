@@ -19,7 +19,9 @@ export default function NewReceipt() {
 
     /* default customer <select> returns [] before attempting to send http-get */
     /* jobs populated & rendered after selection of customer -->  */
+    /* changeCustomer: force second render after user changes customer so that jobs are re-rendered */
     const [customer, setCustomer] = useState("select");
+    const [changeCustomer, setChangeCustomer] = useState(0);
     const [customerList, setCustomerList] = useState([]);
 
     /* processed, received & delivered-partial jobs: http-get returns jobs available for receipts */
@@ -57,12 +59,17 @@ export default function NewReceipt() {
             });
     }, []);
 
+    useEffect(() => {
+    }, [changeCustomer]);
+
     function clearCustomer(e) {
         setCustomer(e.target.value);
         setCurrentDel("");
         setInputPartial([]);
         setQty("");
         setDelQty([]);
+
+        setChangeCustomer(changeCustomer + 1);
     }
 
     //setProcessedJobs, setReceivedJobs, setDpJobs
@@ -482,7 +489,7 @@ export default function NewReceipt() {
                 <div className="col-span-5"> 
                     {error ? <Error isOpen={error} onClose={handleClose}> {errorMessage} </Error> : <></>}
                         <div className="grid place-items-center">
-                            <div className="max-w-full mx-4 py-8 px-8 mb-12 bg-[#eff1fc] rounded shadow border border-slate-500">
+                            <div className="w-full mx-4 py-8 px-8 mb-12 bg-[#eff1fc] rounded shadow border border-slate-500">
 
                                 <div className="p-1 mb-8 text-[#544B76] font-bold text-xl border-b border-slate-500">
                                     New Receipt
@@ -501,8 +508,8 @@ export default function NewReceipt() {
                                         )}
                                     </select>
                                 </div>
-                
-                                {customer == "select"
+
+                                {customer == "select" && changeCustomer >= 0
                                     ? <></>
                                     : <>
                                         {jobs.length == 0 ? <div className="p-1 mx-8 mt-8 text-[#544B76]">No jobs to display.</div> :

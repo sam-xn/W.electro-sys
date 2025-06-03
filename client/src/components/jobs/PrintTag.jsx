@@ -38,7 +38,7 @@ export default function PrintJob() {
                     r.process = [str_1, str_2];
                     setPsLine2(true);
                 }
-                console.log(r);
+                //console.log(r);
                 setJob(r);
             })
             .catch((e) => {
