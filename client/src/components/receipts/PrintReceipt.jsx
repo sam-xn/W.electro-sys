@@ -147,37 +147,31 @@ export default function PrintReceipt() {
     return (
         <>
             {/*<div className="rotate-270 -translate-x-45 translate-y-30 h-[528px] aspect-[calc(8.5/5.5)] text-md text-slate-500 items-start">*/}
-            <div className="translate-x-52 -translate-y-8 w-[528px] aspect-[calc(5.5/8.5)] text-md text-slate-500">
+            <div className="translate-x-30 translate-y-10 w-[520px] aspect-[calc(5.5/8.5)] text-sm text-slate-500">
 
-                <div className="flex gap-4 align-content-center mx-3 mb-2">
-                    <div className="grow self-center border-t-3 border-slate-500 mt-2"> <hr className="mt-0.25 border-slate-500" /> </div>
+                {/*<div className="grow self-center border-t-3 my-2 mx-3 border-slate-500"> <hr className="mt-0.25 border-slate-500" /> </div>*/}
+
+                <div className="flex gap-4 justify-between mx-3 mb-2">
+                    <p className="font-bold text-center text-md"> Delivery Slip # {receipt.id} </p>
                     <p className="font-bold text-center text-md"> {new Date(receipt._timestamp).toDateString()} </p>
-                    <div className="grow self-center border-t-3 border-slate-500 mt-2"> <hr className="mt-0.25 border-slate-500" /> </div>
                 </div>
 
                 {/*<div className="pr-4 translate-x-10 -translate-y-5 w-[780px]"> */}
                 <div className="mx-3">
 
-                    <div className="mx-1 border-double border-4 mb-1 p-1 flex"> FROM:
+                    <div className="border-double border-4 p-1 flex mb-1"> TO:
+                        {receipt ? <p className="grow text-center font-semibold"> {String(receipt.customer).toUpperCase()} </p> : <></>}
+                    </div>
+                    <div className="border-double border-4 p-1 flex"> FROM:
                         <div className="grow text-center">
-                            <p className="font-semibold"> WATERLOO ELECTROPLATING & METAL FINISHING INC.</p>
+                            <p className="font-semibold"> WATERLOO ELECTROPLATING</p>
                             <p className="leading-4"> 3-105 Randall Drive Waterloo ON  N2V 1C5 <br />
-                                Tel (519) 884 0797  Fax (519) 884 ???? <br />
-                                GST # R13.. <br />
+                                Tel (519) 884 0797
                             </p>
                         </div>
                     </div>
-                    <div className="mx-1 border-double border-4 mt-1 p-1 flex"> TO:
-                        {receipt ? <p className="grow text-center font-semibold"> {String(receipt.customer).toUpperCase()} </p> : <></>}
-                    </div>
 
-                    <div className="flex gap-4 align-content-center my-1">
-                        <div className="grow self-center border-t-3 border-slate-500 mt-2"> <hr className="mt-0.25 border-slate-500" /> </div>
-                        <p className="font-bold text-center text-md"> DELIVERY SLIP # {receipt.id} </p>
-                        <div className="grow self-center border-t-3 border-slate-500 mt-2"> <hr className="mt-0.25 border-slate-500" /> </div>
-                    </div>
-
-                    <div className="border border-2">
+                    <div className="mt-2 border border-2 h-[calc(100%-50px)]">
                         <div className="grid grid-cols-5 text-sm text-center leading-6 border-b-2">
                             <p className="px-1">QTY</p>
                             <p className="px-1 border-l-2 col-span-4">DESCRIPTION</p>
@@ -193,16 +187,17 @@ export default function PrintReceipt() {
                             )}
                         </div>
                         <div className="flex text-sm leading-8">
-                            <div className="w-full flex px-1 border-t border-b-4 border-r-2">
+                            <div className="w-full flex px-1 border-t border-r-2">
                                 <p>RECEIVED BY:</p>
                                 <p className="grow text-center font-semibold">{receipt.rcvd_by}</p>
                             </div>
-                            <div className="w-full flex gap-6 px-1 border-t border-b-4">
+                            <div className="w-full flex gap-6 px-1 border-t">
                                 <p>SHIP TO:</p>
                                 <p className="grow text-center font-semibold">{receipt.ship_to ? receipt.ship_to : "Purchaser"}</p>
                             </div>
                         </div>
                     </div>
+                    <div className="grow self-center border-t-3 mt-2 border-slate-500"> <hr className="mt-0.25 border-slate-500" /> </div>
                 </div>
             </div>
         </>

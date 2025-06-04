@@ -18,8 +18,8 @@ export default function PrintJob() {
 
                 const r = response.data[0];
 
-                let dateStr = new Date(r._timestamp).toDateString().split(' '); 
-                const day = dateStr.splice(2,1); 
+                let dateStr = new Date(r._timestamp).toDateString().split(' ');
+                const day = dateStr.splice(2, 1);
                 dateStr[0] = day;
                 dateStr.splice(1, 0, " - ");
                 dateStr.splice(3, 0, " - ");
@@ -33,12 +33,12 @@ export default function PrintJob() {
                         if (processStr[i] !== " ") continue;
                         else { index = i + 1; break; }
                     }
-                    let str_1 = processStr.substring(0,index);
+                    let str_1 = processStr.substring(0, index);
                     let str_2 = processStr.substring(index, processStr.length);
                     r.process = [str_1, str_2];
                     setPsLine2(true);
                 }
-                //console.log(r);
+                console.log(r);
                 setJob(r);
             })
             .catch((e) => {
@@ -56,14 +56,9 @@ export default function PrintJob() {
             });
     }, [job]);
 
-    useEffect(() => {
-        JobService.update(params.id, { status: "received" })
-            .catch((e) => { console.log(e); });
-    }, []);
-
     return (
-        <>  
-            <div className="rotate-270 translate-x-6 translate-y-76 h-[528px] aspect-[calc(8.5/11)] text-sm pr-2"> 
+        <>
+            <div className="rotate-270 translate-x-46 -translate-y-25 h-[528px] aspect-[calc(8.5/11)] text-sm pr-4 pl-4">
                 <div className="font-bold text-center my-2"> WORK TAG </div>
 
                 <div className="m-1 flex gap-2"> <p>Company:</p> <div className="grow border-b border-slate-500 text-center text-xl"> {job.order ? job.order.customer : ""} </div> </div>
@@ -138,3 +133,4 @@ export default function PrintJob() {
         </>
     );
 }
+
