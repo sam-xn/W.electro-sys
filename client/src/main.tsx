@@ -13,7 +13,7 @@ import Order from './components/orders/Order.jsx'
 import NewOrder from './components/orders/NewOrder.jsx'
 
 import Jobs from './components/SidebarLinks/Jobs.jsx'
-import Job from './components/jobs/Job.jsx'
+//import Job from './components/jobs/Job.jsx'
 import NewJob from './components/jobs/NewJob.jsx'
 import FinishJob from './components/jobs/FinishJob.jsx'
 import PrintTag from './components/jobs/PrintTag.jsx'

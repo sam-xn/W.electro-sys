@@ -38,7 +38,10 @@ export default function PrintJob() {
                     r.process = [str_1, str_2];
                     setPsLine2(true);
                 }
-                console.log(r);
+
+                JobService.update(params.id, { status: "received" })
+                    .catch((e) => { console.log(e); });
+
                 setJob(r);
             })
             .catch((e) => {
