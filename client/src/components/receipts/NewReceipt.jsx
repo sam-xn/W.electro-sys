@@ -477,7 +477,7 @@ export default function NewReceipt() {
     }
 
 
-    const label_classname = "font-bold text-md text-[#544B76] border-b pl-4 pb-1 pt-2";
+    const label_classname = "font-bold text-md text-[#544B76] pl-4 pb-1 pt-2";
     const input_classname = "focus:outline-none border-b pl-16 pb-1 pt-2";
 
     const div_classname = "max-w-full mr-4 p-6 rounded shadow border border-slate-500";
@@ -495,10 +495,10 @@ export default function NewReceipt() {
                                     New Receipt
                                 </div>
 
-                                <div className="bg-white grid grid-cols-4 m-4 pl-8 py-4 max-w-full border border-slate-500">
+                                <div className="bg-white flex gap-4 m-4 pl-8 py-4 max-w-full border border-slate-500">
                                     <div className={label_classname}> Customer: </div>
                                     <select
-                                        className="col-span-3 mr-8 border-b border-slate-500 text-center"
+                                        className="grow mr-8 border-b border-slate-500 text-center"
                                         defaultValue="select"
                                         onChange={clearCustomer}
                                     >
