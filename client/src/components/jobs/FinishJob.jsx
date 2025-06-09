@@ -65,22 +65,22 @@ export default function FinishJob() {
                 <div className="col-span-5"> 
                     {error ? <Error isOpen={error} onClose={handleClose}> {errorMessage} </Error> : <></>}
 
-                    {submitted
-                        ? <>
-                            <div className="mx-4 py-8 px-8 bg-[#eff1fc] rounded shadow border border-slate-500">
-                                <div className="p-1 text-[#544B76] font-bold text-xl border-b border-slate-500">
-                                    For Operator
-                                </div>
-                                <div className="my-8 py-8 ml-12 text--[#544B76] text-lg"> Submitted. Thanks! </div>
-                                <Link
-                                    className={button_classname}
-                                    to={`/jobs`}
-                                >
-                                    <p> {" <- Return to Jobs " } </p>
-                                </Link>
-                            </div>
-                        </>
-                        : <>
+                    {/*{submitted*/}
+                    {/*    ? <>*/}
+                    {/*        <div className="mx-4 py-8 px-8 bg-[#eff1fc] rounded shadow border border-slate-500">*/}
+                    {/*            <div className="p-1 text-[#544B76] font-bold text-xl border-b border-slate-500">*/}
+                    {/*                For Operator*/}
+                    {/*            </div>*/}
+                    {/*            <div className="my-8 py-8 ml-12 text--[#544B76] text-lg"> Submitted. Thanks! </div>*/}
+                    {/*            <Link*/}
+                    {/*                className={button_classname}*/}
+                    {/*                to={`/jobs`}*/}
+                    {/*            >*/}
+                    {/*                <p> {" <- Return to Jobs " } </p>*/}
+                    {/*            </Link>*/}
+                    {/*        </div>*/}
+                    {/*    </>*/}
+                    {/*    : <>*/}
                             <div className="mx-4 pt-8 px-8 bg-[#eff1fc] rounded shadow border border-slate-500">
                                 <div className="flex gap-8">
                                     <div className={"bg-white max-w-full mr-2 p-8 mb-8 rounded shadow border border-slate-500"}>
@@ -102,7 +102,7 @@ export default function FinishJob() {
 
                                             {job.status !== "incoming" && job.status !== "received"
                                                 ? <>
-                                                    <div className="pt-4 pb-1 flex gap-4 border-t border-slate-500"> Operator: <div className="font-semibold text-blue-700">{job.tag?.operator_initial}</div></div>
+                                                    <div className="mt-4 pt-4 pb-1 flex gap-4 border-t border-slate-500"> Operator: <div className="font-semibold text-blue-700">{job.tag?.operator_initial}</div></div>
                                                     <div className="flex gap-4 items-center">
                                                         {job.tag?.rack_type ? <> Rack Type: <div className="font-semibold text-blue-700 pr-6 border-r border-slate-500">{job.tag?.rack_type} </div> </> : <></>}
                                                         {job.tag?.diff_level ? <> Difficulty: <div className="font-semibold text-blue-700">{job.tag?.diff_level} </div> </> : <></>}
@@ -127,7 +127,18 @@ export default function FinishJob() {
                                         <div className="p-1 text-[#544B76] font-bold text-xl border-b border-slate-500">
                                             For Operator's Use
                                         </div>
-                                        {/*<div className="mb-4 text-sm text-[#544B76]"> - Edit info - </div>*/}
+
+                                        {submitted
+                                            ? <>
+                                                <div className="my-8 py-8 ml-12 text--[#544B76] text-lg"> Submitted. Thanks! </div>
+                                                <Link
+                                                    className={button_classname}
+                                                    to={`/jobs`}
+                                                >
+                                                    <p> {" <- Return to Jobs "} </p>
+                                                </Link>
+                                            </>
+                                            : <>
 
                                         <div className="bg-white grid grid-cols-4 mx-4 mt-8 pb-8 border border-slate-500">
 
@@ -295,11 +306,11 @@ export default function FinishJob() {
 
                                             <div></div>
                                                 </div>
+                                            </>
+                                        }
                                     </div>
                                 </div>
                             </div>
-                        </>
-                    }
                 </div>
             </div>
         </>
