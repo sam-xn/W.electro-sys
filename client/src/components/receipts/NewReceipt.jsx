@@ -467,8 +467,8 @@ export default function NewReceipt() {
 
         ReceiptService.create({ deliverables_data, rcvd_by: receiver, ship_to: shipTo })
             .then((response) => {
-                window.open(`/receipts/${response.data.id}`);
-                navigate(`/receipts`);
+                //window.open(`/receipts/${response.data.id}`);
+                navigate(`/receipts/${response.data.id}`);
             })
             .catch((e) => {
                 console.log(e);

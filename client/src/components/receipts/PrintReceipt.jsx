@@ -94,7 +94,11 @@ export default function PrintReceipt() {
 
                         rRows.push({
                             packages: order.deliverables[i].qty,
-                            received: order.deliverables[i].job.process + (order.deliverables[i].partial ? " -- partial pickup out of - " + order.deliverables[i].job.qtyRcvd + " - recvd" : "")
+                            received: order.deliverables[i].job.process
+                        });
+                        if (order.deliverables[i].partial) rRows.push({
+                            packages: "",
+                            received: " -- partial pickup out of - " + order.deliverables[i].job.qtyRcvd + " - recvd"
                         });
 
                         if (i == order.deliverables.length - 1) rRows.push({
