@@ -19,9 +19,7 @@ export default function NewReceipt() {
 
     /* default customer <select> returns [] before attempting to send http-get */
     /* jobs populated & rendered after selection of customer -->  */
-    /* changeCustomer: force second render after user changes customer so that jobs are re-rendered */
     const [customer, setCustomer] = useState("select");
-    const [changeCustomer, setChangeCustomer] = useState(0);
     const [customerList, setCustomerList] = useState([]);
 
     /* processed, received & delivered-partial jobs: http-get returns jobs available for receipts */
@@ -59,25 +57,23 @@ export default function NewReceipt() {
             });
     }, []);
 
-    useEffect(() => {
-    }, [changeCustomer]);
-
     function clearCustomer(e) {
         setCustomer(e.target.value);
+        setProcessedJobs([]);
+        setReceivedJobs([]);
+        setDpJobs([]);
+        setJobs([]);
+        setJobIds([]);
         setCurrentDel("");
         setInputPartial([]);
         setQty("");
         setDelQty([]);
-
-        setChangeCustomer(changeCustomer + 1);
     }
 
     //setProcessedJobs, setReceivedJobs, setDpJobs
     useEffect(() => {
-        if (customer === "select") {
-            setJobIds([]);
-            return;
-        }
+        if (customer === "select") return; 
+
         JobService.getCustomer('processed', customer)
             .then((response) => {
                 let d = response.data.sort((a, b) => a.orderId - b.orderId);
@@ -105,7 +101,7 @@ export default function NewReceipt() {
                         continue;
                     }
 
-                    if (cj.orderId != pj.orderId) {
+                    if (cj.order.id != pj.order.id) {
                         j.push({
                             orderId: cj.order.id,
                             po_num: cj.order.po_num,
@@ -142,7 +138,7 @@ export default function NewReceipt() {
         JobService.getCustomer('received', customer)
             .then((response) => {
 
-                let d = response.data.sort((a, b) => a.orderId - b.orderId);
+                let d = response.data.sort((a, b) => a.orderId - b.orderId); console.log(d)
                 let cj, pj;
                 let j = [];
 
@@ -164,10 +160,10 @@ export default function NewReceipt() {
                             }]
                         });
                         pj = cj;
-                        continue;
+                        continue; 
                     }
 
-                    if (cj.orderId != pj.orderId) {
+                    if (cj.order.id != pj.order.id) {
                         j.push({
                             orderId: cj.order.id,
                             po_num: cj.order.po_num,
@@ -200,7 +196,7 @@ export default function NewReceipt() {
             });
 
         JobService.getCustomer('delivered-partial', customer)
-            .then((response) => {
+            .then((response) => { 
 
                 let d = response.data.sort((a, b) => a.orderId - b.orderId);
                 let cj, pj;
@@ -227,7 +223,7 @@ export default function NewReceipt() {
                         continue;
                     }
 
-                    if (cj.orderId != pj.orderId) {
+                    if (cj.order.id != pj.order.id) {
                         j.push({
                             orderId: cj.order.id,
                             po_num: cj.order.po_num,
@@ -267,10 +263,10 @@ export default function NewReceipt() {
     useEffect(() => {
         const d = [];
         processedJobs.forEach((job) => d.push(job));
-        receivedJobs.forEach((job) => d.push(job));
+        receivedJobs.forEach((job) => d.push(job)); 
         dpJobs.forEach((job) => d.push(job));
 
-        d.sort((a, b) => a.orderId - b.orderId);
+        d.sort((a, b) => a.orderId - b.orderId); 
 
         let cj, pj;
         let j = [];
@@ -313,7 +309,7 @@ export default function NewReceipt() {
 
         setJobs(j);
 
-    }, [processedJobs.length, receivedJobs.length, dpJobs.length, customer]);
+    }, [processedJobs]);
 
     //setDeliverables
     useEffect(() => {
@@ -509,7 +505,7 @@ export default function NewReceipt() {
                                     </select>
                                 </div>
 
-                                {customer == "select" && changeCustomer >= 0
+                                {customer == "select"
                                     ? <></>
                                     : <>
                                         {jobs.length == 0 ? <div className="p-1 mx-8 mt-8 text-[#544B76]">No jobs to display.</div> :

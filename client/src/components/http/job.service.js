@@ -16,12 +16,12 @@ const getJob = (id) => {
 };
 
 const getOrder = (poId) => {
-    return http.get(`/jobs/order/${poId}`);
+    return http.get(`/jobs/order/${encodeURIComponent(poId)}`);
 };
 
 const getCustomer = (status, customer) => {
     if (status === "select") status = null;
-    return http.get(`/jobs/customer/${status}/${customer}`);
+    return http.get(`/jobs/customer/${status}/${encodeURIComponent(customer)}`);
 };
 
 const getList = (jobIds) => {
@@ -31,16 +31,16 @@ const getList = (jobIds) => {
 const search = (status, customer, po_num, process) => {
     const queries = [];
 
-    if (customer) queries.push(`?customer=${customer}`);
+    if (customer) queries.push(`?customer=${encodeURIComponent(customer)}`);
     if (po_num) {
         if (queries.length > 0) queries.push("&")
         else queries.push("?");
-        queries[queries.length - 1] += `po_num=${po_num}`;
+        queries[queries.length - 1] += `po_num=${encodeURIComponent(po_num)}`;
     }
     if (process) {
         if (queries.length > 0) queries.push("&")
         else queries.push("?");
-        queries[queries.length - 1] += `process=${process}`;
+        queries[queries.length - 1] += `process=${encodeURIComponent(process)}`;
     }
 
     let request = "";
