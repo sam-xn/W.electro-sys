@@ -12,7 +12,7 @@ const create = (data) => {
 };
 
 const getOrder = (poId) => {
-    return http.get(`/receipts/order/${poId}`);
+    return http.get(`/receipts/order/${encodeURIComponent(poId)}`);
 };
 
 const getList = (receiptIds) => { 
@@ -30,12 +30,12 @@ const search = (id, customer, po_num) => {
     if (customer) {
         if (queries.length > 0) queries.push("&")
         else queries.push("?");
-        queries[queries.length - 1] += `customer=${customer}`;
+        queries[queries.length - 1] += `customer=${encodeURIComponent(customer)}`;
     }
     if (po_num) {
         if (queries.length > 0) queries.push("&")
         else queries.push("?");
-        queries[queries.length - 1] += `po_num=${po_num}`;
+        queries[queries.length - 1] += `po_num=${encodeURIComponent(po_num)}`;
     }
 
     let request = "";
@@ -57,7 +57,7 @@ const createNote = (data) => {
 };
 
 const getNotes = (orderId) => {
-    return http.get(`/receipt_notes/order/${orderId}`);
+    return http.get(`/receipt_notes/order/${encodeURIComponent(orderId)}`);
 };
 
 const updateNote = (id, data) => {

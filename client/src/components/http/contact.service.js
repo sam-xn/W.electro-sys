@@ -17,11 +17,11 @@ const getType = (type) => {
 
 const getCompany = (company) => {
     if (company === "") return ({});
-    return http.get(`/contacts/company/${company}`);
+    return http.get(`/contacts/company/${encodeURIComponent(company)}`);
 };
 
 const searchCompany = (company, type) => {
-    return http.get(`/contacts/search/${type}?company=${company}`);
+    return http.get(`/contacts/search/${type}?company=${encodeURIComponent(company)}`);
 };
 
 export default {

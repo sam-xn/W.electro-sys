@@ -28,7 +28,7 @@ const remove = (id) => {
 };
 
 const findByTitle = (company) => {
-    return http.get(`/customers?company=${company}`);
+    return http.get(`/customers?company=${encodeURIComponent(company)}`);
 };
 
 export default {

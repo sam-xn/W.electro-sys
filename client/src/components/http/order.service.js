@@ -18,11 +18,11 @@ const get = (id) => {
 const search = (status, customer, po_num) => {
     const queries = [];
 
-    if (customer) queries.push(`?customer=${customer}`);
+    if (customer) queries.push(`?customer=${encodeURIComponent(customer)}`);
     if (po_num) {
         if (queries.length > 0) queries.push("&")
         else queries.push("?");
-        queries[queries.length - 1] += `po_num=${po_num}`;
+        queries[queries.length - 1] += `po_num=${encodeURIComponent(po_num)}`;
     }
 
     let request = "";
@@ -47,7 +47,7 @@ const createNote = (data) => {
 };
 
 const getNotes = (orderId) => {
-    return http.get(`/order_notes/order/${orderId}`);
+    return http.get(`/order_notes/order/${encodeURIComponent(orderId)}`);
 };
 
 const updateNote = (id, data) => {
