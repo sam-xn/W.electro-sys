@@ -39,9 +39,7 @@ export default function NewReceipt() {
     const [inputPartial, setInputPartial] = useState([]);
     const [currentDel, setCurrentDel] = useState("");
 
-    /* qty, setQty: input qty for each deliverable set to partial, updates onChange of input */
     /* delQty, setDelQty: array saves deliverables set to partial where newQty will be added to receipt. updates on togglePartial and addToReceipt */
-    const [qty, setQty] = useState(""); 
     const [delQty, setDelQty] = useState([]); 
 
     const [receiver, setReceiver] = useState("");
@@ -66,7 +64,6 @@ export default function NewReceipt() {
         setJobIds([]);
         setCurrentDel("");
         setInputPartial([]);
-        setQty("");
         setDelQty([]);
     }
 
@@ -138,7 +135,7 @@ export default function NewReceipt() {
         JobService.getCustomer('received', customer)
             .then((response) => {
 
-                let d = response.data.sort((a, b) => a.orderId - b.orderId); console.log(d)
+                let d = response.data.sort((a, b) => a.orderId - b.orderId); //console.log(d)
                 let cj, pj;
                 let j = [];
 
@@ -417,17 +414,14 @@ export default function NewReceipt() {
         setInputPartial(t);
     }
 
-    function submitDel(target) {
+    function updateDelQtys(id, target) {
         setCurrentDel(target.name + target.value);
-        let jobId = target.name;
-        let t = delQty.filter(a => a.id !== jobId);
-        setDelQty([
-            ...t,
-            { id: jobId, qty: qty}
-        ]);
-        setQty("");
-    }
 
+        setDelQty([
+            ...delQty.filter(a => a.id !== id),
+            { id: id, qty: target.value }
+        ]);
+    }
     function saveReceipt() {
         if (jobIds.length == 0) return;
 
@@ -458,8 +452,6 @@ export default function NewReceipt() {
                 deliverables_data.push(newDel);
             });
         });
-
-        //console.log(deliverables_data);
 
         ReceiptService.create({ deliverables_data, rcvd_by: receiver, ship_to: shipTo })
             .then((response) => {
@@ -602,23 +594,13 @@ export default function NewReceipt() {
                                                                                 : <> {inputPartial.find((a) => a.id == job.id).partial
                                                                                     ? <>
                                                                                         <div className="flex justify-center gap-4 mt-6">
-                                                                                            <div className="font-bold text-md text-[#544B76] border-b pb-1 pt-2">
+                                                                                            <div className="font-bold text-md text-[#544B76] pb-1 pt-2">
                                                                                                 Qty:
                                                                                             </div>
                                                                                             <input className="focus:outline-none text-center border-b max-w-xs pb-1 pt-2"
                                                                                                 type="text"
-                                                                                                value={delQty.find((a) => a.id == job.id) === undefined
-                                                                                                    ? null : delQty.find((a) => a.id == job.id).qty }
-                                                                                                placeholder="input required"
-                                                                                                onChange={(e) => setQty(e.target.value)}
+                                                                                                onChange={(e) => updateDelQtys(job.id, e.target)}
                                                                                             />
-                                                                                            <button
-                                                                                                className={`outline rounded px-4 ${delQty.find((a) => a.id == job.id) === undefined ? "bg-[#544B76]" : "bg-blue-800"} text-white hover:bg-blue-700`}
-                                                                                                name={job.id}
-                                                                                                onClick={(e) => submitDel(e.target)}
-                                                                                            > {delQty.find((a) => a.id == job.id) === undefined
-                                                                                                ? "Submit" : "Submitted"}
-                                                                                            </button>
                                                                                         </div>
                                                                                     </>
                                                                                     : <></>}
