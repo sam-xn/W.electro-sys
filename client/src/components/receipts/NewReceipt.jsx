@@ -426,8 +426,7 @@ export default function NewReceipt() {
                     pj = cj;
                 }
 
-                setPastPickups(j); console.log(j)
-                console.log(j.find(a => a.jobId === 6).dels.map(p =>  p.qty ))
+                setPastPickups(j); 
             })
             .catch((e) => {
                 console.log(e);
