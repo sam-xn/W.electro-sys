@@ -33,6 +33,7 @@ export default function NewReceipt() {
     /* deliverables: array of data returned from http request on each jobIds change: display deliverable options only for selected jobs */
     const [jobIds, setJobIds] = useState([]);
     const [deliverables, setDeliverables] = useState([]);
+    const [pastPickups, setPastPickups] = useState([]);
 
     /* inputPartial: array saves an ordered list used to decide whether the deliverable radio is rendered as <checked> or <empty str> */
     /* currentDel: e.target.name as deliverable-id when rendering inputPartial*/
@@ -44,6 +45,7 @@ export default function NewReceipt() {
 
     const [receiver, setReceiver] = useState("");
     const [shipTo, setShipTo] = useState("");
+
     // setCustomerList
     useEffect(() => {
         CustomerService.getAll()
@@ -308,15 +310,15 @@ export default function NewReceipt() {
 
     }, [processedJobs, receivedJobs, dpJobs]);
 
-    //setDeliverables
+    //setDeliverables, setPastPickups
     useEffect(() => {
-        if (jobIds.length == 0) { setDeliverables([]); return; }
+        if (jobIds.length == 0) { setDeliverables([]); setPastPickups([]); return; }
         let jIds_str = "";
         jobIds.forEach(jId => jIds_str += String(jId) + ',');
         
         JobService.getList(jIds_str.slice(0, -1))
             .then((response) => {
-                let d = response.data.sort((a, b) => a.orderId - b.orderId);
+                const d = response.data.sort((a, b) => a.orderId - b.orderId);
                 let cj, pj;
                 let j = [];
 
@@ -375,6 +377,62 @@ export default function NewReceipt() {
             .catch((e) => {
                 console.log(e);
             });
+
+        ReceiptService.getPastPickups(jIds_str.slice(0, -1))
+            .then(response => {
+                const d = response.data.sort((a, b) => a.job_id - b.jobId);
+                let cj, pj;
+                let j = [];
+
+                for (let i = 0; i < d.length; i++) {
+
+                    cj = d[i];
+
+                    if (i == 0) {
+                        j.push({
+                            jobId: cj.job_id,
+                            dels: [{
+                                id: cj.id,
+                                qty: cj.qty,
+                                ds_num: cj.receipt.id,
+                                date: new Date(cj.receipt._timestamp).toDateString().split(" ").splice(1, 2)[0] + " " + new Date(cj.receipt._timestamp).toDateString().split(" ").splice(1, 2)[1]
+                            }]
+                        });
+                        pj = cj;
+                        continue;
+                    }
+
+                    if (cj.orderId != pj.orderId) {
+                        j.push({
+                            jobId: cj.job_id,
+                            dels: [{
+                                id: cj.id,
+                                qty: cj.qty,
+                                ds_num: cj.receipt.id,
+                                date: new Date(cj.receipt._timestamp).toDateString().split(" ").splice(1, 2)[0] + " " + new Date(cj.receipt._timestamp).toDateString().split(" ").splice(1, 2)[1]
+                            }]
+                        });
+                    }
+
+                    else {
+                        j[j.length - 1].dels.push({
+                            id: cj.id,
+                            qty: cj.qty,
+                            ds_num: cj.receipt.id,
+                            date: new Date(cj.receipt._timestamp).toDateString().split(" ").splice(1, 2)[0] + " " + new Date(cj.receipt._timestamp).toDateString().split(" ").splice(1, 2)[1]
+                        })
+                    }
+
+                    pj = cj;
+                }
+
+                setPastPickups(j); console.log(j)
+                console.log(j.find(a => a.jobId === 6).dels.map(p =>  p.qty ))
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+
     }, [jobIds.length, customer, currentDel]);
 
     function addToReceipt(e) {
@@ -566,6 +624,22 @@ export default function NewReceipt() {
                                                                             <div className="pt-4">{`Qty: ${job.qtyRcvd}`}</div>
                                                                             <div className="">{`Process: ${job.process}`}</div>
                                                                             <div className="pt-4">{`${new Date(job._timestamp).toDateString()}`}</div>
+                                                                            {job.status === "delivered-partial" ?
+                                                                                <></> :
+                                                                                <div className="mt-4 pt-2 mr-4 border-t border-slate-500 text-sm"> <p className="pb-1">Past Pickups: </p>
+                                                                                    {pastPickups?.find(a => a.jobId === job.id) ? <>
+                                                                                        {pastPickups.find(a => a.jobId === job.id).dels.map(p => <>
+                                                                                            <div className="ml-2 flex gap-2">
+                                                                                                <p className="font-semibold">{p.date}</p>
+                                                                                                <p>DS# {p.ds_num}</p> 
+                                                                                                <p>--</p>
+                                                                                                <p> Qty: {p.qty}</p> 
+                                                                                            </div>
+                                                                                        </> )}
+                                                                                    </> : <></>}
+                                                                                </div>
+                                                                            }
+                                                                            
                                                                         </div>
                                                                         <div className="col-span-2 content-center border-l border-slate-500">
                                                                             <form className="flex justify-center gap-6">
@@ -586,7 +660,7 @@ export default function NewReceipt() {
                                                                                         ? "checked" : (inputPartial.find((a) => a.id == job.id).partial
                                                                                             ? "" : "checked")}
                                                                                     onChange={(e) => togglePartial(e.target)}
-                                                                                /> Full pickup
+                                                                                /> Final pickup
                                                                             </form>
 
                                                                             {inputPartial.find((a) => a.id == job.id) === undefined

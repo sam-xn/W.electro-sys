@@ -77,24 +77,7 @@ function NewContact() {
                                 New Contact
                             </div>
 
-                            <div className="mb-4 text-sm text-[#544B76]"> - Edit info - </div>
-
-
-
                             <div className="bg-white grid grid-cols-4 m-4 pl-8 py-4 max-w-full border border-slate-500">
-                                <div className={label_classname}> Customer: </div>
-                                <select
-                                    className="col-span-3 mr-8 border-b border-slate-500 text-center "
-                                    defaultValue="select"
-                                    onChange={(e) => setCustomer(e.target.value)}
-                                >
-                                    <option value="select"> {"< select customer >"} </option>
-                                    <option value="new"> New Customer </option>
-                                    {customerList.map((company, index) =>
-                                        <option value={company}> {company} </option>
-                                    )}
-                                </select>
-
                                 {customer == "new"
                                     ? (
                                         <div className="mt-6 mr-8 col-span-4">

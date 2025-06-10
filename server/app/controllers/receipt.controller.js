@@ -131,6 +131,28 @@ export const findPrint = (req, res) => {
         });
 };
 
+export const findDeliverablesList = (req, res) => {
+
+    if (!req.params.jobIds) {
+        res.status(400).send({ message: "Content cannot be empty." });
+        return;
+    }
+    const jIds = (String(req.params.jobIds)).split(',');
+
+    Receipt.hasMany(Deliverable, { foreignKey: 'receipt_id' });
+    Deliverable.belongsTo(Receipt, { foreignKey: 'receipt_id' });
+
+    Deliverable.findAll({
+        attributes: ['id', 'job_id', 'qty'],
+        where: { job_id: { [Op.in]: jIds } },
+        include: [{ model: Receipt, required: true, attributes: ['id', '_timestamp'] }]
+    })
+        .then(data => { res.send(data); })
+        .catch(err => {
+            res.status(500).send({ message: err.message || "An error occurred while retrieving Jobs." });
+        });
+};
+
 export const search = (req, res) => {
     const receiptConditions = {};
     if (req.query.id) receiptConditions.id = { [Op.like]: `%${req.query.id}%` }

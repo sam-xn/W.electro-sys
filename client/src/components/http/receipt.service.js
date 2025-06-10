@@ -23,6 +23,10 @@ const getPrint = (id) => {
     return http.get(`/receipts/print/${id}`);
 };
 
+const getPastPickups = (jobIds) => {
+    return http.get(`/receipts/deliverables/list/${jobIds}`);
+};
+
 const search = (id, customer, po_num) => {
     const queries = [];
 
@@ -69,6 +73,7 @@ export default {
     getOrder,
     getList,
     getPrint,
+    getPastPickups,
     search,
     update,
     remove,
