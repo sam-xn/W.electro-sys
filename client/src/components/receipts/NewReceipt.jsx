@@ -306,7 +306,7 @@ export default function NewReceipt() {
 
         setJobs(j);
 
-    }, [processedJobs]);
+    }, [processedJobs, receivedJobs, dpJobs]);
 
     //setDeliverables
     useEffect(() => {
