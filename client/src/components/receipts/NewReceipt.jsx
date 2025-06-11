@@ -380,7 +380,7 @@ export default function NewReceipt() {
 
         ReceiptService.getPastPickups(jIds_str.slice(0, -1))
             .then(response => {
-                const d = response.data.sort((a, b) => a.id - b.id);
+                const d = response.data.sort((a, b) => a.job_id - b.job_id); 
                 let cj, pj;
                 let j = [];
 
