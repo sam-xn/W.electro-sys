@@ -380,7 +380,7 @@ export default function NewReceipt() {
 
         ReceiptService.getPastPickups(jIds_str.slice(0, -1))
             .then(response => {
-                const d = response.data.sort((a, b) => a.job_id - b.jobId);
+                const d = response.data.sort((a, b) => a.id - b.id);
                 let cj, pj;
                 let j = [];
 
@@ -402,7 +402,7 @@ export default function NewReceipt() {
                         continue;
                     }
 
-                    if (cj.orderId != pj.orderId) {
+                    if (cj.job_id != pj.job_id) {
                         j.push({
                             jobId: cj.job_id,
                             dels: [{
