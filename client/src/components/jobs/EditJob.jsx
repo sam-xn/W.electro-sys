@@ -148,7 +148,7 @@ export default function EditJob() {
                             <div className="grid place-items-center">
                                 <button
                                     className="text-white mb-4 mx-8 py-1 rounded w-sm bg-[#544B76] outline hover:bg-red-800"
-                                    onClick={(e) => navigate(`/orders/${params.id}`)}
+                                    onClick={(e) => navigate(`/orders/${job.po_id}`)}
                                     >
                                         Discard
                                 </button>
