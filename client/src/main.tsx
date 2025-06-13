@@ -13,7 +13,7 @@ import Order from './components/orders/Order.jsx'
 import NewOrder from './components/orders/NewOrder.jsx'
 
 import Jobs from './components/SidebarLinks/Jobs.jsx'
-//import Job from './components/jobs/Job.jsx'
+import EditJob from './components/jobs/EditJob.jsx'
 import NewJob from './components/jobs/NewJob.jsx'
 import FinishJob from './components/jobs/FinishJob.jsx'
 import PrintTag from './components/jobs/PrintTag.jsx'
@@ -68,10 +68,10 @@ const router = createBrowserRouter([
                 path: "/jobs",
                 element: <Jobs />
             },
-            //{
-            //    path: "/jobs/:id",
-            //    element: <Job />
-            //},
+            {
+                path: "/jobs/:id/edit",
+                element: <EditJob />
+            },
             {
                 path: "/jobs/:id/update",
                 element: <FinishJob />

@@ -428,12 +428,17 @@ export default function Order() {
                                                     : <></>
                                                 }
                                             </div>
-                                            {job.status === "incoming"
+                                            {job.status === "incoming" || job.status === "received"
                                                 ? <>
-                                                    <div className="mt-4 border-t border-slate-500">
-                                                        <div className="mt-4 mx-4">
-                                                            <Link className={button_classname} to={`/jobs/${job.id}/print`} >
-                                                                <p className="">Print Tag</p>
+                                                    <div className="flex gap-2 place-content-end mt-4 border-t border-slate-500">
+                                                        <div className="mt-4">
+                                                            <Link className={button_classname+" px-4"} to={`/jobs/${job.id}/edit`} >
+                                                                <p className="">Edit</p>
+                                                            </Link>
+                                                        </div>
+                                                        <div className="mt-4">
+                                                            <Link className={button_classname+" px-4"} to={`/jobs/${job.id}/print`} >
+                                                                <p className="">Print</p>
                                                             </Link>
                                                         </div>
                                                     </div>
