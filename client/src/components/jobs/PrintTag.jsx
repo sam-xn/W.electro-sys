@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import JobService from '/src/components/http/job.service';
 import ContactService from '/src/components/http/contact.service';
 
-export default function PrintJob() {
+export default function PrintTag() {
 
     const params = useParams();
 

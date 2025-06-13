@@ -11,7 +11,7 @@ export default (app) => {
     router.get("/list/:jobIds", jobs.findList);
     router.get("/search/:status", jobs.search);
 
-    router.get("/:id", jobs.findJob);
+    router.get("/:id", jobs.find);
 
     router.put("/:id", jobs.update);
     router.put("/tag/:id", jobs.updateTag);

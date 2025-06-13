@@ -79,7 +79,7 @@ export const findOrder = (req, res) => {
         });
 };
 
-export const findJob = (req, res) => {
+export const find = (req, res) => {
 
     if (!req.params.id) {
         req.status(400).send({ message: "Content cannot be empty." });

@@ -49,7 +49,7 @@ function NewContact() {
         }
 
         if (customer == "new") {
-            CustomerService.create({ company: newCompany, name: newContactName, email: newContactEmail, phone: newContactPhone })
+            CustomerService.create({ company: newCompany.toUpperCase(), name: newContactName, email: newContactEmail, phone: newContactPhone })
                 .then(() => {
                     navigate(`/customers`);
                 })
@@ -60,13 +60,13 @@ function NewContact() {
     }
 
 
-    const label_classname = "font-bold text-md text-[#544B76] border-b pl-4 pb-1 pt-2";
-    const input_classname = "focus:outline-none border-b pb-1 pt-2 col-span-3 pr-16";
+    const label_classname = "font-bold text-md text-[#544B76] pl-4 pt-4";
+    const input_classname = "focus:outline-none border-b border-slate-500 text-center col-span-3 pr-16";
 
     return (
         <>
             <div className="grid grid-cols-6">
-                <div className="mb-8"><Sidebar /></div>
+                <div className=""><Sidebar /></div>
                 <div className="col-span-5">
                     <div className="grid place-items-center">
                         {error ? <Error isOpen={error} onClose={handleClose}> {errorMessage} </Error> : <></>}
@@ -77,16 +77,44 @@ function NewContact() {
                                 New Contact
                             </div>
 
+                            {/*<div className="mb-4 text-sm text-[#544B76]"> - Edit info - </div>*/}
+
+
+
                             <div className="bg-white grid grid-cols-4 m-4 pl-8 py-4 max-w-full border border-slate-500">
-                                {customer == "new"
+                                <div className={label_classname}> Customer: </div>
+                                <select
+                                    className="col-span-3 mr-8 border-b border-slate-500 text-center "
+                                    defaultValue="select"
+                                    onChange={(e) => setCustomer(e.target.value)}
+                                >
+                                    <option value="select"> {"< select customer >"} </option>
+                                    <option value="new"> New Customer </option>
+                                    {customerList.map((company, index) =>
+                                        <option value={company}> {company} </option>
+                                    )}
+                                </select>
+
+                                {customer !== "select"
                                     ? (
                                         <div className="mt-6 mr-8 col-span-4">
 
-                                            <div className="grid grid-cols-3 pb-4 border-b border-slate-500">
+                                            {customer == "new" ? <>
+                                                <div className="grid grid-cols-4 mb-4">
+                                                    <div className={label_classname}> Company Name: </div>
+                                                    <input className={input_classname}
+                                                        type="text"
+                                                        value={newCompany}
+                                                        onChange={(e) => setNewCompany(e.target.value)}
+                                                    />
+                                                </div>
+                                            </> : <></>}
+
+                                            <div className="grid grid-cols-3 mt-8">
                                                 <div className="text-[#544B76] font-bold ml-4 mb-2"> Type: </div>
-                                                <div></div>
-                                                <div></div>
-                                                <div className="ml-24">
+                                                {/*<div></div>*/}
+                                                {/*<div></div>*/}
+                                                <div className="">
                                                     <input className=""
                                                         type="radio"
                                                         name="type"
@@ -108,13 +136,6 @@ function NewContact() {
                                             </div>
 
                                             <div className="grid grid-cols-4">
-
-                                                <div className={label_classname}> Company: </div>
-                                                <input className={input_classname}
-                                                    type="text"
-                                                    value={newCompany}
-                                                    onChange={(e) => setNewCompany(e.target.value)}
-                                                />
 
                                                 <div className={label_classname}> Contact Name: </div>
                                                 <input className={input_classname}
@@ -146,7 +167,7 @@ function NewContact() {
                                 }
                             </div>
 
-                            <div className="pt-8 mx-8 grid grid-cols-2 gap-4 place-items-center">
+                            <div className="pt-8 mx-8 flex gap-4 place-items-center">
                                 <button
                                     className="text-white mb-4 mx-4 py-1 rounded w-sm bg-[#544B76] outline hover:bg-red-800"
                                     onClick={() => navigate(`/customers`)}
