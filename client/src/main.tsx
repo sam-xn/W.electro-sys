@@ -25,6 +25,7 @@ import PrintReceiptPgN from './components/receipts/PrintReceiptPgN.jsx'
 
 import Customers from './components/SidebarLinks/Customers.jsx'
 import NewContact from './components/contacts/NewContact.jsx'
+import EditContact from './components/contacts/EditContact.jsx'
 
 
 const router = createBrowserRouter([
@@ -111,6 +112,10 @@ const router = createBrowserRouter([
             {
                 path: "/contacts/new",
                 element: <NewContact />
+            },
+            {
+                path: "/contacts/:id/edit",
+                element: <EditContact />
             },
             {
                 path: "/settings",

@@ -4,12 +4,12 @@ const Contact = db.contacts;
 const Op = db.Sequelize.Op;
 
 export const create = (req, res) => {
-    if (!req.body.newContactEmail || !req.body.newContactName) {
+    if (!req.body.name || (!req.body.email && !req.body.phone)) {
         res.status(400).send({ message: "Content cannot be empty." });
         return;
     }
 
-    Contact.create({ name: req.body.newContactName, email: req.body.newContactEmail, company: req.body.newCompany })
+    Contact.create(req.body)
         .then(data => { res.send(data); })
         .catch(err => {
             res.status(500).send({ message: err.message || "An error occurred while retrieving Jobs." });

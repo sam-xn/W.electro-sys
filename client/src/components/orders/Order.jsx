@@ -160,41 +160,6 @@ export default function Order() {
     // ------------------------------------------------------------------------------------ Modal 
 
     const [open, setOpen] = useState(false);
-    const [contacts, setContacts] = useState([]);
-
-    useEffect(() => {
-        //const customer = po?.customer ? po.customer : "";
-        ContactService.getCompany(po.customer)
-            .then((response) => {
-
-                const d = response.data;
-                const c = { primary: null, accounting: null, other: [] };
-                d.forEach(r => {
-                    switch (r.type) {
-                        case "primary":
-                            c.primary = {
-                                name: r.name,
-                                email: r.email
-                            }; break;
-                        case "accounting":
-                            c.accounting = {
-                                name: r.name,
-                                email: r.email
-                            }; break;
-                        default:
-                            c.other.push({
-                                name: r.name,
-                                email: r.email
-                            });
-                    }
-                });
-
-                setContacts(c);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    }, [contacts.length]);
 
     // ------------------------------------------------------------------------------------ Receipt 
 
@@ -385,7 +350,7 @@ export default function Order() {
                             : <></>
                             }
                             <Modal isOpen={open} onClose={() => setOpen(false)}>
-                                <Contacts company={po.customer} contacts={contacts} />
+                                <Contacts company={po.customer} />
                             </Modal>
 
                         </div>

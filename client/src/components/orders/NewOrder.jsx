@@ -7,7 +7,6 @@ import CustomerService from '/src/components/http/customer.service';
 
 import Error from '/src/components/Error';
 
-
 function NewOrder() {
     // ---------------------------------------------------- ErrorModal 
     const [error, setError] = useState(false);
@@ -47,8 +46,8 @@ function NewOrder() {
             setError(true);
             return;
         }
-        else if (customer === "new" && (newCompany === "" || newContactName === "" || newContactEmail === "")) {
-            setErrorMessage("Please enter contact info.");
+        else if (customer === "new" && (newCompany === "" || newContactName === "" || (newContactEmail === "" && newContactPhone === ""))) {
+            setErrorMessage("Please enter Contact Info.");
             setError(true);
             return;
         }

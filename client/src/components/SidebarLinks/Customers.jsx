@@ -43,45 +43,10 @@ export default function Customers() {
     // ------------------------------------------------------------------------------------ Modal 
 
     const [open, setOpen] = useState(false);
-    const [contacts, setContacts] = useState([]);
     const [modalCompany, setModalCompany] = useState("");
 
     const handleClose = () => { setOpen(false); };
     const handleOpen = (c) => { setOpen(true); setModalCompany(c); };
-
-    useEffect(() => {
-        if (!modalCompany) return;
-        ContactService.getCompany(modalCompany)
-            .then((response) => {
-
-                const d = response.data;
-                const c = { primary: null, accounting: null, other: [] };
-                d.forEach(r => {
-                    switch (r.type) {
-                        case "primary":
-                            c.primary = {
-                                name: r.name,
-                                email: r.email
-                            }; break;
-                        case "accounting":
-                            c.accounting = {
-                                name: r.name,
-                                email: r.email
-                            }; break;
-                        default:
-                            c.other.push({
-                                name: r.name,
-                                email: r.email
-                            });
-                    }
-                });
-
-                setContacts(c); console.log(c)
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    }, [modalCompany, contacts.length]);
 
     const input_classname = "block flex-1 border-0 bg-transparent py-1.5 px-3 text-slate-900 placeholder:text-slate-400 focus:ring-0 sm:text-sm sm:leading-6";
     const th_classname = "h-12 px-4 align-middle font-medium border-b border-slate-500";
@@ -93,7 +58,7 @@ export default function Customers() {
         <>
             <div className="grid grid-cols-6">
                 <Modal isOpen={open} onClose={handleClose}>
-                    <Contacts company={modalCompany} contacts={contacts} />
+                    <Contacts company={modalCompany} />
                 </Modal>
                 <div className="mb-8"><Sidebar /></div>
                 <div className="col-span-5"> <CustomersNavbar status={filter} setter={setFilter} />
