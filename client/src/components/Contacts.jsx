@@ -10,7 +10,6 @@ export default function Contacts({ company }) {
     useEffect(() => {
         ContactService.getCompany(company)
             .then((response) => {
-                console.log(response.data)
                 const d = response.data;
                 const c = { primary: [], accounting: [], other: [] };
                 d.forEach(r => {
@@ -39,7 +38,7 @@ export default function Contacts({ company }) {
                     }
                 });
 
-                setContacts(c); console.log(c)
+                setContacts(c); 
             })
             .catch((e) => {
                 console.log(e);
@@ -47,7 +46,7 @@ export default function Contacts({ company }) {
     }, []);
 
     const button_classname = "grid text-center text-sm font-medium shadow-xs ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-slate-500 border-input bg-background hover:bg-[#DEE1F4] rounded-md py-2";
-    const link_classname = "hover:text-white mx-2 px-2 pt-1 rounded text-sm text-center bg-[#DEE1F4] outline hover:bg-blue-800";
+    const link_classname = "hover:text-white mx-2 px-2 my-2 rounded text-sm text-center bg-[#DEE1F4] outline hover:bg-blue-800";
 
     return (
         <>
@@ -57,73 +56,58 @@ export default function Contacts({ company }) {
                     {company}
                 </div>
 
-                <div className="flex gap-2 my-4 text-[#544B76] text-lg">
-                    {contacts.primary[0]?.id ?
-                        <>
-                            <div className="mx-4 text-sm "> Primary: </div>
-                            <div>{contacts.primary[0].name}</div>
-                            {contacts.primary.email !== null ?
-                                <div className="border-l border-slate-500 pl-2 ml-2">{contacts.primary.email}</div>
-                                : <></>
-                            }
-                            {contacts.primary.phone !== null ?
-                                <div className="border-l border-slate-500 pl-2 ml-2">{contacts.primary.phone}</div>
-                                : <></>
-                            }
-                            <Link
-                                className={link_classname}
-                                to={`/contacts/${contacts.primary.id}/edit`}>
-                                Edit
-                            </Link>
-                        </> : <></>
-                    }
-                </div>
-                {/*<div className="flex gap-2 my-4 text-[#544B76] text-lg">*/}
-                {/*    {contacts.accounting?[0].id ?*/}
-                {/*    <>*/}
-                {/*        <div className="mx-4 text-lg"> Accounting: </div>*/}
-                {/*        <div>{contacts.accounting.name}</div>*/}
-                {/*        {contacts.accounting.email !== null ?*/}
-                {/*            <div className="border-l border-slate-500 pl-2 ml-2">{contacts.accounting.email}</div>*/}
-                {/*            : <></>*/}
-                {/*        }*/}
-                {/*        {contacts.accounting.phone !== null ?*/}
-                {/*            <div className="border-l border-slate-500 pl-2 ml-2">{contacts.accounting.phone}</div>*/}
-                {/*            : <></>*/}
-                {/*        }*/}
-                {/*        <Link*/}
-                {/*            className={link_classname}*/}
-                {/*            to={`/contacts/${contacts.accounting.id}/edit`}>*/}
-                {/*            Edit*/}
-                {/*        </Link> */}
-                {/*        </> : <></>*/}
-                {/*    }*/}
-                {/*</div>*/}
-                {/*<div className="flex gap-2 my-4 text-[#544B76] text-lg">*/}
-                {/*    {contacts.other ? <>*/}
-                {/*        {contacts.other[0] !== null*/}
-                {/*            ? <>*/}
-                {/*                <div className="flex gap-2 my-4 text-[#544B76] text-lg">*/}
-                {/*                    <div className="mx-4 text-lg"> Other: </div>*/}
-                {/*                    {contacts.other.map((other, i) => {*/}
-                {/*                        <>*/}
-                {/*                            <div>{other[i].name}</div>*/}
-                {/*                            <div> | </div>*/}
-                {/*                            <div>{other[i].email}</div>*/}
-                {/*                            {contacts.other[i].id ?*/}
-                {/*                                <Link*/}
-                {/*                                    className={link_classname}*/}
-                {/*                                    to={`/contacts/${contacts.other[i].id}/edit`}>*/}
-                {/*                                    Edit*/}
-                {/*                                </Link>*/}
-                {/*                            : <></>}*/}
-                {/*                        </>*/}
-                {/*                    })}*/}
-                {/*                </div>*/}
-                {/*            </> : <></>*/}
-                {/*        }*/}
-                {/*    </> : <></>}*/}
-                {/*</div>*/}
+                {contacts.primary[0]?.id ?
+                    <>
+                        <div className="text-[#544B76] underline my-2 mx-4"> Primary </div>
+                        {contacts.primary.map(c => <>
+                            <div className="ml-8 mr-4 flex justify-between text-[#544B76] border-b border-slate-500">
+                                <div className="px-2 pt-1">{c.name}</div>
+                                {c.email !== null ? <div className="px-2 pt-1">{c.email}</div> : <></>}
+                                {c.phone !== null ? <div className="px-2 pt-1">{c.phone}</div> : <></>}
+                                <Link
+                                    className={link_classname}
+                                    to={`/contacts/${c.id}/edit`}>
+                                    Edit
+                                </Link>
+                            </div>
+                        </>)}
+                    </> : <></>
+                }
+                {contacts.accounting[0]?.id ?
+                    <>
+                        <div className="text-[#544B76] underline my-2 mx-4"> Accounting </div>
+                        {contacts.accounting.map(c => <>
+                            <div className="ml-8 mr-4 flex justify-between text-[#544B76] border-b border-slate-500">
+                                <div className="px-2 pt-1">{c.name}</div>
+                                {c.email !== null ? <div className="px-2 pt-1">{c.email}</div> : <></>}
+                                {c.phone !== null ? <div className="px-2 pt-1">{c.phone}</div> : <></>}
+                                <Link
+                                    className={link_classname}
+                                    to={`/contacts/${c.id}/edit`}>
+                                    Edit
+                                </Link>
+                            </div>
+                        </>)}
+                    </> : <></>
+                }
+                {contacts.other[0]?.id ?
+                    <>
+                        <div className="text-[#544B76] underline my-2 mx-4"> Other </div>
+                        {contacts.other.map(c => <>
+                            <div className="ml-8 mr-4 flex justify-between text-[#544B76] border-b border-slate-500">
+                                <div className="px-2 pt-1">{c.name}</div>
+                                {c.email !== null ? <div className="px-2 pt-1">{c.email}</div> : <></>}
+                                {c.phone !== null ? <div className="px-2 pt-1">{c.phone}</div> : <></>}
+                                <Link
+                                    className={link_classname}
+                                    to={`/contacts/${c.id}/edit`}>
+                                    Edit
+                                </Link>
+                            </div>
+                        </>)}
+                    </> : <></>
+                }
+
             </div>
         </>
     );
