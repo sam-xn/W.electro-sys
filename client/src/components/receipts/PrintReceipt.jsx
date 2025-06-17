@@ -98,7 +98,7 @@ export default function PrintReceipt() {
                         });
                         if (order.deliverables[i].partial) rRows.push({
                             packages: "",
-                            received: " -- partial pickup out of - " + order.deliverables[i].job.qtyRcvd + " - recvd"
+                            received: " --- partial pickup out of - " + order.deliverables[i].job.qtyRcvd + " - recv'd"
                         });
 
                         if (i == order.deliverables.length - 1) rRows.push({
