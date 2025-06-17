@@ -20,7 +20,7 @@ export const createWithDeliverables = (req, res) => {
                         res.status(500).send({ message: err.message || "An error occurred while creating Deliverable." });
                     });
 
-                const jobStatus = d.partial ? "delivered-partial" : "delivered"; 
+                const jobStatus = d.partial ? (d.final ? "delivered" : "delivered-partial") : "delivered"; 
                 Job.update({ status: jobStatus }, { where: { id: d.jobId } })
                     .catch(err => {
                         res.status(500).send({ message: err.message || "An error occurred while creating Deliverable." });

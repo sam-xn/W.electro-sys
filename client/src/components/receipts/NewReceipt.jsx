@@ -66,6 +66,7 @@ export default function NewReceipt() {
         setJobIds([]);
         setCurrentDel("");
         setInputPartial([]);
+        setPastPickups([]);
         setDelQty([]);
     }
 
@@ -489,7 +490,7 @@ export default function NewReceipt() {
         }
 
         let deliverables_data = [];
-        let jobId, receiptId, newQty, partial, newDel;
+        let jobId, receiptId, newQty, partial, final, newDel;
         deliverables.forEach(del => {
             del.jobs.forEach(job => {
 
@@ -497,22 +498,25 @@ export default function NewReceipt() {
                 if (delQty.find(a => +a.id === +job.id) === undefined) {
                     newQty = job.qtyRcvd;
                     partial = 0;
+                    final = true; // full pickup
                 }
                 delQty.forEach(a => {
                     if (+a.id === +job.id) {
                         newQty = a.qty;
-                        partial = 1;
+                        partial = 1; 
+                        if (inputPartial.find(a => +a.id === +job.id)?.partial === true) final = false;
+                        else final = true;
+                        // full or final pickup
                     }
-                });
+                });                
 
-                newDel = { partial, newQty, jobId, receiptId };
+                newDel = { partial, newQty, jobId, receiptId, final };
                 deliverables_data.push(newDel);
             });
         });
-
+        console.log(deliverables_data)
         ReceiptService.create({ deliverables_data, rcvd_by: receiver, ship_to: shipTo })
             .then((response) => {
-                //window.open(`/receipts/${response.data.id}`);
                 navigate(`/receipts/${response.data.id}`);
             })
             .catch((e) => {
@@ -626,7 +630,7 @@ export default function NewReceipt() {
                                                                             {job.status === "delivered-partial" ?
                                                                                 <></> :
                                                                                 <div className="mt-4 pt-2 mr-4 border-t border-slate-500 text-sm"> <p className="pb-1">Past Pickups: </p>
-                                                                                    {pastPickups?.find(a => a.jobId === job.id) ? <>
+                                                                                    {pastPickups.find(a => a.jobId === job.id) ? <>
                                                                                         {pastPickups.find(a => a.jobId === job.id).dels.map(p => <>
                                                                                             <div className="ml-2 flex gap-2">
                                                                                                 <p className="font-semibold">{p.date}</p>
@@ -641,30 +645,30 @@ export default function NewReceipt() {
                                                                             
                                                                         </div>
                                                                         <div className="col-span-2 content-center border-l border-slate-500">
-                                                                            <form className="flex justify-center gap-6">
+                                                                            <form name="dels" className="flex justify-center gap-6">
                                                                                 <input
                                                                                     type="radio"
                                                                                     value="partial"
                                                                                     name={job.id}
                                                                                     checked={inputPartial.find((a) => a.id == job.id) === undefined
-                                                                                        ? "" : (inputPartial.find((a) => a.id == job.id).partial
-                                                                                            ? "checked" : "")}
+                                                                                        ? false : (inputPartial.find((a) => a.id == job.id).partial
+                                                                                            ? true : false)}
                                                                                     onChange={(e) => togglePartial(e.target)}
                                                                                 /> Partial pickup
                                                                                 <input
                                                                                     type="radio"
-                                                                                    value="full"
+                                                                                    value={pastPickups.find(a => a.jobId === job.id) ? "final" : "full"}
                                                                                     name={job.id}
                                                                                     checked={inputPartial.find((a) => a.id == job.id) === undefined
-                                                                                        ? "checked" : (inputPartial.find((a) => a.id == job.id).partial
-                                                                                            ? "" : "checked")}
+                                                                                        ? true : (inputPartial.find((a) => a.id == job.id).partial
+                                                                                            ? false : true)}
                                                                                     onChange={(e) => togglePartial(e.target)}
-                                                                                /> Final pickup
+                                                                                /> {(pastPickups.find(a => a.jobId === job.id) ? "Final " : "Full ") + "pickup"}
                                                                             </form>
 
-                                                                            {inputPartial.find((a) => a.id == job.id) === undefined
+                                                                            {inputPartial.find((a) => a.id == job.id) === undefined && pastPickups.find(a => a.jobId === job.id)
                                                                                 ? <></>
-                                                                                : <> {inputPartial.find((a) => a.id == job.id).partial
+                                                                                : <> {inputPartial.find((a) => a.id == job.id).partial || pastPickups.find(a => a.jobId === job.id)
                                                                                     ? <>
                                                                                         <div className="flex justify-center gap-4 mt-6">
                                                                                             <div className="font-bold text-md text-[#544B76] pb-1 pt-2">
@@ -717,8 +721,8 @@ export default function NewReceipt() {
                                                     Discard Receipt
                                                 </button>
                                                 <button
-                                                    className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline hover:bg-blue-800"
-                                                    onClick={saveReceipt}
+                                            className="text-white mb-4 py-1 rounded w-sm bg-[#544B76] outline hover:bg-blue-800"
+                                            onClick={() => saveReceipt(document.getElementsByName("dels"))}
                                                 >
                                                     Create Delivery Slip
                                                 </button>
