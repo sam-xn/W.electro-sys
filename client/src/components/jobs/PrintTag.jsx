@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import JobService from '/src/components/http/job.service';
 import ContactService from '/src/components/http/contact.service';
+import CustomerService from '/src/components/http/customer.service';
 
 export default function PrintTag() {
 
@@ -11,6 +12,7 @@ export default function PrintTag() {
     const [job, setJob] = useState([]);
     const [psLine2, setPsLine2] = useState(false);
     const [contact, setContact] = useState([]);
+    const [customer, setCustomer] = useState([]);
 
     useEffect(() => {
         JobService.getJob(params.id)
@@ -52,11 +54,18 @@ export default function PrintTag() {
     useEffect(() => {
         ContactService.searchCompany(job.order?.customer, "primary")
             .then(response => {
-                setContact(response.data[0]);
+                setContact(response.data[0]); 
             })
             .catch((e) => {
                 console.log(e);
             });
+        CustomerService.get(job.order?.customer)
+            .then(response => {
+                setCustomer(response.data); console.log(response.data)
+            })
+            .catch ((e) => {
+            console.log(e);
+        });
     }, [job]);
 
     return (
@@ -87,8 +96,8 @@ export default function PrintTag() {
                 <div className="mt-2 m-1 flex gap-2"> <p>Remarks:</p> <div className="grow border-b border-slate-500 text-center text-xl"> {job.remarks} </div> </div>
 
                 <div className="flex">
-                    <div className="grow m-1 flex gap-2"> <p>Contact:</p> <div className="grow border-b border-slate-500 text-center text-lg"> {contact?.name} </div> </div>
-                    <div className="grow m-1 flex gap-2"> <p>Ph #:</p> <div className="grow border-b border-slate-500 text-center text-lg"> {contact?.phone} </div> </div>
+                    <div className="grow m-1 flex gap-2"> <p>Contact:</p> <div className="grow border-b border-slate-500 text-center text-lg"> {contact?.name ? contact.name : (customer?.phone ? "biz. line" : "")} </div> </div>
+                    <div className="grow m-1 flex gap-2"> <p>Ph #:</p> <div className="grow border-b border-slate-500 text-center text-lg"> {contact?.phone ? contact.phone : (customer?.phone ? customer.phone : "")} </div> </div>
                 </div>
 
 

@@ -8,6 +8,7 @@ export default (app) => {
     router.post("/", customers.createWithContact);
 
     router.get("/", customers.findAll);
+    router.get("/:company", customers.find);
 
     router.delete("/:company", customers._delete);
 

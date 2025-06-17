@@ -11,8 +11,8 @@ const getAll = () => {
     return http.get("/customers");
 };
 
-const get = (id) => {
-    return http.get(`/customers/${id}`);
+const get = (company) => {
+    return http.get(`/customers/${company}`);
 };
 
 const create = (data) => {
@@ -27,9 +27,6 @@ const remove = (id) => {
     return http.delete(`/customers/${id}`);
 };
 
-const findByTitle = (company) => {
-    return http.get(`/customers?company=${encodeURIComponent(company)}`);
-};
 
 export default {
     getAll,
@@ -37,5 +34,4 @@ export default {
     create,
     update,
     remove,
-    findByTitle,
 };

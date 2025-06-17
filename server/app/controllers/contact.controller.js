@@ -47,6 +47,7 @@ export const findAll = (req, res) => {
 };
 
 export const findCompany = (req, res) => {
+
     Contact.findAll({ where: { company: req.params.company } })
         .then(data => { res.send(data); })
         .catch(err => {

@@ -42,6 +42,20 @@ export const findAll = (req, res) => {
         });
 };
 
+export const find = (req, res) => {
+
+    if (!req.params.company) {
+        res.status(400).send({ message: "Content cannot be empty." });
+        return;
+    }
+
+    Customer.findByPk(req.params.company)
+        .then(data => { res.send(data); })
+        .catch(err => {
+            res.status(400).send({ message: err.message || "An error occurred while retrieving customers." });
+        });
+};
+
 export const _delete = (req, res) => {
     Customer.destroy({ where: { company: req.params.company } })
         .then(num => {
