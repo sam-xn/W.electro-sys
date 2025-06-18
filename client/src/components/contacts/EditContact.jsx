@@ -16,13 +16,10 @@ function EditContact({ contactId }) {
     const params = useParams();
 
     const [submitted, setSubmitted] = useState(false);
-    //const [customer, setCustomer] = useState("select");
-    //const [customerList, setCustomerList] = useState([]);
-
-    //const [newCompany, setNewCompany] = useState("");
 
     const [contact, setContact] = useState([]);
     const [newContactType, setNewContactType] = useState("primary");
+
     const [newContactName, setNewContactName] = useState("");
     const [newContactEmail, setNewContactEmail] = useState("");
     const [newContactPhone, setNewContactPhone] = useState("");
@@ -40,34 +37,6 @@ function EditContact({ contactId }) {
 
     function saveContact() {
 
-        //if (customer === "select") {
-        //    setErrorMessage("Please select an existing customer or select New Customer to create a new contact.");
-        //    setError(true);
-        //    return;
-        //}
-
-        //if (customer === "new") {
-        //    if (newCompany === "") {
-        //        setErrorMessage("Please enter new Company Name.");
-        //        setError(true);
-        //        return;
-        //    }
-        //    else if (newContactName === "" || (newContactEmail === "" && newContactPhone === "")) {
-        //        setErrorMessage("Please enter new Contact info.");
-        //        setError(true);
-        //        return;
-        //    }
-
-        //    CustomerService.create({ company: newCompany.toUpperCase(), name: newContactName, email: newContactEmail, phone: newContactPhone, type: newContactType })
-        //        .then(() => {
-        //            setSubmitted(true);
-        //        })
-        //        .catch((e) => {
-        //            console.log(e);
-        //        });
-        //}
-
-        //else {
         if (newContactType === contact?.type && newContactName === "" && newContactEmail === "" && newContactPhone === "") {
             setErrorMessage("Please enter new values to update.");
             setError(true);
@@ -88,7 +57,6 @@ function EditContact({ contactId }) {
                 console.log(e);
             });
     }
-    //}
 
     const label_classname = "font-bold text-md text-[#544B76] pl-4 pt-4";
     const input_classname = "focus:outline-none border-b border-slate-500 text-center col-span-3 pr-16";
@@ -192,7 +160,7 @@ function EditContact({ contactId }) {
 
                                 </div>
 
-                                <div className="pt-4 mx-8 flex gap-4 place-items-center">
+                                <div className="pt-4 mx-8 flex gap-4 place-content-center">
                                     <button
                                         className="text-white mb-2 mx-4 py-1 rounded w-sm bg-[#544B76] outline hover:bg-red-800"
                                         onClick={() => navigate(`/customers`)}

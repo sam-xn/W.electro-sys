@@ -205,7 +205,7 @@ function NewContact() {
                                     }
                                 </div>
 
-                                <div className="pt-4 mx-8 flex gap-4 place-items-center">
+                                <div className="pt-4 mx-8 flex gap-4 place-content-center">
                                     <button
                                         className="text-white mb-2 mx-4 py-1 rounded w-sm bg-[#544B76] outline hover:bg-red-800"
                                         onClick={() => navigate(`/customers`)}

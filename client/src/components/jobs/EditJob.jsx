@@ -74,7 +74,7 @@ export default function EditJob() {
                         <div className="max-w-full mx-4 py-8 px-8 mb-12 bg-[#eff1fc] rounded shadow border border-slate-500">
 
                             <div className="p-1 text-[#544B76] font-bold text-xl border-b border-slate-500">
-                                New Job
+                                Edit Job
                             </div>
 
                             <div className="bg-white grid grid-cols-4 mx-4 my-8 py-8 max-w-full border border-slate-500">
