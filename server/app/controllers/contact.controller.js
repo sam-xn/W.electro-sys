@@ -17,7 +17,12 @@ export const create = (req, res) => {
 };
 
 export const update = (req, res) => {
-    Contact.update( req.body, { where: { email: req.params.email } })
+
+    if (!req.params.id) {
+        res.status(400).send({ message: "Content cannot be empty" });
+    }
+
+    Contact.update(req.body, { where: { id: req.params.id } })
         .then(num => {
             if (num === 1) { res.send({ message: "Contact updated." }); }
             else { res.send({ message: `Cannot update Contact with id=${req.body.email}. Possible causes: not found or empty req.body.` }); }
@@ -35,6 +40,18 @@ export const _delete = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({ message: `Could not delete Contact with id=${email}` });
+        });
+};
+
+export const find = (req, res) => {
+    if (!req.params.id) {
+        res.status(400).send({ message: "Content cannot be empty" });
+    }
+
+    Contact.findByPk(req.params.id)
+        .then(data => { res.send(data); })
+        .catch(err => {
+            res.status(500).send({ message: err.message || "An error occurred while retrieving contacts." });
         });
 };
 

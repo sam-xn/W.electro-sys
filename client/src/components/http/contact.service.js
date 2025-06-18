@@ -11,6 +11,14 @@ const create = (data) => {
     return http.post("/contacts", data);
 };
 
+const update = (id, data) => {
+    return http.put(`/contacts/${id}`, data);
+};
+
+const get = (id) => {
+    return http.get(`/contacts/${id}`);
+};
+
 const getType = (type) => {
     return http.get(`/contacts/type/${type}`);
 };
@@ -26,6 +34,8 @@ const searchCompany = (company, type) => {
 
 export default {
     create,
+    update,
+    get,
     getType,
     getCompany,
     searchCompany

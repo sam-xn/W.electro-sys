@@ -6,6 +6,7 @@ export default (app) => {
 
     router.post("/", contacts.create);
 
+    router.get("/:id", contacts.find);
     router.get("/company/:company", contacts.findCompany);
     router.get("/type/:type", contacts.findType);
     router.get("/search/:type", contacts.searchCompany);
