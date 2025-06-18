@@ -23,7 +23,7 @@ const receiptsItems: Item[] = [
 ]
 
 const contactsItems: Item[] = [
-    { title: 'Customers', iconName: 'user', href: '/customers/type/primary' }
+    { title: 'Customers', iconName: 'user', href: '/customers/type/business' }
 ]
 
 const settingsItems: Item[] = [

@@ -9,6 +9,7 @@ export default (app) => {
 
     router.get("/", customers.findAll);
     router.get("/:company", customers.find);
+    router.get("/search/:type", customers.searchCompany);
 
     router.delete("/:company", customers._delete);
 

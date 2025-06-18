@@ -36,6 +36,21 @@ export default function CustomersNavbar({ type, setter }) {
                     Accounting
                 </Link>
             </Typography>
+            <div></div>
+            <Typography
+                as="li"
+                variant="small"
+                color=""
+                className={ty_classname + (params ? (params.type === "business" ? " border-b border-[#544B76]" : "") : "")}
+            >
+                <Link
+                    className="flex items-center text-[#544B76]"
+                    to="/customers/type/business"
+                    onClick={() => setter("business")}
+                >
+                    Customers
+                </Link>
+            </Typography>
         </ul>
     );
 

@@ -7,6 +7,10 @@ const http = axios.create({
     },
 });
 
+const create = (data) => {
+    return http.post("/customers", data);
+};
+
 const getAll = () => {
     return http.get("/customers");
 };
@@ -15,10 +19,9 @@ const get = (company) => {
     return http.get(`/customers/${company}`);
 };
 
-const create = (data) => {
-    return http.post("/customers", data);
+const searchCompany = (company, type) => {
+    return http.get(`/customers/search/${type}?company=${encodeURIComponent(company)}`);
 };
-
 const update = (id, data) => {
     return http.put(`/customers/${id}`, data);
 };
@@ -29,9 +32,10 @@ const remove = (id) => {
 
 
 export default {
+    create,
     getAll,
     get,
-    create,
+    searchCompany,
     update,
     remove,
 };

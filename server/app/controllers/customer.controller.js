@@ -3,6 +3,8 @@ import db from '../models/index.js'
 const Customer = db.customers;
 const Contact = db.contacts;
 
+const Op = db.Sequelize.Op;
+
 //export const create = (req, res) => {
 
 //    if (!req.body.newCompany) {
@@ -55,6 +57,19 @@ export const find = (req, res) => {
             res.status(400).send({ message: err.message || "An error occurred while retrieving customers." });
         });
 };
+
+export const searchCompany = (req, res) => {
+
+    const conditions = {};
+    if (req.query.company) conditions.company = { [Op.like]: `%${req.query.company}%` };
+
+    Customer.findAll({ where: conditions })
+        .then(data => { res.send(data); })
+        .catch(err => {
+            res.status(500).send({ message: err.message || "An error occurred while retrieving customers." });
+        });
+};
+
 
 export const _delete = (req, res) => {
     Customer.destroy({ where: { company: req.params.company } })
