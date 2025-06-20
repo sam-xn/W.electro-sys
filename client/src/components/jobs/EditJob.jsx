@@ -18,7 +18,8 @@ export default function EditJob() {
 
     const [po, setPo] = useState({});
     const [job, setJob] = useState({});
-    //const [status, setStatus] = useState("received");
+
+    const [newStatus, setNewStatus] = useState("");
     const [qty, setQty] = useState("");
     const [process, setProcess] = useState("");
     const [remarks, setRemarks] = useState("");
@@ -27,7 +28,8 @@ export default function EditJob() {
     useEffect(() => {
         JobService.getJob(params.id)
             .then((response) => {
-                setJob(response.data[0]); 
+                setJob(response.data[0]);
+                setNewStatus(response.data[0].status);
                 OrderService.get(response.data[0].po_id)
                     .then(r => {
                         setPo(r.data); 
@@ -49,6 +51,7 @@ export default function EditJob() {
         if (qty !== "") updates.qty = qty;
         if (process !== "") updates.process = process
         if (remarks !== "") updates.remarks = remarks;
+        if (newStatus !== "" && newStatus !== job?.status) updates.status = newStatus;
 
         console.log(updates)
         JobService.update(params.id, updates)
@@ -77,63 +80,108 @@ export default function EditJob() {
                                 Edit Job
                             </div>
 
-                            <div className="bg-white grid grid-cols-4 mx-4 my-8 py-8 max-w-full border border-slate-500">
+                            <div className="bg-white grid grid-cols-4 mx-4 mt-8 mb-4 py-8 max-w-full border border-slate-500">
                                 <div className={label_classname}>  Date:  </div>
-                                {/*<div className="col-span-3 place-self-stretch justify-content-center border">*/}
                                     <input className={input_classname}
                                         disabled
                                         type="text"
                                         value={new Date().toDateString()}
                                     />
-                                {/*</div>*/}
                                 <div className={label_classname}> Customer: </div>
-                                {/*<div className="col-span-3">*/}
                                     <input className={input_classname}
                                         disabled
                                         type="text"
                                         value={po.customer}
                                     />
-                                {/*</div>*/}
                                 <div className={label_classname}> PO#: </div>
-                                {/*<div className="col-span-3">*/}
                                     <input className={input_classname}
                                         disabled
                                         type="text"
                                         value={po.po_num}
                                     />
-                                {/*</div>*/}
                                 <div className={label_classname + " mt-12"}> Qty: </div>
-                                {/*<div className="col-span-3">*/}
                                     <input className={input_classname + " mt-12"}
                                         type="text"
                                         placeholder={job.qty}
                                         onChange={(e) => setQty(e.target.value)}
                                     />
-                                {/*</div>*/}
                                 <div className={label_classname}> Process: </div>
-                                {/*<div className="col-span-3">*/}
                                     <input className={input_classname}
                                         type="text"
                                         placeholder={job.process}
                                         onChange={(e) => setProcess(e.target.value)}
                                     />
-                                {/*</div>*/}
                                 <div className={label_classname+" mt-12"}> Remarks: </div>
-                                {/*<div className="col-span-3">*/}
                                     <input className={input_classname + " mt-12"}
                                         type="text"
                                         placeholder={job.remarks}
                                         onChange={(e) => setRemarks(e.target.value)}
                                     />
-                                {/*</div>*/}
                                 <div className={label_classname}>  Initial:  </div>
-                                {/*<div className="col-span-3">*/}
                                     <input className={input_classname}
                                         type="text"
                                         placeholder="input required"
                                         onChange={(e) => setInitial(e.target.value)}
                                     />
-                                {/*</div>*/}
+                            </div>
+
+                            <div className="bg-white border border-slate-500 mx-4 mb-8 pb-4 pl-8 pt-2">
+                                <div className="text-[#544B76] font-bold ml-4 mt-2"> Status: </div>
+                                <div className="grid grid-cols-3 place-content-center mx-4 pl-8 my-1">
+                                    <div>
+                                        <input
+                                            type="radio"
+                                            name="status"
+                                            value="incoming"
+                                            checked={newStatus === "incoming"}
+                                            onChange={(e) => setNewStatus(e.target.value)}
+                                        />
+                                        <label className="text-md px-2"> incoming </label>
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="radio"
+                                            name="status"
+                                            value="received"
+                                            checked={newStatus === "received"}
+                                            onChange={(e) => setNewStatus(e.target.value)}
+                                        />
+                                        <label className="text-md px-2"> received </label>
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="radio"
+                                            name="status"
+                                            value="processed"
+                                            checked={newStatus === "processed"}
+                                            onChange={(e) => setNewStatus(e.target.value)}
+                                        />
+                                        <label className="text-md px-2"> processed </label>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-3 place-content-center mx-4 pl-8 my-1">
+                                    
+                                    <div>
+                                        <input
+                                            type="radio"
+                                            name="status"
+                                            value="delivered"
+                                            checked={newStatus === "delivered"}
+                                            onChange={(e) => setNewStatus(e.target.value)}
+                                        />
+                                        <label className="text-md px-2"> delivered </label>
+                                    </div>
+                                    <div className="col-span-2">
+                                        <input
+                                            type="radio"
+                                            name="status"
+                                            value="delivered-partial"
+                                            checked={newStatus === "delivered-partial"}
+                                            onChange={(e) => setNewStatus(e.target.value)}
+                                        />
+                                        <label className="text-md px-2"> delivered-partial </label>
+                                    </div>
+                                </div>
                             </div>
 
                             {/*<div className="pt-4">*/}

@@ -28,6 +28,8 @@ import Customers from './components/SidebarLinks/Customers.jsx'
 import NewContact from './components/contacts/NewContact.jsx'
 import EditContact from './components/contacts/EditContact.jsx'
 
+//import Updates from './components/SidebarLinks/Updates.jsx'
+
 
 const router = createBrowserRouter([
     {
@@ -121,11 +123,12 @@ const router = createBrowserRouter([
             {
                 path: "/contacts/:id/edit",
                 element: <EditContact />
-            },
-            {
-                path: "/settings",
-                element: <Outlet />
             }
+            //,
+            //{
+            //    path: "/updates",
+            //    element: <Updates />
+            //}
         ]
     }
 ])

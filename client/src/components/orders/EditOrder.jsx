@@ -16,14 +16,15 @@ export default function EditOrder() {
     const navigate = useNavigate();
     const params = useParams();
 
-    //const [status, setStatus] = useState("open");
     const [order, setOrder] = useState([]);
     const [newPoNum, setNewPoNum] = useState("");
+    const [newStatus, setNewStatus] = useState("");
 
     useEffect(() => {
         OrderService.get(params.id)
             .then((response) => {
                 setOrder(response.data);
+                setNewStatus(response.data.status)
             })
             .catch((e) => {
                 console.log(e);
@@ -33,12 +34,16 @@ export default function EditOrder() {
 
     function saveOrder() {
 
-        if (newPoNum === "") {
+        if (newPoNum === "" && newStatus === order.status) {
             navigate(`/orders/${params.id}`);
             return;
         }
 
-        OrderService.update(params?.id, {po_num: newPoNum})
+        const updates = {};
+        if (newPoNum !== "") updates.po_num = newPoNum;
+        if (newStatus !== "" && newStatus !== order.status) updates.status = newStatus;
+
+        OrderService.update(params?.id, updates)
             .then((response) => {
                 navigate(`/orders/${params.id}`);
             })
@@ -78,6 +83,52 @@ export default function EditOrder() {
                                     value={newPoNum}
                                     onChange={(e) => setNewPoNum(e.target.value)}
                                 />
+                            </div>
+
+                            <div className="bg-white border border-slate-500 mx-4 mb-8 pb-4 pl-8 pt-2">
+                                <div className="text-[#544B76] font-bold ml-4 mt-2"> Status: </div>
+                                <div className="grid grid-cols-4 place-content-center mx-4 pl-8 my-1">
+                                    <div>
+                                        <input
+                                            type="radio"
+                                            name="status"
+                                            value="open"
+                                            checked={newStatus === "open"}
+                                            onChange={(e) => setNewStatus(e.target.value)}
+                                        />
+                                        <label className="text-md px-2"> open </label>
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="radio"
+                                            name="status"
+                                            value="finished"
+                                            checked={newStatus === "finished"}
+                                            onChange={(e) => setNewStatus(e.target.value)}
+                                        />
+                                        <label className="text-md px-2"> finished </label>
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="radio"
+                                            name="status"
+                                            value="priced"
+                                            checked={newStatus === "priced"}
+                                            onChange={(e) => setNewStatus(e.target.value)}
+                                        />
+                                        <label className="text-md px-2"> priced </label>
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="radio"
+                                            name="status"
+                                            value="invoiced"
+                                            checked={newStatus === "invoiced"}
+                                            onChange={(e) => setNewStatus(e.target.value)}
+                                        />
+                                        <label className="text-md px-2"> invoiced </label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="pt-8 mx-8 grid grid-cols-2 gap-4 place-items-center">

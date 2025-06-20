@@ -27,7 +27,7 @@ const contactsItems: Item[] = [
 ]
 
 const settingsItems: Item[] = [
-    { title: 'Update Database', iconName: 'settings', href: '/settings' }
+    { title: 'Status Updates', iconName: 'settings', href: '/updates' }
 ]
 
 const SidebarSection = ({ title, items }: { title: string; items: Item[] }) => (
@@ -83,7 +83,7 @@ export default function Sidebar() {
                     <SidebarSection title="Open Orders" items={openOrdersItems} /><div className="mt-10"></div>
                     <SidebarSection title="Receipts" items={receiptsItems} /><div className="mt-10"></div>
                     <SidebarSection title="Contacts" items={contactsItems} /><div className="mt-10"></div>
-                    <SidebarSection title="Settings" items={settingsItems} /><div className="mt-10"></div>
+                    {/*<SidebarSection title="Admin" items={settingsItems} /><div className="mt-10"></div>*/}
                 </nav>
             </aside>
         </>

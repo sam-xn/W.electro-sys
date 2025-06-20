@@ -398,52 +398,52 @@ export default function Order() {
                                                     : <></>
                                                 }
                                             </div>
-                                            {job.status === "incoming" || job.status === "received"
-                                                ? <>
-                                                    <div className="flex gap-2 place-content-end mt-4 border-t border-slate-500">
-                                                        <div className="mt-4">
-                                                            <Link className={button_classname+" px-4"} to={`/jobs/${job.id}/edit`} >
-                                                                <p className="">Edit</p>
-                                                            </Link>
-                                                        </div>
-                                                        <div className="mt-4">
-                                                            <Link className={button_classname+" px-4"} to={`/jobs/${job.id}/print`} >
-                                                                <p className="">Print</p>
-                                                            </Link>
-                                                        </div>
-                                                    </div>
-                                                </> :
-                                                (po.status === "finished" || po.status === "priced"
-                                                    ? <>
-                                                        <div className="mt-4 border-t border-slate-500">
-                                                                <div className={button_classname+ " mt-4 mx-4"} >
-                                                                <button onClick={() => fnAddPrice(job.id)}>
-                                                                    {addPrice == job.id ? "Close" : (job.price ? "Edit Price" : "Add Price")}
-                                                                </button>
-                                                            </div>
-                                                        </div>
+                                            
+                                            <div className="flex gap-2 place-content-end mt-4 border-t border-slate-500">
+                                                <div className="mt-4">
+                                                    <Link className={button_classname+" px-4"} to={`/jobs/${job.id}/edit`} >
+                                                        <p className="">Edit</p>
+                                                    </Link>
+                                                </div>
+                                                <div className="mt-4">
+                                                    <Link className={button_classname + " px-4"} to={`/jobs/${job.id}/print`} >
+                                                        <p className="">Print</p>
+                                                    </Link>
+                                                </div>
+                                                {/*{job.status === "incoming" || job.status === "received"*/}
+                                                {/*    ? <></> :*/}
+                                                {/*    (po.status === "finished" || po.status === "priced"*/}
+                                                {/*        ? <>*/}
+                                                {/*            <div className="">*/}
+                                                {/*                    <div className={button_classname+ " mt-4 mx-4"} >*/}
+                                                {/*                    <button onClick={() => fnAddPrice(job.id)}>*/}
+                                                {/*                        {addPrice == job.id ? "Close" : (job.price ? "Edit Price" : "Add Price")}*/}
+                                                {/*                    </button>*/}
+                                                {/*                </div>*/}
+                                                {/*            </div>*/}
 
-                                                    {addPrice == job.id
-                                                        ? <>
-                                                            <div className="flex gap-2 py-4 pr-12">
-                                                                <input
-                                                                    className="w-md px-4 bg-white text-black focus:outline-none max-w-full border border-slate-500"
-                                                                    onChange={(e) => setNewPrice(e.target.value)}
-                                                                    placeholder={"$ / unit"}
-                                                                    value={newPrice}
-                                                                />
-                                                                <button
-                                                                    className={button_classname}
-                                                                    onClick={() => savePrice(job.id)}
-                                                                >
-                                                                    <p className="text-sm"> Save </p>
-                                                                </button>
-                                                            </div>
-                                                        </> : <></>
-                                                    }
-                                                    </> : <><div className="border-t border-slate-500 mt-4"></div></>
-                                                )
-                                            }
+                                                {/*        {addPrice == job.id*/}
+                                                {/*            ? <>*/}
+                                                {/*                <div className="flex gap-2 py-4 pr-12">*/}
+                                                {/*                    <input*/}
+                                                {/*                        className="w-md px-4 bg-white text-black focus:outline-none max-w-full border border-slate-500"*/}
+                                                {/*                        onChange={(e) => setNewPrice(e.target.value)}*/}
+                                                {/*                        placeholder={"$ / unit"}*/}
+                                                {/*                        value={newPrice}*/}
+                                                {/*                    />*/}
+                                                {/*                    <button*/}
+                                                {/*                        className={button_classname}*/}
+                                                {/*                        onClick={() => savePrice(job.id)}*/}
+                                                {/*                    >*/}
+                                                {/*                        <p className="text-sm"> Save </p>*/}
+                                                {/*                    </button>*/}
+                                                {/*                </div>*/}
+                                                {/*            </> : <></>*/}
+                                                {/*        }*/}
+                                                {/*        </> : <><div className="border-t border-slate-500 mt-4"></div></>*/}
+                                                {/*    )*/}
+                                                {/*}*/}
+                                            </div>
                                         </div>
                                     </div>
                                 </>
