@@ -10,6 +10,7 @@ import Home from './components/Home.jsx'
 
 import Orders from './components/SidebarLinks/Orders.jsx'
 import Order from './components/orders/Order.jsx'
+import EditOrder from './components/orders/EditOrder.jsx'
 import NewOrder from './components/orders/NewOrder.jsx'
 
 import Jobs from './components/SidebarLinks/Jobs.jsx'
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
             {
                 path: "/orders/:id",
                 element: <Order />
+            },
+            {
+                path: "/orders/:id/edit",
+                element: <EditOrder />
             },
             {
                 path: "/orders/new",

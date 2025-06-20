@@ -305,14 +305,20 @@ export default function Order() {
                                 }
                                 <div>
                                     {po.status === "open"
-                                        ? 
-                                            <Link className={button_classname + " mt-1"} to={`new`}>
-                                                <p className="">Add Jobs</p>
-                                            </Link>
+                                        ?
+                                        <Link className={button_classname + " bg-blue-800 mt-1"} to={`new`}>
+                                            <p className="">Add Jobs</p>
+                                        </Link>
                                         : <></>
                                     }
-
-                                    <div className={button_classname + " mt-2"}>
+                                    <div className={button_classname + " bg-blue-800  mt-1"}>
+                                        <Link to={`/orders/${params.id}/edit`}>
+                                            <p className="text-sm">
+                                                Edit PO
+                                            </p>
+                                        </Link>
+                                    </div>
+                                                                        <div className={button_classname + " mt-2"}>
                                         <button onClick={() => setOpen(true)}>
                                             <p className="text-sm">
                                                 View Contacts
@@ -326,7 +332,6 @@ export default function Order() {
                                                 </p>
                                         </button>
                                     </div>
-
                                    
                                 </div>
                             </div>
@@ -444,9 +449,17 @@ export default function Order() {
                                 </>
                             )}
                         </div>
-                        {markFinished ? <>
-                            <div className="grid grid-cols-4">
-                                <div></div><div></div><div></div>
+                        <div className="grid grid-cols-4">
+                            {/*<div className={button_classname + " mt-1"}>*/}
+                            {/*    <button to={`edit`}>*/}
+                            {/*        <p className="text-sm">*/}
+                            {/*            Edit PO*/}
+                            {/*        </p>*/}
+                            {/*    </button>*/}
+                            {/*</div>*/}
+                            <div></div>
+                            <div></div><div></div>
+                            {markFinished ? <>
                                 <div className={button_classname + " mt-1 bg-blue-800"}>
                                     <button onClick={() => statusUpdate("finished")}>
                                         <p className="text-sm">
@@ -454,12 +467,9 @@ export default function Order() {
                                         </p>
                                     </button>
                                 </div>
-                            </div>
-                        </>
-                        : <></>}
-                        {markInvoiced ? <>
-                            <div className="grid grid-cols-4">
-                                <div></div><div></div><div></div>
+                            </>
+                            : <></>}
+                            {markInvoiced ? <>
                                 <div className={button_classname + " mt-1 bg-blue-800"}>
                                     <button onClick={() => statusUpdate("invoiced")}>
                                         <p className="text-sm">
@@ -467,12 +477,9 @@ export default function Order() {
                                         </p>
                                     </button>
                                 </div>
-                            </div>
-                        </>
-                        : <></>}
-                        {markPriced ? <>
-                            <div className="grid grid-cols-4">
-                                <div></div><div></div><div></div>
+                            </>
+                            : <></>}
+                            {markPriced ? <>
                                 <div className={button_classname + " mt-1 bg-blue-800"}>
                                     <button onClick={() => statusUpdate("priced")}>
                                         <p className="text-sm">
@@ -480,9 +487,9 @@ export default function Order() {
                                         </p>
                                     </button>
                                 </div>
-                            </div>
-                        </>
+                            </>
                             : <></>}
+                        </div>
                     </div>
 
                     <div className={"bg-[#eff1fc] my-8 " + div_classname}>

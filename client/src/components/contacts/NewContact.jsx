@@ -141,7 +141,7 @@ function NewContact() {
                                                 </> : <></>}
 
                                                 <div className="grid grid-cols-4 mt-8">
-                                                    <div className="text-[#544B76] font-bold ml-4 mb-2"> Type: </div>
+                                                    <div className="text-[#544B76] font-bold ml-4 mb-2"> Contact Type: </div>
                                                     <div>
                                                         <input
                                                             type="radio"

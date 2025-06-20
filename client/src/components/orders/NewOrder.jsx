@@ -93,7 +93,7 @@ function NewOrder() {
                     <div className="grid">
                         {error ? <Error isOpen={error} onClose={handleClose}> {errorMessage} </Error> : <></>}
 
-                        <div className="mx-4 py-8 px-8 mb-12 bg-[#eff1fc] rounded shadow border border-slate-500">
+                        <div className="place-self-center w-3/4 mx-4 py-8 px-8 mb-12 bg-[#eff1fc] rounded shadow border border-slate-500">
 
                             <div className="p-1 text-[#544B76] font-bold text-xl border-b border-slate-500">
                                 New Order
