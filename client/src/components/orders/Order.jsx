@@ -318,7 +318,7 @@ export default function Order() {
                                             </p>
                                         </Link>
                                     </div>
-                                                                        <div className={button_classname + " mt-2"}>
+                                    <div className={button_classname + " mt-2"}>
                                         <button onClick={() => setOpen(true)}>
                                             <p className="text-sm">
                                                 View Contacts

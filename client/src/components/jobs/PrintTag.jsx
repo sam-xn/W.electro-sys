@@ -73,7 +73,7 @@ export default function PrintTag() {
             <div className="rotate-270 translate-x-46 -translate-y-25 h-[528px] aspect-[calc(8.5/11)] text-sm pr-4 pl-4">
                 <div className="font-bold text-center my-2"> WORK TAG </div>
 
-                <div className="m-1 flex gap-2"> <p>Company:</p> <div className="grow border-b border-slate-500 text-center text-lg"> {job.order ? job.order.customer : ""} </div> </div>
+                <div className="m-1 flex gap-2"> <p>Company:</p> <div className="grow border-b border-slate-500 text-center text-xl"> {job.order ? job.order.customer : ""} </div> </div>
 
                 <div className="flex">
                     <div className="grow m-1 flex gap-2"> <p>Date:</p> <div className="grow border-b border-slate-500 text-center text-lg"> {job._timestamp} </div> </div>
