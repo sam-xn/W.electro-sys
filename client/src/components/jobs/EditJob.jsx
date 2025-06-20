@@ -41,11 +41,11 @@ export default function EditJob() {
     }, []);
 
     function saveJob() {
-        if (initial === "") {
-            setError(true);
-            setErrorMessage("Please enter Initial to update Job. ");
-            return;
-        }
+        //if (initial === "") {
+        //    setError(true);
+        //    setErrorMessage("Please enter Initial to update Job. ");
+        //    return;
+        //}
 
         const updates = { author_initial: initial };
         if (qty !== "") updates.qty = qty;
